@@ -263,7 +263,7 @@ export function explainYtDlpError(stderr: string): YtDlpError {
     return { message: 'This video needs you to be signed in, so it can’t be downloaded.', suggestUpdate: false }
   if (/Video unavailable|removed|does not exist|404/i.test(raw)) return { message: 'This video is unavailable or was removed.', suggestUpdate: false }
   if (/Requested format is not available/i.test(raw)) return { message: 'That quality isn’t offered for this video. Try a lower one.', suggestUpdate: false }
-  if (/getaddrinfo|Unable to download webpage|timed out|Connection/i.test(raw))
+  if (/getaddrinfo|Unable to download (webpage|API page)|timed out|Connection|proxy/i.test(raw))
     return { message: 'Couldn’t reach the site. Check your internet connection.', suggestUpdate: false }
   if (/nsig|signature|player|403|Forbidden|extract|JavaScript|js-runtime/i.test(raw))
     return { message: 'The site changed how it works. Updating the downloader usually fixes this.', suggestUpdate: true }

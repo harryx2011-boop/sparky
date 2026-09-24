@@ -1,0 +1,51 @@
+{
+  "name": "@sparky/desktop",
+  "productName": "Sparky",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Convert anything. Download everything. A local file converter and link downloader for Windows.",
+  "license": "MIT",
+  "author": "harryx2011-boop",
+  "homepage": "https://github.com/harryx2011-boop/sparky",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "package": "electron-vite build && electron-builder --win --x64",
+    "typecheck": "tsc -p tsconfig.node.json && tsc -p tsconfig.web.json",
+    "test": "vitest run",
+    "postinstall": "electron-builder install-app-deps || echo \"Skipping native rebuild (no Electron headers available).\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "electron-updater": "^6.8.9",
+    "pdfjs-dist": "^6.3.289",
+    "sharp": "^0.35.4"
+  },
+  "devDependencies": {
+    "@sparky/core": "*",
+    "@sparky/ui": "*",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.20.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "class-variance-authority": "^0.7.1",
+    "cmdk": "^1.1.1",
+    "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "lucide-react": "^1.48.0",
+    "motion": "^13.4.3",
+    "radix-ui": "^1.6.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "sonner": "^2.0.8",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7"
+  }
+}

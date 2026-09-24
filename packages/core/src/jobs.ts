@@ -52,6 +52,8 @@ export interface DownloadRequest {
   quality: Resolution | null
   /** 1-based playlist positions. Empty or undefined downloads everything. */
   items?: number[]
+  /** How many items this request will download, for overall progress. */
+  count?: number
   /** Convert the finished download into this format in the same job. */
   convertTo?: string | null
   compression: CompressionLevel

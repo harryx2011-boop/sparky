@@ -103,5 +103,6 @@ describe('parsing', () => {
     expect(explainYtDlpError('ERROR: Unsupported URL: https://x')).toMatchObject({ suggestUpdate: true })
     expect(explainYtDlpError('ERROR: [youtube] abc: Video unavailable')).toMatchObject({ suggestUpdate: false })
     expect(explainYtDlpError('ERROR: [youtube] abc: nsig extraction failed').message).toMatch(/Updating/)
+    expect(explainYtDlpError("ERROR: [youtube] abc: Unable to download API page: ('Unable to connect to proxy')")).toMatchObject({ suggestUpdate: false })
   })
 })
