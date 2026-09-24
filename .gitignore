@@ -11,3 +11,6 @@ apps/desktop/resources/bin/*
 !apps/desktop/resources/bin/.gitkeep
 .env
 .env.*
+# Satoshi is fetched by scripts/fetch-fonts.mjs (Fontshare license), never committed
+apps/web/public/fonts/satoshi/
+apps/desktop/src/renderer/public/fonts/satoshi/

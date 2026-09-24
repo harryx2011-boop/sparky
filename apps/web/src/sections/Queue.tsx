@@ -69,7 +69,7 @@ export function Queue() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="flex max-w-[620px] flex-col gap-5">
             <Eyebrow index="04">Queue</Eyebrow>
-            <Heading>Everything waits in one line.</Heading>
+            <Heading lines={['Everything waits in one line.']} />
             <Lead>
               Downloads and conversions take turns together. See how fast each one is going and how long is left, then pause,
               drag to reorder or cancel whenever you like.

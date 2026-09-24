@@ -31,6 +31,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Fetch the Satoshi font
+        run: node scripts/fetch-fonts.mjs
+        continue-on-error: true
       - run: npm run build:web
         env:
           BASE_PATH: /${{ github.event.repository.name }}/

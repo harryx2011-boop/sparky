@@ -23,4 +23,5 @@ Sparky also uses these libraries, which are bundled into the app:
 | pdf.js | Apache-2.0 |
 | Radix UI, cmdk, sonner, lucide-react, Motion, Tailwind CSS | MIT (lucide-react: ISC) |
 | Simple Icons (brand icons) | CC0-1.0; brand marks belong to their owners |
-| Geist and Geist Mono fonts | SIL Open Font License 1.1 |
+| IBM Plex Mono | SIL Open Font License 1.1 |
+| Satoshi (fetched at build time, not in git) | ITF Free Font License, Indian Type Foundry via Fontshare |

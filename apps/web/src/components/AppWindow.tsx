@@ -8,19 +8,19 @@ const W = 1200
 const H = 740
 
 /** Scales a fixed-size design down to fit narrow screens without reflowing it. */
-function FitToWidth({ children }: { children: ReactNode }) {
+export function FitToWidth({ children, width = W, height = H }: { children: ReactNode; width?: number; height?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const ro = new ResizeObserver(([entry]) => setScale(Math.min(1, (entry?.contentRect.width ?? W) / W)))
+    const ro = new ResizeObserver(([entry]) => setScale(Math.min(1, (entry?.contentRect.width ?? width) / width)))
     ro.observe(el)
     return () => ro.disconnect()
-  }, [])
+  }, [width])
   return (
-    <div ref={ref} className="w-full" style={{ height: H * scale }}>
-      <div style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'top left' }}>{children}</div>
+    <div ref={ref} className="w-full" style={{ height: height * scale }}>
+      <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left' }}>{children}</div>
     </div>
   )
 }

@@ -45,6 +45,7 @@ npm install
 
 npm run dev:web          # the landing site at http://localhost:5173
 npm run dev:ui -w @sparky/desktop   # the app's interface in a browser, with sample data
+npm run fetch-fonts      # download the Satoshi font (optional; falls back to system fonts)
 npm run fetch-tools      # download FFmpeg, yt-dlp, Pandoc, 7-Zip and Deno (Windows builds)
 npm run dev:app          # the real app in Electron
 npm run package:win      # build Sparky-Setup.exe (run on Windows)
@@ -61,7 +62,7 @@ apps/
     src/main/engine/  job queue and tool runners (no Electron imports, tested on its own)
     src/preload/      the small API the interface is allowed to use
     src/renderer/     React + Tailwind + shadcn/ui interface
-  web/            landing site (React + Tailwind + Motion), deployed to GitHub Pages
+  web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to GitHub Pages
 packages/
   core/           shared logic: formats, levels, 1440p/4K rules, tool command lines, progress parsing
   ui/             shared look: theme, Performance bars, Compression slider, Resolution picker

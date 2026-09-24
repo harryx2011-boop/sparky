@@ -191,11 +191,7 @@ export function Convert() {
         <div className="grid grid-cols-1 items-center gap-12 py-24 lg:sticky lg:top-0 lg:h-screen lg:grid-cols-2 lg:gap-20 lg:py-0">
           <div className="flex flex-col gap-5">
             <Eyebrow index="01">Convert</Eyebrow>
-            <Heading>
-              Drop anything.
-              <br />
-              Get what you need.
-            </Heading>
+            <Heading lines={['Drop anything.', 'Get what you need.']} />
             <Lead>Videos, songs, photos, documents and zip files, all changed right on your computer. Drag them in, pick a format, done.</Lead>
             <CategoryList active={row} />
           </div>

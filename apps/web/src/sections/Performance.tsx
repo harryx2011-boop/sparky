@@ -41,7 +41,7 @@ export function Performance() {
             <span className="eyebrow inline-flex items-center gap-2">
               <Bolt size={14} strokeWidth={2} /> 03 · Performance
             </span>
-            <Heading>You decide how hard it works.</Heading>
+            <Heading lines={['You decide how hard it works.']} />
             <Lead>Keep it quiet while you game or take a call, or let Sparky use everything your PC has for a big batch.</Lead>
           </div>
 

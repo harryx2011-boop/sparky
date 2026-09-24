@@ -17,7 +17,8 @@
     "package:win": "npm run fetch-tools && npm run package -w @sparky/desktop",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run typecheck && npm test && npm run build:web && npm run build:app"
+    "check": "npm run typecheck && npm test && npm run build:web && npm run build:app",
+    "fetch-fonts": "node scripts/fetch-fonts.mjs"
   },
   "engines": {
     "node": ">=22"

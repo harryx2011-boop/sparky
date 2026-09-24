@@ -2,25 +2,32 @@ import { cn, LogoMark } from '@sparky/ui'
 import { Bell, Clipboard, FolderOpen, History, Image, Inbox, RotateCcw, Scissors, Search, ShieldCheck, Subtitles, Tags, Trash2 } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { TiltCard } from '../components/motion'
 import { Eyebrow, Heading } from '../components/ui'
 
 function Tile({ className, icon, title, children, visual, delay = 0 }: { className?: string; icon: ReactNode; title: string; children: ReactNode; visual?: ReactNode; delay?: number }) {
   const reduce = useReducedMotion()
   return (
-    <motion.article
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
+    <motion.div
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40, scale: 0.96, filter: 'blur(6px)' }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
       viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={cn('group flex flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card p-6 transition-colors hover:border-[#333]', className)}
+      transition={{ duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={cn('rounded-2xl', className)}
     >
-      <div className="flex flex-col gap-2.5">
-        <span className="text-foreground">{icon}</span>
-        <h3 className="text-base font-semibold">{title}</h3>
-        <p className="text-sm leading-relaxed text-muted-foreground">{children}</p>
-      </div>
-      {visual && <div className="mt-auto">{visual}</div>}
-    </motion.article>
+      <TiltCard className="h-full rounded-2xl">
+        <article className="group flex h-full flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card p-6 transition-colors hover:border-[#3a3a3a]">
+          <div className="flex flex-col gap-2.5">
+            <motion.span className="text-foreground" whileHover={reduce ? undefined : { rotate: [0, -12, 10, 0], scale: 1.15 }} transition={{ duration: 0.5 }}>
+              {icon}
+            </motion.span>
+            <h3 className="text-base font-bold">{title}</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">{children}</p>
+          </div>
+          {visual && <div className="mt-auto">{visual}</div>}
+        </article>
+      </TiltCard>
+    </motion.div>
   )
 }
 
@@ -149,7 +156,7 @@ export function Details() {
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12">
         <div className="flex flex-col gap-5">
           <Eyebrow index="05">Details</Eyebrow>
-          <Heading>The little things, already handled.</Heading>
+          <Heading lines={['The little things, already handled.']} />
         </div>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6 lg:grid-rows-[auto_auto_auto_auto]">

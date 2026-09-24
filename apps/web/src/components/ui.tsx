@@ -1,6 +1,7 @@
 import { cn } from '@sparky/ui'
 import { motion, useReducedMotion } from 'motion/react'
 import type { AnchorHTMLAttributes, ReactNode } from 'react'
+import { SplitText } from './motion'
 
 export function ButtonLink({ variant = 'secondary', size = 'md', className, ...props }: AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: 'primary' | 'secondary'; size?: 'sm' | 'md' | 'lg' }) {
   return (
@@ -43,8 +44,17 @@ export function Eyebrow({ index, children, icon }: { index: string; children: Re
   )
 }
 
-export function Heading({ children, className }: { children: ReactNode; className?: string }) {
-  return <h2 className={cn('text-balance text-[40px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[52px]', className)}>{children}</h2>
+/** Section heading. Each line's words rise into place when it scrolls into view. */
+export function Heading({ lines, className }: { lines: string[]; className?: string }) {
+  return (
+    <h2 className={cn('text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[52px]', className)}>
+      {lines.map((l, i) => (
+        <span key={l} className="block">
+          <SplitText text={l} inView delay={i * 0.18} />
+        </span>
+      ))}
+    </h2>
+  )
 }
 
 export function Lead({ children, className }: { children: ReactNode; className?: string }) {

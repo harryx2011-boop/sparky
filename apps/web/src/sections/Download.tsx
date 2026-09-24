@@ -128,11 +128,7 @@ export function Download() {
 
         <div className="order-1 flex flex-col gap-5 lg:order-2">
           <Eyebrow index="02">Download</Eyebrow>
-          <Heading>
-            Paste a link.
-            <br />
-            Keep what you like.
-          </Heading>
+          <Heading lines={['Paste a link.', 'Keep what you like.']} />
           <Lead>
             YouTube and well over a thousand other sites. Grab one video, a whole playlist or a channel, in sharp 4K or as music
             for your phone. Tick the ones you want and Sparky can turn them into MP3 in the same go.

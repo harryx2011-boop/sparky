@@ -23,6 +23,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: npm pkg set version="${GITHUB_REF_NAME#v}" -w @sparky/desktop
+      - name: Fetch the Satoshi font
+        run: node scripts/fetch-fonts.mjs
+        continue-on-error: true
       - name: Fetch FFmpeg, yt-dlp, Pandoc, 7-Zip and Deno
         run: node scripts/fetch-tools.mjs
         env:
