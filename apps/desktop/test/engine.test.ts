@@ -12,7 +12,7 @@ import { createEngine, type Engine } from '../src/main/engine'
 import { run } from '../src/main/engine/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
-const has = (name: string) => Boolean(BIN && fs.existsSync(path.join(BIN, name)))
+const has = (name: string) => Boolean(BIN && [name, `${name}.exe`].some((f) => fs.existsSync(path.join(BIN, f))))
 
 const base: ConvertSettings = { output: 'mp4', compression: 2, resolution: null, performance: 'normal', originals: 'keep', advanced: {} }
 

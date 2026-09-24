@@ -9,7 +9,7 @@ A free, open-source file converter and link downloader for Windows. Everything h
 
 <p align="center">
   <a href="https://github.com/harryx2011-boop/sparky/releases/latest">Download for Windows</a> ·
-  <a href="https://harryx2011-boop.github.io/sparky/">Website</a> ·
+  <a href="https://sparky-labs.vercel.app">Website</a> ·
   <a href="docs/SPEC.md">Product spec</a>
 </p>
 
@@ -18,7 +18,7 @@ A free, open-source file converter and link downloader for Windows. Everything h
 ## What it does
 
 - **Converts files** between common formats: video (MP4, WEBM, MKV, MOV, GIF), audio (MP3, WAV, FLAC, M4A, OGG), images (PNG, JPG, WEBP, AVIF, ICO, and HEIC or BMP in), documents (PDF, DOCX, MD, HTML, TXT) and archives (ZIP, 7Z, and RAR in).
-- **Shrinks files** without changing their format. Pick the same format and slide **Compression** from *Lossless-ish* to *Tiny*.
+- **Shrinks files** without changing their format. Pick the same format and slide **Compression** from *Near original* to *Tiny*.
 - **Downloads from links**: YouTube and the other sites yt-dlp supports, including whole playlists and channels, up to 4K. You can turn a download into MP3 (or anything else) in the same step.
 - **Lets you choose how hard it works**: *Low* stays quiet, *Normal* is everyday speed, and *Max* uses your graphics card and every core. 1440p and 4K unlock on Max when your video and graphics card allow it.
 - **Handles the small things**: one queue for everything, history you can re-run, clipboard link detection, tray mode, Windows notifications, cover art and tags, subtitles, and skipping sponsor segments.
@@ -62,7 +62,7 @@ apps/
     src/main/engine/  job queue and tool runners (no Electron imports, tested on its own)
     src/preload/      the small API the interface is allowed to use
     src/renderer/     React + Tailwind + shadcn/ui interface
-  web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to GitHub Pages
+  web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to Vercel
 packages/
   core/           shared logic: formats, levels, 1440p/4K rules, tool command lines, progress parsing
   ui/             shared look: theme, Performance bars, Compression slider, Resolution picker

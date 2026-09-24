@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Downloads Satoshi (Indian Type Foundry, free via Fontshare) into the site and the app.
-// The font files aren't committed; the Pages and Release workflows run this before building.
+// The font files aren't committed; the Vercel build and the Release workflow run this before building.
 // Without it, both fall back to the next fonts in the stack.
 //
 //   node scripts/fetch-fonts.mjs

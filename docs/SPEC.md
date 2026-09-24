@@ -81,13 +81,13 @@ The control is a row of bars that fill left to right and animate with a shifting
 | --- | --- | --- |
 | Source resolution | ffprobe (files) or yt-dlp format list (links) reports ≥ the target height | Option hidden; Sparky never upscales |
 | Performance level | Performance is set to Max | Tooltip: "Switch to Max to unlock 1440p/4K" |
-| GPU support | NVENC, AMF or QSV encoder detected for the chosen codec (H.264, HEVC, AV1) | Tooltip names the missing encoder |
+| GPU support | NVENC, AMF or QSV encoder detected for the chosen codec (H.264, HEVC, AV1) | Tooltip says in plain words why it is locked |
 
 **Compression.** Every video, audio and image conversion has a Compression control with five levels, shown as a slider with labelled stops. Each level maps to encoder settings, and the result card shows before and after sizes with the percentage saved.
 
 | Level | Video (CRF / CQ) | Audio | Images (quality) |
 | --- | --- | --- | --- |
-| Lossless-ish | CRF 16 | 320 kbps / FLAC | 95 |
+| Near original | CRF 16 | 320 kbps / FLAC | 95 |
 | High | CRF 20 | 256 kbps | 88 |
 | Balanced (default) | CRF 23 | 192 kbps | 80 |
 | Small | CRF 28 | 128 kbps | 70 |
@@ -186,7 +186,7 @@ It's built as static HTML/React with scroll-linked animations; reduced-motion us
 
 - [x] **DOCX → PDF:** LibreOffice is *not* bundled. If it's installed, Sparky uses it; otherwise Pandoc turns the document into HTML and Electron's built-in Chromium prints it to PDF.
 - [x] **App updates:** yes. electron-updater checks GitHub Releases on launch, and yt-dlp still updates itself separately via `yt-dlp -U`.
-- [x] **Hosting:** the landing site deploys to GitHub Pages; the installer is `Sparky-Setup.exe` on GitHub Releases.
+- [x] **Hosting:** the landing site deploys to Vercel (https://sparky-labs.vercel.app, project `sparky-labs`, production branch `main`); the installer is `Sparky-Setup.exe` on GitHub Releases.
 - [x] **Logo:** the bolt in a rounded tile, rendered by `scripts/make-icons.mjs`.
 - [x] **License:** MIT. Bundled tools keep their own licenses (see `THIRD_PARTY_NOTICES.md`).
 - [x] **Bundled tools:** not stored in git. `scripts/fetch-tools.mjs` downloads the Windows builds before packaging, so users still get zero setup.
