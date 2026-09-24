@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sparky — Landing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0A0A0A;color:#EDEDED;font-family:Geist,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#EDEDED;text-decoration:none}a:hover{color:#FFFFFF}
+.mono{font-family:"Geist Mono",ui-monospace,Consolas,monospace}
+.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:10px;font-size:14px;font-weight:500;border:1px solid #2A2A2A;background:#141414;color:#EDEDED;cursor:pointer;font-family:inherit}
+.btn:hover{background:#1C1C1C}
+.btn-primary{background:#EDEDED;color:#0A0A0A;border-color:#EDEDED}
+.btn-primary:hover{background:#FFFFFF;color:#0A0A0A}
+.card{background:#111111;border:1px solid #232323;border-radius:14px}
+.eyebrow{font-family:"Geist Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8A8A8A}
+.h2{margin:0;font-size:52px;line-height:1.05;letter-spacing:-.035em;font-weight:600}
+.lead{margin:0;font-size:18px;line-height:1.55;color:#A1A1A1}
+.navitem{display:flex;align-items:center;gap:10px;height:34px;padding:0 10px;border-radius:8px;font-size:13px;color:#A1A1A1}
+.navitem.active{background:#1A1A1A;color:#EDEDED}
+.track{height:4px;border-radius:4px;background:#222222;overflow:hidden}
+.fill{height:100%;border-radius:4px;background:#EDEDED}
+.fill.run{background:linear-gradient(90deg,#8A8A8A,#EDEDED,#8A8A8A);background-size:200% 100%;animation:shimmer 2.4s linear infinite}
+.bars{display:flex;align-items:flex-end;gap:3px}
+.bar{width:5px;border-radius:2px;background:#2A2A2A;transform-origin:bottom}
+.mini .bar:nth-child(1){height:6px}.mini .bar:nth-child(2){height:9px}.mini .bar:nth-child(3){height:12px}.mini .bar:nth-child(4){height:15px}.mini .bar:nth-child(5){height:18px}
+.big{gap:12px}
+.big .bar{width:38px;border-radius:8px}
+.big .bar:nth-child(1){height:48px}.big .bar:nth-child(2){height:84px}.big .bar:nth-child(3){height:120px}.big .bar:nth-child(4){height:156px}.big .bar:nth-child(5){height:192px}
+.bar.on{background-size:100% 300%;animation:flow 2.2s ease-in-out infinite,flicker 1.6s ease-in-out infinite}
+.bar.on.low{background-image:linear-gradient(180deg,#9FB4C7,#5E7A94,#9FB4C7)}
+.bar.on.normal{background-image:linear-gradient(180deg,#8FB8FF,#8B7CF6,#4FA3E8,#8FB8FF)}
+.bar.on.max{background-image:linear-gradient(180deg,#FFD166,#FF7A45,#F0386B,#FFD166)}
+.bar:nth-child(2){animation-delay:.12s}.bar:nth-child(3){animation-delay:.24s}.bar:nth-child(4){animation-delay:.36s}.bar:nth-child(5){animation-delay:.48s}
+.opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 20px;border-radius:12px;border:1px solid #232323;background:#0F0F0F;color:#A1A1A1;cursor:pointer;text-align:left;font-family:inherit;width:100%}
+.opt:hover{border-color:#3A3A3A}
+.opt.sel{border-color:#EDEDED;background:#161616;color:#EDEDED}
+.spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#EDEDED;animation:twinkle 3.2s ease-in-out infinite}
+.range{width:100%;height:24px;margin:0;accent-color:#EDEDED;cursor:pointer}
+.btn.rsel{background:#EDEDED;color:#0A0A0A;border-color:#EDEDED}
+.btn.rdis{opacity:.4;cursor:not-allowed}
+.btn.rdis:hover{background:#141414}
+.check{width:16px;height:16px;accent-color:#EDEDED;margin:0}
+@keyframes flow{0%{background-position:0 0}50%{background-position:0 100%}100%{background-position:0 0}}
+@keyframes flicker{0%,100%{transform:scaleY(1)}40%{transform:scaleY(.86)}70%{transform:scaleY(.95)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.4)}}
+@keyframes reveal{from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:none}}
+@keyframes tilt{from{transform:perspective(1600px) rotateX(22deg) scale(.92);opacity:.6}to{transform:none;opacity:1}}
+@supports (animation-timeline: view()){
+.reveal{animation:reveal linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+.tilt{animation:tilt linear both;animation-timeline:view();animation-range:entry 0% cover 45%}
+}
+@media (prefers-reduced-motion: reduce){.bar.on,.fill.run,.spark,.reveal,.tilt{animation:none}}
+</style>
+</helmet>
+
+<div style="width: 1440px; height: 6000px; display: flex; flex-direction: column; background: #0A0A0A; overflow: hidden">
+
+  <!-- Nav -->
+  <header style="height: 72px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 120px; border-bottom: 1px solid #1A1A1A">
+    <a href="#top" style="display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -0.02em">
+      <span style="width: 28px; height: 28px; border-radius: 8px; background: #EDEDED; display: flex; align-items: center; justify-content: center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+      </span>
+      Sparky
+    </a>
+    <nav style="display: flex; gap: 32px; font-size: 14px; color: #A1A1A1">
+      <a href="#convert" style="color: #A1A1A1">Convert</a>
+      <a href="#download-links" style="color: #A1A1A1">Download</a>
+      <a href="#performance" style="color: #A1A1A1">Performance</a>
+      <a href="#features" style="color: #A1A1A1">Features</a>
+    </nav>
+    <a href="#get" class="btn btn-primary" style="height: 38px; font-size: 13px">Download for Windows</a>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" style="position: relative; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 120px 120px 80px; gap: 28px">
+    <span class="spark" style="left: 210px; top: 140px"></span>
+    <span class="spark" style="left: 330px; top: 300px; animation-delay: .8s"></span>
+    <span class="spark" style="left: 1180px; top: 170px; animation-delay: 1.4s"></span>
+    <span class="spark" style="left: 1260px; top: 360px; animation-delay: .3s"></span>
+    <span class="spark" style="left: 470px; top: 90px; animation-delay: 2.1s"></span>
+    <span class="spark" style="left: 1010px; top: 110px; animation-delay: 1.1s"></span>
+    <span class="spark" style="left: 150px; top: 430px; animation-delay: 2.6s"></span>
+    <span class="spark" style="left: 1320px; top: 250px; animation-delay: 1.8s"></span>
+
+    <span class="mono" style="display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px; border: 1px solid #2A2A2A; border-radius: 999px; font-size: 12px; color: #A1A1A1">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background: #EDEDED"></span>
+      v1.0 · Windows 10 &amp; 11
+    </span>
+    <h1 style="margin: 0; font-size: 88px; line-height: 0.98; letter-spacing: -0.05em; font-weight: 600; text-align: center; max-width: 1000px">Convert anything.<br>Download everything.</h1>
+    <p class="lead" style="text-align: center; max-width: 620px; font-size: 20px">Sparky is a local file converter and link downloader for Windows. No uploads, no setup, just drop a file or paste a link.</p>
+    <div style="display: flex; gap: 12px">
+      <a href="#get" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>
+        Download for Windows
+      </a>
+      <a href="#convert" class="btn">See how it works</a>
+    </div>
+
+    <!-- App window -->
+    <div class="tilt" style="margin-top: 56px; width: 1200px; height: 740px; border-radius: 16px; border: 1px solid #2A2A2A; background: #0E0E0E; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 120px rgba(0,0,0,.6)">
+      <div style="height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 0 0 16px; border-bottom: 1px solid #1C1C1C; font-size: 12px; color: #8A8A8A">
+        <span style="display: flex; align-items: center; gap: 8px">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          Sparky
+        </span>
+        <span style="display: flex; height: 40px">
+          <span style="width: 46px; display: flex; align-items: center; justify-content: center">—</span>
+          <span style="width: 46px; display: flex; align-items: center; justify-content: center">▢</span>
+          <span style="width: 46px; display: flex; align-items: center; justify-content: center">✕</span>
+        </span>
+      </div>
+      <div style="flex-grow: 1; display: flex; min-height: 0">
+        <aside style="width: 200px; flex-shrink: 0; border-right: 1px solid #1C1C1C; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px">
+          <span class="navitem active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 3-4 4 4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>Convert</span>
+          <span class="navitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path><path d="M12 15V3"></path></svg>Download</span>
+          <span class="navitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>Queue</span>
+          <span class="navitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg>History</span>
+          <span class="navitem"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7"></path><path d="M4 10V3"></path><path d="M12 21v-9"></path><path d="M12 8V3"></path><path d="M20 21v-5"></path><path d="M20 12V3"></path><path d="M1 14h6"></path><path d="M9 8h6"></path><path d="M17 16h6"></path></svg>Settings</span>
+        </aside>
+        <main style="flex-grow: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <span style="font-size: 16px; font-weight: 600">Convert</span>
+            <span class="mono" style="font-size: 12px; color: #8A8A8A">3 files · 412 MB</span>
+          </div>
+          <div style="height: 84px; border: 1px dashed #2E2E2E; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: #8A8A8A; font-size: 13px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m17 8-5-5-5 5"></path><path d="M12 3v12"></path></svg>
+            Drop files here, or browse
+          </div>
+          <div style="display: flex; flex-direction: column; border: 1px solid #1F1F1F; border-radius: 10px">
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 14px; border-bottom: 1px solid #1F1F1F; font-size: 13px">
+              <span>trip-recap.mov</span><span class="mono" style="color: #8A8A8A; font-size: 12px">MOV · 318 MB</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 14px; border-bottom: 1px solid #1F1F1F; font-size: 13px">
+              <span>interview.wav</span><span class="mono" style="color: #8A8A8A; font-size: 12px">WAV · 86 MB</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 14px; font-size: 13px">
+              <span>notes.md</span><span class="mono" style="color: #8A8A8A; font-size: 12px">MD · 8 KB</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: stretch">
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 11px; color: #8A8A8A">Output format</span>
+              <span style="height: 38px; border: 1px solid #2A2A2A; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 13px; background: #121212">
+                <span style="display: flex; align-items: center; gap: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>MP4 · Balanced</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+              </span>
+            </div>
+            <div style="width: 250px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 11px; color: #8A8A8A">Performance</span>
+              <span style="height: 38px; border: 1px solid #2A2A2A; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 13px; background: #121212">
+                <span style="display: flex; align-items: center; gap: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>{{cur.label}}</span>
+                <span class="bars mini"><span class="{{bars.b0}}"></span><span class="{{bars.b1}}"></span><span class="{{bars.b2}}"></span><span class="{{bars.b3}}"></span><span class="{{bars.b4}}"></span></span>
+              </span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: stretch">
+            <div style="width: 250px; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 11px; color: #8A8A8A">Resolution</span>
+              <span style="height: 38px; border: 1px solid #2A2A2A; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 13px; background: #121212">
+                <span>{{resCur}}</span><span class="mono" style="font-size: 11px; color: #8A8A8A">{{resNote}}</span>
+              </span>
+            </div>
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+              <label for="comp-hero" style="font-size: 11px; color: #8A8A8A; display: flex; justify-content: space-between"><span>Compression</span><span class="mono">{{compCur.label}} · {{compCur.video}}</span></label>
+              <div style="height: 38px; display: flex; align-items: center"><input id="comp-hero" class="range" type="range" min="0" max="4" step="1" value="{{comp}}" onChange="{{setComp}}"></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <span style="font-size: 12px; color: #8A8A8A">▸ Advanced: bitrate, codec, trim</span>
+            <button class="btn btn-primary" style="height: 38px; font-size: 13px">Convert 3 files</button>
+          </div>
+        </main>
+      </div>
+      <div style="height: 118px; flex-shrink: 0; border-top: 1px solid #1C1C1C; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; background: #0B0B0B">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8A8A8A"><span class="eyebrow" style="font-size: 10px">Queue · 2 running</span><span>Pause all</span></div>
+        <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 160px; gap: 16px; align-items: center; font-size: 12px">
+          <span>trip-recap.mov → MP4</span><div class="track"><div class="fill run" style="width: 64%"></div></div><span class="mono" style="color: #8A8A8A; text-align: right">3.1x · 0:42 left</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 160px; gap: 16px; align-items: center; font-size: 12px">
+          <span>Lo-fi mix (playlist 4/12)</span><div class="track"><div class="fill run" style="width: 28%"></div></div><span class="mono" style="color: #8A8A8A; text-align: right">6.4 MB/s · 1:15</span>
+        </div>
+      </div>
+      <div style="height: 34px; flex-shrink: 0; border-top: 1px solid #1C1C1C; display: flex; align-items: center; justify-content: flex-end; gap: 18px; padding: 0 20px; font-size: 11px; color: #8A8A8A">
+        <span style="display: flex; align-items: center; gap: 6px"><img src="https://cdn.simpleicons.org/gmail/EDEDED" alt="" style="width: 12px; height: 12px">harryx2011@gmail.com</span>
+        <span style="display: flex; align-items: center; gap: 6px"><img src="https://cdn.simpleicons.org/discord/EDEDED" alt="" style="width: 12px; height: 12px">ogexr.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Convert -->
+  <section id="convert" class="reveal" style="flex-shrink: 0; padding: 120px 120px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px; align-items: center">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <span class="eyebrow">01 · Convert</span>
+      <h2 class="h2">Drop anything.<br>Get what you need.</h2>
+      <p class="lead">Video, audio, images, documents and archives, all converted on your machine. Pick a compression level to shrink files, with or without changing format. 1440p and 4K unlock when the source, your GPU and Max performance allow it.</p>
+    </div>
+    <div class="card" style="padding: 28px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; font-size: 14px; align-items: center">
+        <span class="mono" style="color: #8A8A8A; font-size: 12px">VIDEO</span><span>MP4 · MKV · MOV · WEBM → GIF, MP3</span>
+        <span class="mono" style="color: #8A8A8A; font-size: 12px">AUDIO</span><span>MP3 · WAV · FLAC · M4A · OGG</span>
+        <span class="mono" style="color: #8A8A8A; font-size: 12px">IMAGES</span><span>PNG · JPG · WEBP · HEIC → AVIF, ICO</span>
+        <span class="mono" style="color: #8A8A8A; font-size: 12px">DOCS</span><span>DOCX · MD · HTML · PDF · TXT</span>
+        <span class="mono" style="color: #8A8A8A; font-size: 12px">ARCHIVES</span><span>ZIP · 7Z · RAR</span>
+      </div>
+      <div style="height: 1px; background: #232323"></div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; font-size: 14px"><label for="comp-card">Compression</label><span class="mono" style="color: #A1A1A1; font-size: 12px">{{compCur.label}} · {{compCur.video}} · {{compCur.audio}}</span></div>
+        <input id="comp-card" class="range" type="range" min="0" max="4" step="1" value="{{comp}}" onChange="{{setComp}}">
+        <div class="mono" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); font-size: 11px; color: #8A8A8A"><span>Lossless-ish</span><span style="text-align: center">High</span><span style="text-align: center">Balanced</span><span style="text-align: center">Small</span><span style="text-align: right">Tiny</span></div>
+      </div>
+      <div style="height: 1px; background: #232323"></div>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px"><span>Resolution</span><span class="mono" style="color: #8A8A8A; font-size: 12px">{{resHint}}</span></div>
+        <div style="display: flex; gap: 8px">
+          <sc-for list="{{resOpts}}" as="r" hint-placeholder-count="4">
+            <button class="{{r.cls}}" disabled="{{r.disabled}}" onClick="{{r.pick}}" style="height: 34px; font-size: 13px">{{r.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section id="download-links" class="reveal" style="flex-shrink: 0; padding: 120px 120px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px; align-items: center; border-top: 1px solid #161616">
+    <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="height: 42px; border: 1px solid #2A2A2A; border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 13px; color: #A1A1A1; background: #0D0D0D">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span class="mono">youtube.com/playlist?list=[PLAYLIST]</span>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center">
+        <div style="width: 150px; height: 84px; border-radius: 8px; background: #1E1E1E; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #8A8A8A">[thumbnail]</div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 15px; font-weight: 600">[Playlist title]</span>
+          <span style="font-size: 13px; color: #8A8A8A">[Channel] · 12 videos · 48:10</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; border: 1px solid #1F1F1F; border-radius: 10px">
+        <sc-for list="{{items}}" as="it" hint-placeholder-count="4">
+          <label style="display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 14px; border-bottom: 1px solid #1A1A1A; font-size: 13px; cursor: pointer">
+            <input type="checkbox" class="check" checked="{{it.checked}}" onChange="{{it.toggle}}">
+            <span style="flex-grow: 1">{{it.title}}</span>
+            <span class="mono" style="color: #8A8A8A; font-size: 12px">{{it.len}}</span>
+          </label>
+        </sc-for>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+        <span style="font-size: 12px; color: #8A8A8A">Audio · MP3 · SponsorBlock on · {{picked}} selected</span>
+        <button class="btn btn-primary" style="height: 38px; font-size: 13px">Convert</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <span class="eyebrow">02 · Download</span>
+      <h2 class="h2">Paste a link.<br>Pick what you keep.</h2>
+      <p class="lead">YouTube and every site yt-dlp supports, including playlists and whole channels, up to 4K. Preview first, tick the videos you want, and convert in the same step.</p>
+    </div>
+  </section>
+
+  <!-- Performance -->
+  <section id="performance" class="reveal" style="flex-shrink: 0; padding: 120px 120px; display: flex; flex-direction: column; align-items: center; gap: 48px; border-top: 1px solid #161616">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center">
+      <span class="eyebrow" style="display: flex; align-items: center; gap: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>03 · Performance</span>
+      <h2 class="h2">You choose how hard it works.</h2>
+      <p class="lead" style="max-width: 600px">Keep it quiet in the background, or let Sparky use every core and your GPU for big batches.</p>
+    </div>
+    <div style="height: 200px; display: flex; align-items: flex-end">
+      <div class="bars big"><span class="{{bars.b0}}"></span><span class="{{bars.b1}}"></span><span class="{{bars.b2}}"></span><span class="{{bars.b3}}"></span><span class="{{bars.b4}}"></span></div>
+    </div>
+    <div style="width: 960px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+      <sc-for list="{{opts}}" as="o" hint-placeholder-count="3">
+        <button class="{{o.cls}}" onClick="{{o.pick}}">
+          <span style="font-size: 16px; font-weight: 600">{{o.label}}</span>
+          <span style="font-size: 13px; line-height: 1.45">{{o.desc}}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- Queue -->
+  <section class="reveal" style="flex-shrink: 0; padding: 120px 120px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 80px; align-items: center; border-top: 1px solid #161616">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <span class="eyebrow">04 · Queue</span>
+      <h2 class="h2">Everything in one queue.</h2>
+      <p class="lead">Downloads and conversions line up together with live speed and ETA. Pause, reorder, cancel, and set how many run at once.</p>
+    </div>
+    <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span>trip-recap.mov → MP4</span><span class="mono" style="color: #8A8A8A; font-size: 12px">3.1x · 0:42</span></div><div class="track"><div class="fill run" style="width: 64%"></div></div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span>[Video title] → MP3</span><span class="mono" style="color: #8A8A8A; font-size: 12px">6.4 MB/s · 1:15</span></div><div class="track"><div class="fill run" style="width: 28%"></div></div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span>photos.zip → 7Z</span><span class="mono" style="color: #8A8A8A; font-size: 12px">Waiting</span></div><div class="track"><div class="fill" style="width: 0%"></div></div></div>
+      <div style="display: flex; flex-direction: column; gap: 8px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span>report.docx → PDF</span><span class="mono" style="color: #8A8A8A; font-size: 12px">Done</span></div><div class="track"><div class="fill" style="width: 100%"></div></div></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="reveal" style="flex-shrink: 0; padding: 120px 120px; display: flex; flex-direction: column; gap: 48px; border-top: 1px solid #161616">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <span class="eyebrow">05 · Details</span>
+      <h2 class="h2">Small things, done right.</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="4" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg><span style="font-size: 16px; font-weight: 600">Clipboard detection</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Copy a link, open Sparky, and it offers to grab it.</span></div>
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg><span style="font-size: 16px; font-weight: 600">Lives in the tray</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Close the window and jobs keep running quietly.</span></div>
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg><span style="font-size: 16px; font-weight: 600">Windows notifications</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Get pinged when a job finishes, then open the file in one click.</span></div>
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l4 2"></path></svg><span style="font-size: 16px; font-weight: 600">History with re-run</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Search past jobs and repeat any of them with the same settings.</span></div>
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M20 4 8.12 15.88"></path><path d="M14.47 14.48 20 20"></path><path d="M8.12 8.12 12 12"></path></svg><span style="font-size: 16px; font-weight: 600">SponsorBlock</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Skip sponsor and intro segments before they reach your file.</span></div>
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 15h4"></path><path d="M15 15h2"></path><path d="M7 11h2"></path><path d="M13 11h4"></path></svg><span style="font-size: 16px; font-weight: 600">Subtitles, thumbnails, tags</span><span style="font-size: 14px; color: #A1A1A1; line-height: 1.5">Embed captions, cover art and metadata automatically.</span></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="get" class="reveal" style="position: relative; flex-grow: 1; padding: 140px 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; border-top: 1px solid #161616">
+    <span class="spark" style="left: 520px; top: 120px"></span>
+    <span class="spark" style="left: 900px; top: 160px; animation-delay: .9s"></span>
+    <span class="spark" style="left: 640px; top: 420px; animation-delay: 1.7s"></span>
+    <span class="spark" style="left: 820px; top: 380px; animation-delay: .4s"></span>
+    <span style="width: 72px; height: 72px; border-radius: 20px; background: #EDEDED; display: flex; align-items: center; justify-content: center">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+    </span>
+    <h2 class="h2" style="font-size: 64px; text-align: center">Give your files a spark.</h2>
+    <p class="lead" style="text-align: center">Free for Windows 10 and 11.</p>
+    <a href="#get" class="btn btn-primary" style="height: 50px; padding: 0 24px; font-size: 15px">Download for Windows</a>
+  </section>
+
+  <!-- Footer -->
+  <footer style="height: 96px; flex-shrink: 0; border-top: 1px solid #1A1A1A; display: flex; align-items: center; justify-content: space-between; padding: 0 120px; font-size: 13px; color: #8A8A8A">
+    <span style="display: flex; align-items: center; gap: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></svg>Sparky</span>
+    <div style="display: flex; gap: 12px">
+      <a href="mailto:harryx2011@gmail.com" class="btn" style="height: 40px; font-size: 13px"><img src="https://cdn.simpleicons.org/gmail/EDEDED" alt="Gmail" style="width: 16px; height: 16px">harryx2011@gmail.com</a>
+      <button class="btn" style="height: 40px; font-size: 13px" onClick="{{copyDiscord}}" aria-label="Copy Discord username ogexr."><img src="https://cdn.simpleicons.org/discord/EDEDED" alt="" style="width: 16px; height: 16px">{{discordLabel}}</button>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"level":{"editor":"enum","options":["low","normal","max"],"default":"max"},"$preview":{"width":1440,"height":6000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      level: null,
+      copied: false,
+      checks: [true, true, false, true],
+      comp: 2,
+      res: 3
+    };
+  }
+  renderVals() {
+    var LV = {
+      low: { n: 1, label: 'Low', desc: 'Minimal resource usage, single-thread.' },
+      normal: { n: 3, label: 'Normal', desc: 'Regular conversion speeds, multi-threaded.' },
+      max: { n: 5, label: 'Max', desc: 'Full GPU utilization, resource-heavy on batch conversion.' }
+    };
+    var self = this;
+    var level = this.state.level || this.props.level || 'max';
+    var cur = LV[level] || LV.max;
+    var bars = {};
+    for (var i = 0; i < 5; i++) {
+      bars['b' + i] = i < cur.n ? 'bar on ' + level : 'bar';
+    }
+    var opts = ['low', 'normal', 'max'].map(function (k) {
+      return {
+        label: LV[k].label,
+        desc: LV[k].desc,
+        cls: k === level ? 'opt sel' : 'opt',
+        pick: function () { self.setState({ level: k }); }
+      };
+    });
+    var titles = ['[Video title 1]', '[Video title 2]', '[Video title 3]', '[Video title 4]'];
+    var lens = ['3:42', '4:05', '2:58', '5:11'];
+    var checks = this.state.checks;
+    var items = titles.map(function (t, idx) {
+      return {
+        title: t,
+        len: lens[idx],
+        checked: !!checks[idx],
+        toggle: function () {
+          var next = self.state.checks.slice();
+          next[idx] = !next[idx];
+          self.setState({ checks: next });
+        }
+      };
+    });
+    var picked = checks.filter(Boolean).length;
+    var COMP = [
+      { label: 'Lossless-ish', video: 'CRF 16', audio: '320 kbps' },
+      { label: 'High', video: 'CRF 20', audio: '256 kbps' },
+      { label: 'Balanced', video: 'CRF 23', audio: '192 kbps' },
+      { label: 'Small', video: 'CRF 28', audio: '128 kbps' },
+      { label: 'Tiny', video: 'CRF 32', audio: '96 kbps' }
+    ];
+    var comp = this.state.comp;
+    var RES = ['720p', '1080p', '1440p', '4K'];
+    var unlocked = level === 'max';
+    var res = this.state.res;
+    if (!unlocked && res > 1) res = 1;
+    var resOpts = RES.map(function (r, idx) {
+      var locked = !unlocked && idx > 1;
+      return {
+        label: r,
+        disabled: locked,
+        cls: locked ? 'btn rdis' : (idx === res ? 'btn rsel' : 'btn'),
+        pick: function () { if (!locked) self.setState({ res: idx }); }
+      };
+    });
+    return {
+      cur: cur,
+      bars: bars,
+      opts: opts,
+      items: items,
+      picked: picked,
+      comp: comp,
+      compCur: COMP[comp],
+      setComp: function (e) { self.setState({ comp: parseInt(e.target.value, 10) }); },
+      resOpts: resOpts,
+      resCur: RES[res] === '4K' ? '4K · 2160p' : RES[res],
+      resNote: unlocked ? 'GPU ✓' : '4K needs Max',
+      resHint: unlocked ? 'Source 4K · Max · GPU encoder found' : 'Set Performance to Max to unlock 1440p/4K',
+      discordLabel: this.state.copied ? 'Copied ogexr.' : 'ogexr.',
+      copyDiscord: function () {
+        try { navigator.clipboard.writeText('ogexr.'); } catch (e) {}
+        self.setState({ copied: true });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

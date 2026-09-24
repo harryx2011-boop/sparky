@@ -1,0 +1,13 @@
+node_modules/
+dist/
+out/
+release/
+*.tsbuildinfo
+.DS_Store
+.vite/
+coverage/
+# Windows tool binaries are fetched by scripts/fetch-tools.mjs, never committed
+apps/desktop/resources/bin/*
+!apps/desktop/resources/bin/.gitkeep
+.env
+.env.*

@@ -1,0 +1,25 @@
+{
+  "name": "sparky",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Convert anything. Download everything. A local file converter and link downloader for Windows.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w @sparky/web",
+    "dev:app": "npm run dev -w @sparky/desktop",
+    "build:web": "npm run build -w @sparky/web",
+    "build:app": "npm run build -w @sparky/desktop",
+    "fetch-tools": "node scripts/fetch-tools.mjs",
+    "package:win": "npm run fetch-tools && npm run package -w @sparky/desktop",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "check": "npm run typecheck && npm test && npm run build:web && npm run build:app"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
