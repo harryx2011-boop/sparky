@@ -20,7 +20,13 @@ let quitting = false
 let lastOffered = ''
 const dismissed = new Set<string>()
 
-if (!app.requestSingleInstanceLock()) app.quit()
+let ready = false
+/** Windows can drop a notification's click handler if nothing holds on to it. */
+const liveNotifications = new Set<Notification>()
+
+// A second copy only hands focus to the first one, then leaves straight away.
+const primary = app.requestSingleInstanceLock()
+if (!primary) app.exit(0)
 app.setAppUserModelId('com.sparky.app')
 
 function ensureWritableYtDlp(): void {
@@ -43,6 +49,8 @@ function send(channel: string, ...args: unknown[]): void {
 }
 
 function showWindow(): void {
+  // Launched again while still starting up: the window appears when startup finishes.
+  if (!ready) return
   if (!win) return createWindow()
   if (win.isMinimized()) win.restore()
   win.show()
@@ -77,6 +85,10 @@ function createWindow(): void {
   win.on('maximize', () => send('window:maximized', true))
   win.on('unmaximize', () => send('window:maximized', false))
   win.on('focus', () => void offerClipboardLink())
+  // Let Windows sign out or shut down instead of hiding to the tray.
+  win.on('session-end', () => {
+    quitting = true
+  })
   win.on('close', (e) => {
     if (!quitting && engine?.getSettings().closeToTray) {
       e.preventDefault()
@@ -152,7 +164,10 @@ function notifyFinished(job: Job): void {
     icon: path.join(resources, 'icon.png'),
     silent: false,
   })
+  liveNotifications.add(n)
+  n.on('close', () => liveNotifications.delete(n))
   n.on('click', () => {
+    liveNotifications.delete(n)
     const out = job.outputs[0]
     if (ok && out) {
       if (job.outputs.length > 1) shell.showItemInFolder(out)
@@ -163,7 +178,7 @@ function notifyFinished(job: Job): void {
 }
 
 async function printToPdf(htmlPath: string, pdfPath: string): Promise<void> {
-  const w = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false, offscreen: true } })
+  const w = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } })
   try {
     await w.loadFile(htmlPath)
     const pdf = await w.webContents.printToPDF({ printBackground: true, pageSize: 'A4', preferCSSPageSize: true })
@@ -238,16 +253,21 @@ function registerIpc(): void {
 
 app.on('second-instance', showWindow)
 
-app.on('before-quit', () => {
+let shutDown = false
+app.on('before-quit', (e) => {
   quitting = true
-  engine?.shutdown()
+  if (shutDown || !engine) return
+  // Give running jobs a moment to stop and remove their half-written files.
+  e.preventDefault()
+  shutDown = true
+  void engine.shutdown().finally(() => app.quit())
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin' && !engine?.getSettings().closeToTray) app.quit()
 })
 
-app.whenReady().then(async () => {
+if (primary) app.whenReady().then(async () => {
   Menu.setApplicationMenu(null)
   ensureWritableYtDlp()
   engine = await createEngine({
@@ -267,6 +287,7 @@ app.whenReady().then(async () => {
   })
   engine.queue.on('finished', notifyFinished)
 
+  ready = true
   createWindow()
   tray = new Tray(trayIcon())
   tray.on('click', showWindow)

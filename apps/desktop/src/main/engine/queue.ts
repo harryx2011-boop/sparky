@@ -27,6 +27,9 @@ interface QueueEvents {
 export class JobQueue extends EventEmitter<QueueEvents> {
   private jobs: Job[] = []
   private running = new Map<string, AbortController>()
+  private settled = new Map<string, Promise<void>>()
+  /** Cancel pressed while a pause was still stopping the process. */
+  private cancelAfterStop = new Set<string>()
   private emitTimer: NodeJS.Timeout | undefined
   private lastEmit = 0
 
@@ -85,8 +88,11 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   cancel(id: string): void {
     const job = this.get(id)
     if (!job) return
-    if (job.status === 'running') this.running.get(id)?.abort('cancel')
-    else if (job.status === 'queued' || job.status === 'paused') {
+    if (job.status === 'running') {
+      const c = this.running.get(id)
+      if (c?.signal.aborted) this.cancelAfterStop.add(id)
+      else c?.abort('cancel')
+    } else if (job.status === 'queued' || job.status === 'paused') {
       this.patch(job, { status: 'canceled', finishedAt: Date.now() })
       this.emit('finished', { ...job })
     }
@@ -122,16 +128,20 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     return this.running.size
   }
 
-  /** Stops everything, e.g. when the app quits. */
-  shutdown(): void {
+  /** Stops everything and waits (up to `timeoutMs`) for jobs to clean up their partial files. */
+  async shutdown(timeoutMs = 3000): Promise<void> {
     for (const c of this.running.values()) c.abort('cancel')
+    const all = Promise.allSettled([...this.settled.values()])
+    await Promise.race([all, new Promise((r) => setTimeout(r, timeoutMs))])
   }
 
   private pump(): void {
     while (this.running.size < this.concurrency) {
       const next = this.jobs.find((j) => j.status === 'queued')
       if (!next) break
-      void this.start(next)
+      const p = this.start(next)
+      this.settled.set(next.id, p)
+      void p.finally(() => this.settled.delete(next.id))
     }
   }
 
@@ -152,7 +162,8 @@ export class JobQueue extends EventEmitter<QueueEvents> {
       this.patch(job, { ...result, status: 'done', progress: 1, speed: undefined, eta: undefined, finishedAt: Date.now() })
     } catch (e) {
       if (e instanceof CanceledError || controller.signal.aborted) {
-        const paused = controller.signal.reason === 'pause'
+        const paused = controller.signal.reason === 'pause' && !this.cancelAfterStop.has(job.id)
+        this.cancelAfterStop.delete(job.id)
         this.patch(job, {
           status: paused ? 'paused' : 'canceled',
           speed: undefined,

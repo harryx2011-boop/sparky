@@ -36,6 +36,8 @@ export type Engine = Awaited<ReturnType<typeof createEngine>>
 
 export async function createEngine(opts: EngineOptions) {
   fs.mkdirSync(opts.dataDir, { recursive: true })
+  // Leftovers from a crash or a forced quit.
+  fs.rmSync(opts.tempDir, { recursive: true, force: true })
   fs.mkdirSync(opts.tempDir, { recursive: true })
   const store = new Store(path.join(opts.dataDir, 'sparky.db'))
   let settings = store.loadSettings(opts.defaultRoot)
@@ -52,7 +54,10 @@ export async function createEngine(opts: EngineOptions) {
   }
 
   const queue = new JobQueue((job, ctx) => (job.kind === 'download' ? runDownloadJob(env, job, ctx) : runConvertJob(env, job, ctx)), settings.concurrency)
-  queue.on('finished', (job) => store.record(job))
+  let closed = false
+  queue.on('finished', (job) => {
+    if (!closed) store.record(job)
+  })
 
   let statusCache: SystemInfo['tools'] | undefined
 
@@ -119,8 +124,9 @@ export async function createEngine(opts: EngineOptions) {
       return res
     },
 
-    shutdown(): void {
-      queue.shutdown()
+    async shutdown(): Promise<void> {
+      await queue.shutdown()
+      closed = true
       store.close()
     },
   }

@@ -38,6 +38,9 @@ export function inspectArgs(url: string, jsRuntime?: string): string[] {
   return [
     '--dump-single-json',
     '--flat-playlist',
+    // Windows pipes default to the ANSI code page, which drops non-Latin titles.
+    '--encoding',
+    'utf-8',
     '--no-warnings',
     '--no-colors',
     ...(jsRuntime ? ['--js-runtimes', jsRuntime] : []),
@@ -151,6 +154,8 @@ export function planDownload(req: DownloadRequest, ctx: YtDlpContext): YtDlpPlan
   const args: string[] = [
     '--newline',
     '--progress',
+    '--encoding',
+    'utf-8',
     '--no-colors',
     '--no-warnings',
     '--ignore-errors',

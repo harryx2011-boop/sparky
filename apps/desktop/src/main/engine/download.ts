@@ -18,6 +18,9 @@ import { run, throwIfAborted } from './process'
 import type { RunContext } from './queue'
 import { jsRuntimeArg } from './tools'
 
+/** Belt and braces with --encoding: make Python itself speak UTF-8 on Windows pipes. */
+const YTDLP_ENV = { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' }
+
 class DownloadError extends Error {
   constructor(
     message: string,
@@ -33,7 +36,7 @@ function ytdlp(env: EngineEnv): string {
 }
 
 export async function inspectLink(env: EngineEnv, url: string, signal?: AbortSignal): Promise<LinkInfo> {
-  const res = await run(ytdlp(env), inspectArgs(url, jsRuntimeArg(env.tools)), { signal, timeoutMs: 90_000 })
+  const res = await run(ytdlp(env), inspectArgs(url, jsRuntimeArg(env.tools)), { signal, timeoutMs: 90_000, env: YTDLP_ENV })
   if (res.code !== 0 || !res.stdout.trim()) {
     const e = explainYtDlpError(res.stderr)
     throw new DownloadError(e.message, e.suggestUpdate)
@@ -43,7 +46,7 @@ export async function inspectLink(env: EngineEnv, url: string, signal?: AbortSig
 
 export async function updateYtDlp(env: EngineEnv): Promise<{ ok: boolean; message: string }> {
   try {
-    const res = await run(ytdlp(env), ['-U'], { timeoutMs: 120_000 })
+    const res = await run(ytdlp(env), ['-U'], { timeoutMs: 120_000, env: YTDLP_ENV })
     const text = (res.stdout + res.stderr).trim()
     if (res.code !== 0) return { ok: false, message: text.split(/\r?\n/).pop() ?? 'Update failed.' }
     if (/up to date/i.test(text)) return { ok: true, message: 'The downloader is already up to date.' }
@@ -74,6 +77,7 @@ export async function runDownloadJob(env: EngineEnv, job: Job, ctx: RunContext):
   ctx.update({ stage: { index: 1, count: stages, label: 'Downloading' }, progress: 0 })
   const res = await run(ytdlp(env), plan.args, {
     signal: ctx.signal,
+    env: YTDLP_ENV,
     lowPriority: req.performance === 'low',
     onStdoutLine: (line) => {
       const ev = parseYtDlpLine(line)

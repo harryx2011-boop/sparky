@@ -56,8 +56,8 @@ function wellKnownDirs(id: ToolId): string[] {
       try {
         return fs
           .readdirSync(root)
-          .sort()
-          .reverse()
+          // Newest first: gs10.05 before gs9.56.
+          .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
           .map((v) => path.join(root, v, 'bin'))
       } catch {
         return []

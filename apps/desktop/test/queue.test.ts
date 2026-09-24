@@ -84,4 +84,21 @@ describe('JobQueue', () => {
     await tick()
     expect(q.activeCount()).toBe(8)
   })
+
+  it('cancels a job that was still stopping after Pause', async () => {
+    // A runner that takes a moment to stop, like a real process.
+    const q = new JobQueue(
+      (_job, ctx) =>
+        new Promise((_resolve, reject) => {
+          ctx.signal.addEventListener('abort', () => setTimeout(() => reject(new CanceledError(ctx.signal.reason)), 20))
+        }),
+      1,
+    )
+    add(q, 'a')
+    await tick()
+    q.pause('a')
+    q.cancel('a')
+    await tick(40)
+    expect(q.get('a')!.status).toBe('canceled')
+  })
 })

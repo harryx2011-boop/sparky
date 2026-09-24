@@ -31,6 +31,7 @@ import {
 import { randomUUID } from 'node:crypto'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 import type { RunContext } from './queue'
 import { run, runOk, throwIfAborted } from './process'
 import type { Tools } from './tools'
@@ -55,12 +56,6 @@ function need<T>(value: T | undefined, what: string): T {
   if (!value) throw new Error(`${what} is missing. Reinstall Sparky or run "npm run fetch-tools" if you built it yourself.`)
   return value
 }
-
-const exists = async (p: string) =>
-  fs.access(p).then(
-    () => true,
-    () => false,
-  )
 
 async function freeName(dir: string, inputName: string, ext: string, suffix = ''): Promise<string> {
   const taken = new Set(await fs.readdir(dir).catch(() => [] as string[]))
@@ -177,16 +172,46 @@ export async function convertFile(
       return { output: input, sizeBefore: stat.size, sizeAfter: stat.size, note: 'Already as small as it gets, so the original was kept.' }
     }
 
-    if (out.replace || settings.originals === 'trash') await env.host.trash(input)
-    if (out.replace && out.sameFormat && (await exists(out.finalPath))) {
-      // The original was trashed above; if something recreated it, don't overwrite it.
-      out.finalPath = path.join(out.dir, await freeName(out.dir, path.basename(input), out.ext))
+    // Put the new file in place before touching the original, so a failure never loses both.
+    if (out.replace && out.sameFormat) {
+      const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), out.ext, ' (original)'))
+      await fs.rename(input, aside)
+      try {
+        await fs.rename(out.tmpPath, out.finalPath)
+      } catch (e) {
+        await fs.rename(aside, input).catch(() => undefined)
+        throw e
+      }
+      note = await trashOriginal(env, aside, note)
+    } else {
+      await fs.rename(out.tmpPath, out.finalPath)
+      if (out.replace || settings.originals === 'trash') note = await trashOriginal(env, input, note)
     }
-    await fs.rename(out.tmpPath, out.finalPath)
     return { output: out.finalPath, sizeBefore: stat.size, sizeAfter, note }
   } catch (e) {
     await cleanup()
     throw e
+  }
+}
+
+async function trashOriginal(env: EngineEnv, file: string, note: string | undefined): Promise<string | undefined> {
+  try {
+    await env.host.trash(file)
+    return note
+  } catch {
+    const msg = `Couldn’t move ${path.basename(file)} to the Recycle Bin, so it was left where it is.`
+    return note ? `${note} ${msg}` : msg
+  }
+}
+
+/** Rename, falling back to copy + delete when the two paths are on different drives. */
+async function moveFile(from: string, to: string): Promise<void> {
+  try {
+    await fs.rename(from, to)
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== 'EXDEV') throw e
+    await fs.copyFile(from, to)
+    await fs.rm(from, { force: true })
   }
 }
 
@@ -284,9 +309,9 @@ async function runLibreOffice(env: EngineEnv, input: string, output: string, sig
   await fs.mkdir(work, { recursive: true })
   try {
     // A private profile avoids clashing with a LibreOffice window that is already open.
-    const profile = `-env:UserInstallation=file:///${path.join(work, 'profile').replace(/\\/g, '/')}`
+    const profile = `-env:UserInstallation=${pathToFileURL(path.join(work, 'profile')).href}`
     await runOk(need(env.tools.libreoffice, 'LibreOffice'), [profile, ...libreOfficeArgs(input, work)], { signal, timeoutMs: 5 * 60_000 })
-    await fs.rename(path.join(work, `${path.parse(input).name}.pdf`), output)
+    await moveFile(path.join(work, `${path.parse(input).name}.pdf`), output)
   } finally {
     await fs.rm(work, { recursive: true, force: true })
   }

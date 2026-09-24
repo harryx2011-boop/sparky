@@ -69,8 +69,8 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     fs.writeFileSync(path.join(dir, 'notes.md'), '# Hello\n\nSome **bold** text.\n\n- one\n- two\n')
   }, 120_000)
 
-  afterAll(() => {
-    engine?.shutdown()
+  afterAll(async () => {
+    await engine?.shutdown()
     fs.rmSync(dir, { recursive: true, force: true })
   })
 
@@ -140,7 +140,8 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     fs.copyFileSync(path.join(dir, 'photo.png'), copy)
     const job = await convert(copy, { output: 'png', originals: 'replace', compression: 4 })
     expect(job.status, job.error).toBe('done')
-    expect(trashed).toContain(copy)
+    // The new file is in place first; the original is set aside, then recycled.
+    expect(trashed).toContain(path.join(dir, 'replace-me (original).png'))
     expect(job.outputs[0]).toBe(copy)
     expect(fs.existsSync(copy)).toBe(true)
   })
