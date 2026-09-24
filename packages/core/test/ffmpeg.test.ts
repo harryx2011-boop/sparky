@@ -42,7 +42,7 @@ describe('buildFfmpegPlan', () => {
   it('falls back to every CPU core on Max without a GPU, and says so', () => {
     const p = plan({ performance: 'max' })
     expect(arg(p.args, '-c:v')).toBe('libx264')
-    expect(p.notes[0]).toMatch(/CPU/)
+    expect(p.notes[0]).toMatch(/processor/)
   })
 
   it('builds AMD and Intel quality flags', () => {

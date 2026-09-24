@@ -118,7 +118,7 @@ function FileList({ files, onRemove }: { files: ProbeResult[]; onRemove: (p: str
               <span className="grow truncate" title={f.path}>
                 {f.name}
               </span>
-              {!f.category && <span className="text-xs text-destructive">Not supported</span>}
+              {!f.category && <span className="text-xs text-destructive">Can’t convert this type</span>}
               <span className="shrink-0 font-mono text-xs text-subtle-foreground">{meta.join(' · ')}</span>
               <button type="button" aria-label={`Remove ${f.name}`} className="rounded p-1 text-subtle-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100" onClick={() => onRemove(f.path)}>
                 <X size={13} />
@@ -234,7 +234,7 @@ export function ConvertPage() {
                   hint={
                     group.files.some((f) => f.ext === output)
                       ? output === 'pdf' && !ghostscript
-                        ? 'shrinking PDFs needs Ghostscript (see Settings)'
+                        ? 'shrinking PDFs needs the free Ghostscript add-on (see Settings)'
                         : 'same format · just smaller'
                       : undefined
                   }
@@ -255,12 +255,12 @@ export function ConvertPage() {
               ))}
               {groups.length === 0 && <p className="text-[13px] text-subtle-foreground">Add a file Sparky can convert to pick a format.</p>}
             </div>
-            <Field label="Performance" hint={performance === 'max' ? system?.gpuLabel.replace(' graphics card', '') : undefined}>
+            <Field label="Performance" hint={performance === 'max' && system && system.gpu.encoders.length > 0 ? system.gpuLabel : undefined}>
               <PerformancePicker
                 value={performance}
                 onChange={(p) => void updateSettings({ performance: p })}
                 running={runningAny}
-                note={system && system.gpu.encoders.length === 0 ? 'No supported graphics card was found, so Max uses every CPU core.' : undefined}
+                note={system && system.gpu.encoders.length === 0 ? 'No graphics card can help on this PC, so Max uses all of your processor.' : undefined}
               />
             </Field>
           </div>
@@ -283,9 +283,9 @@ export function ConvertPage() {
           <Disclosure title="More options: trim, size, sound quality, what happens to originals">
             <div className="grid grid-cols-4 gap-3">
               {showResolution && (
-                <Field label="Video codec" className="col-span-2">
+                <Field label="Video type" className="col-span-2">
                   <Select
-                    label="Video codec"
+                    label="Video type"
                     value={codec}
                     onChange={(c) => setAdv((a) => ({ ...a, codec: c }))}
                     options={(Object.keys(CODEC_LABELS) as VideoCodec[]).map((c) => ({ value: c, label: CODEC_LABELS[c] }))}
@@ -293,12 +293,12 @@ export function ConvertPage() {
                 </Field>
               )}
               {showResolution && (
-                <Field label="Video bitrate (kbps)">
+                <Field label="Video data rate" hint="kbps">
                   <Input inputMode="numeric" placeholder="auto, from Compression" value={adv.videoKbps} onChange={(e) => setAdv((a) => ({ ...a, videoKbps: e.target.value }))} />
                 </Field>
               )}
               {hasTimed && (
-                <Field label="Sound bitrate (kbps)">
+                <Field label="Sound data rate" hint="kbps">
                   <Input inputMode="numeric" placeholder={String(compressionInfo(compression).audioKbps)} value={adv.audioKbps} onChange={(e) => setAdv((a) => ({ ...a, audioKbps: e.target.value }))} />
                 </Field>
               )}

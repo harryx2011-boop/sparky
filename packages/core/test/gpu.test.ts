@@ -39,10 +39,10 @@ describe('1440p and 4K unlock rules', () => {
     expect(opts[3]!.reason).toMatch(/Max/)
   })
 
-  it('names the missing encoder when there is no GPU for the codec', () => {
+  it('locks when the graphics card cannot help with the chosen video type', () => {
     const opts = resolutionOptions({ sourceHeight: 2160, performance: 'max', gpu, codec: 'hevc' })
     expect(opts[3]!.locked).toBe(true)
-    expect(opts[3]!.reason).toMatch(/hevc_nvenc/)
+    expect(opts[3]!.reason).toMatch(/graphics card/)
   })
 
   it('hides anything taller than the source, so it never upscales', () => {

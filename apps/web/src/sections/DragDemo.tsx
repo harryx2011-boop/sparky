@@ -396,7 +396,6 @@ export function DragDemo() {
     <section id="watch" className="relative border-t border-[#161616] py-24 lg:py-32">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12 px-4 sm:px-6">
         <div className="flex flex-col items-center gap-5 text-center">
-          <span className="eyebrow">Watch · about 10 seconds a file</span>
           <h2 className="text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[56px]">
             <SplitText text="Drag it in. Pick a format." inView />
             <br />
@@ -407,21 +406,11 @@ export function DragDemo() {
           <Stage />
         </FitToWidth>
       </div>
-      <div className="mt-20 flex flex-col gap-4">
+      <div className="mt-20">
         <Marquee
           duration={36}
           items={PAIRS.map((p) => (
             <span className="font-mono text-2xl tracking-tight text-muted-foreground sm:text-3xl">{p}</span>
-          ))}
-        />
-        <Marquee
-          reverse
-          duration={44}
-          items={['No uploads', 'Keeps your originals', 'Up to 4K', 'Whole playlists', 'Works offline', 'Free forever', 'Open source'].map((p) => (
-            <span className="flex items-center gap-10 text-2xl font-bold tracking-tight sm:text-3xl">
-              {p}
-              <Bolt size={20} className="text-subtle-foreground" />
-            </span>
           ))}
         />
       </div>

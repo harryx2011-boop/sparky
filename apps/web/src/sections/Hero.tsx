@@ -6,11 +6,14 @@ import { AppWindow } from '../components/AppWindow'
 import { Magnetic, SplitText } from '../components/motion'
 import { SpriteField } from '../components/SpriteField'
 import { ButtonLink } from '../components/ui'
+import { useMediaQuery } from '../hooks'
 
 export function Hero() {
   const introRef = useRef<HTMLDivElement>(null)
   const windowRef = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
+  // Wide screens put the words on the left and the bolt on the right; small ones stack the bolt above.
+  const wide = useMediaQuery('(min-width: 1024px)')
 
   // How far the intro has scrolled away: 0 = bolt, 1 = scattered.
   const { scrollYProgress: away } = useScroll({ target: introRef, offset: ['start start', 'end start'] })
@@ -26,61 +29,61 @@ export function Hero() {
 
   return (
     <section id="top" className="relative overflow-hidden">
-      <div ref={introRef} className="relative flex min-h-[100svh] items-center justify-center px-4 sm:px-6">
-        <SpriteField getProgress={getProgress} className="absolute inset-0 size-full" boltScale={0.74} boltY={0.5} />
-        {/* Keeps the headline readable over the brightest dots. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_48%_36%_at_50%_50%,rgba(10,10,10,.72),transparent_75%)]" />
+      <div ref={introRef} className="relative flex min-h-[100svh] items-center px-4 sm:px-6">
+        {/* The field is masked out of the text column, so no dot ever sits behind a letter. */}
+        <SpriteField
+          getProgress={getProgress}
+          boltX={wide ? 0.74 : 0.5}
+          boltY={wide ? 0.5 : 0.22}
+          boltScale={wide ? 0.66 : 0.32}
+          className="absolute inset-0 size-full [mask-image:linear-gradient(180deg,#000_0%,#000_30%,transparent_41%)] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_50%,#000_62%)]"
+        />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
 
-        <motion.div style={reduce ? undefined : { y: textY, opacity: textOpacity, filter: textBlur }} className="relative mx-auto flex max-w-[1100px] flex-col items-center gap-7 pb-16 pt-24 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="inline-flex h-[30px] items-center gap-2 rounded-full border border-input bg-background/60 px-3 font-mono text-xs text-muted-foreground backdrop-blur"
-          >
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-foreground opacity-60" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
-            </span>
-            Free &amp; open source · Windows 10 &amp; 11
-          </motion.span>
+        <motion.div
+          style={reduce ? undefined : { y: textY, opacity: textOpacity, filter: textBlur }}
+          className="relative mx-auto grid w-full max-w-[1200px] pb-16 pt-[44svh] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:pt-24"
+        >
+          <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:gap-7 lg:text-left">
+            <h1 className="text-balance text-[44px] font-bold leading-[0.98] tracking-[-0.045em] sm:text-[64px] lg:text-[68px]">
+              <SplitText text="Convert anything." delay={0.4} />
+              <br />
+              <SplitText text="Download everything." delay={0.65} />
+            </h1>
 
-          <h1 className="max-w-[1000px] text-balance text-[50px] font-bold leading-[0.95] tracking-[-0.045em] [text-shadow:0_2px_30px_rgba(0,0,0,.6)] sm:text-[76px] lg:text-[96px]">
-            <SplitText text="Convert anything." delay={0.55} />
-            <br />
-            <SplitText text="Download everything." delay={0.8} />
-          </h1>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-[560px] text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl"
+            >
+              Sparky changes files into the format you need and saves videos and music from links. It all happens on your PC: no
+              uploads, no account, nothing to set up.
+            </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.15, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-[600px] text-pretty text-lg leading-relaxed text-muted-foreground [text-shadow:0_1px_16px_rgba(0,0,0,.8)] sm:text-xl"
-          >
-            Sparky changes files into the format you need and saves videos and music from links. It all happens on your PC: no
-            uploads, no account, nothing to set up.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-wrap justify-center gap-3"
-          >
-            <Magnetic>
-              <ButtonLink href={CONTACT.installer} variant="primary">
-                <Download size={16} />
-                Download for Windows
-              </ButtonLink>
-            </Magnetic>
-            <Magnetic>
-              <ButtonLink href="#watch">See it work</ButtonLink>
-            </Magnetic>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.15, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col items-center gap-4 lg:items-start"
+            >
+              <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
+                <Magnetic>
+                  <ButtonLink href={CONTACT.installer} variant="primary">
+                    <Download size={16} />
+                    Download for Windows
+                  </ButtonLink>
+                </Magnetic>
+                <Magnetic>
+                  <ButtonLink href="#watch">See it work</ButtonLink>
+                </Magnetic>
+              </div>
+              <span className="text-sm text-subtle-foreground">Free and open source. Works on Windows 10 and 11.</span>
+            </motion.div>
+          </div>
         </motion.div>
 
-        <motion.div style={reduce ? undefined : { opacity: textOpacity }} className="absolute bottom-8 left-1/2 -translate-x-1/2">
+        <motion.div style={reduce ? undefined : { opacity: textOpacity }} className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 lg:block">
           <motion.a
             href="#watch"
             aria-label="Scroll down"

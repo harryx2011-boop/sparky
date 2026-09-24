@@ -5,6 +5,9 @@ import {
   compressionInfo,
   createFfmpegProgressParser,
   engineFor,
+  explainFfmpegError,
+  explainFileError,
+  explainSevenZipError,
   formatInfo,
   FFPROBE_ARGS,
   ghostscriptArgs,
@@ -19,7 +22,6 @@ import {
   PRINT_CSS,
   sevenZipExtractArgs,
   sevenZipPackArgs,
-  summarizeFfmpegError,
   type ConvertSettings,
   type FfprobeInfo,
   type GpuInfo,
@@ -53,13 +55,16 @@ export interface EngineEnv {
 }
 
 function need<T>(value: T | undefined, what: string): T {
-  if (!value) throw new Error(`${what} is missing. Reinstall Sparky or run "npm run fetch-tools" if you built it yourself.`)
+  if (!value) throw new Error(`A part of Sparky is missing (${what}). Reinstalling Sparky will fix it.`)
   return value
 }
 
+/** Output paths claimed by jobs that are still moving their file into place, so two jobs never pick the same name. */
+const claimed = new Set<string>()
+
 async function freeName(dir: string, inputName: string, ext: string, suffix = ''): Promise<string> {
   const taken = new Set(await fs.readdir(dir).catch(() => [] as string[]))
-  return outputName(inputName, ext, (n) => taken.has(n), suffix)
+  return outputName(inputName, ext, (n) => taken.has(n) || claimed.has(path.join(dir, n)), suffix)
 }
 
 export async function probe(env: EngineEnv, file: string): Promise<FfprobeInfo | undefined> {
@@ -103,12 +108,19 @@ async function planOutput(env: EngineEnv, input: string, settings: ConvertSettin
   const sameFormat = isCompressOnly(input, ext)
   const replace = settings.originals === 'replace'
   const dir = outDirOverride ?? (replace ? path.dirname(input) : path.join(env.settings().outputRoot, OUTPUT_FOLDERS[category]))
-  await fs.mkdir(dir, { recursive: true })
-  // Replacing in place keeps the original name; otherwise pick a free one ("clip (2).mp4").
-  const finalName = replace && sameFormat ? path.basename(input) : await freeName(dir, path.basename(input), ext, sameFormat && !replace ? ' (smaller)' : '')
-  const finalPath = path.join(dir, finalName)
+  await fs.mkdir(dir, { recursive: true }).catch((e) => {
+    throw new Error(explainFileError(e, 'save'))
+  })
   const tmpPath = path.join(dir, `.sparky-${randomUUID().slice(0, 8)}${ext === 'folder' ? '' : `.${ext}`}`)
-  return { ext, dir, finalPath, tmpPath, replace, sameFormat }
+  // Replacing in place keeps the original name; otherwise pick a free one ("clip (2).mp4").
+  // The name is claimed only once the file is ready, so a batch of same-named files can't collide.
+  const claimFinal = async () => {
+    const finalName = replace && sameFormat ? path.basename(input) : await freeName(dir, path.basename(input), ext, sameFormat && !replace ? ' (smaller)' : '')
+    const finalPath = path.join(dir, finalName)
+    claimed.add(finalPath)
+    return finalPath
+  }
+  return { ext, dir, tmpPath, replace, sameFormat, claimFinal }
 }
 
 export async function convertFile(
@@ -172,22 +184,29 @@ export async function convertFile(
       return { output: input, sizeBefore: stat.size, sizeAfter: stat.size, note: 'Already as small as it gets, so the original was kept.' }
     }
 
-    // Put the new file in place before touching the original, so a failure never loses both.
-    if (out.replace && out.sameFormat) {
-      const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), out.ext, ' (original)'))
-      await fs.rename(input, aside)
-      try {
-        await fs.rename(out.tmpPath, out.finalPath)
-      } catch (e) {
-        await fs.rename(aside, input).catch(() => undefined)
-        throw e
+    const finalPath = await out.claimFinal()
+    try {
+      // Put the new file in place before touching the original, so a failure never loses both.
+      if (out.replace && out.sameFormat) {
+        const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), out.ext, ' (original)'))
+        await fs.rename(input, aside)
+        try {
+          await fs.rename(out.tmpPath, finalPath)
+        } catch (e) {
+          await fs.rename(aside, input).catch(() => undefined)
+          throw e
+        }
+        note = await trashOriginal(env, aside, note)
+      } else {
+        await fs.rename(out.tmpPath, finalPath)
+        if (out.replace || settings.originals === 'trash') note = await trashOriginal(env, input, note)
       }
-      note = await trashOriginal(env, aside, note)
-    } else {
-      await fs.rename(out.tmpPath, out.finalPath)
-      if (out.replace || settings.originals === 'trash') note = await trashOriginal(env, input, note)
+    } catch (e) {
+      throw (e as NodeJS.ErrnoException).code ? new Error(explainFileError(e, 'save')) : e
+    } finally {
+      claimed.delete(finalPath)
     }
-    return { output: out.finalPath, sizeBefore: stat.size, sizeAfter, note }
+    return { output: finalPath, sizeBefore: stat.size, sizeAfter, note }
   } catch (e) {
     await cleanup()
     throw e
@@ -252,9 +271,9 @@ async function runFfmpeg(env: EngineEnv, input: string, output: string, settings
     // Some drivers refuse certain sizes or formats; the CPU always works.
     await fs.rm(output, { force: true })
     ;({ res, plan } = await attempt({ encoders: [] }))
-    note = 'The graphics card couldn’t handle this one, so it used the CPU instead.'
+    note = 'The graphics card couldn’t handle this one, so Sparky finished it with the processor instead.'
   }
-  if (res.code !== 0) throw new Error(summarizeFfmpegError(res.stderr))
+  if (res.code !== 0) throw new Error(explainFfmpegError(res.stderr))
   return note
 }
 
@@ -279,7 +298,9 @@ async function runSharp(input: string, output: string, settings: ConvertSettings
       img = img.png({ compressionLevel: 9, palette: settings.compression >= 3, quality })
       break
   }
-  await img.toFile(output)
+  await img.toFile(output).catch((e) => {
+    throw new Error(explainFfmpegError((e as Error).message))
+  })
 }
 
 async function printToPdf(env: EngineEnv, input: string, output: string, signal: AbortSignal): Promise<void> {
@@ -321,7 +342,9 @@ async function pdfToText(input: string, output: string, markdown: boolean): Prom
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
   const data = new Uint8Array(await fs.readFile(input))
   const task = pdfjs.getDocument({ data, useSystemFonts: true })
-  const doc = await task.promise
+  const doc = await task.promise.catch((e) => {
+    throw new Error(explainFfmpegError(`${(e as Error).name} ${(e as Error).message}`))
+  })
   const pages: string[] = []
   for (let i = 1; i <= doc.numPages; i++) {
     const page = await doc.getPage(i)
@@ -353,18 +376,13 @@ async function runArchive(env: EngineEnv, input: string, output: string, ext: st
     if (p !== undefined) ctx.update({ progress: twoSteps ? offset + p / 2 : p })
   }
   try {
+    // Only the full 7-Zip (7z.exe + 7z.dll) opens RAR; the standalone 7za and 7zz don't.
+    const canOpenRar = path.parse(sevenZip).name.toLowerCase() === '7z'
     const res = await run(sevenZip, sevenZipExtractArgs(input, unpackTo), { signal: ctx.signal, onStdout: onProgress(0), lowPriority: settings.performance === 'low' })
-    if (res.code !== 0) {
-      const msg = res.stderr + res.stdout
-      if (/Unsupported|Can not open the file as archive/i.test(msg) && normalizeExt(input) === 'rar') {
-        throw new Error('This copy of 7-Zip can’t open RAR files. Install 7-Zip from 7-zip.org and restart Sparky.')
-      }
-      if (/Wrong password|encrypted/i.test(msg)) throw new Error('This archive is password protected.')
-      throw new Error(msg.trim().split(/\r?\n/).filter(Boolean).pop() ?? '7-Zip couldn’t open the archive.')
-    }
+    if (res.code !== 0) throw new Error(explainSevenZipError(res.stderr + res.stdout, normalizeExt(input), { canOpenRar, fallback: 'Sparky couldn’t open this archive.' }))
     if (twoSteps) {
       const res2 = await run(sevenZip, sevenZipPackArgs(output, settings.compression), { cwd: unpackTo, signal: ctx.signal, onStdout: onProgress(0.5), lowPriority: settings.performance === 'low' })
-      if (res2.code !== 0) throw new Error(res2.stderr.trim().split(/\r?\n/).pop() || '7-Zip couldn’t create the archive.')
+      if (res2.code !== 0) throw new Error(explainSevenZipError(res2.stderr + res2.stdout, ext, { canOpenRar, fallback: 'Sparky couldn’t create the new archive.' }))
     }
   } finally {
     if (twoSteps) await fs.rm(unpackTo, { recursive: true, force: true })

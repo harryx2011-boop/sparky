@@ -4,7 +4,6 @@ import {
   animate,
   motion,
   useInView,
-  useMotionTemplate,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -65,17 +64,13 @@ export function Magnetic({ children, strength = 0.28, className }: { children: R
   )
 }
 
-/** A card that tilts towards the pointer with a soft spotlight under it. */
+/** A card that tilts a few degrees towards the pointer. */
 export function TiltCard({ children, className, max = 7 }: { children: ReactNode; className?: string; max?: number }) {
   const reduce = useReducedMotion()
   const mx = useMotionValue(0.5)
   const my = useMotionValue(0.5)
   const rx = useSpring(useTransform(my, [0, 1], [max, -max]), { stiffness: 200, damping: 20 })
   const ry = useSpring(useTransform(mx, [0, 1], [-max, max]), { stiffness: 200, damping: 20 })
-  const px = useTransform(mx, (v) => `${v * 100}%`)
-  const py = useTransform(my, (v) => `${v * 100}%`)
-  const spot = useMotionTemplate`radial-gradient(420px circle at ${px} ${py}, rgba(237,237,237,0.07), transparent 60%)`
-  const [hover, setHover] = useState(false)
   return (
     <motion.div
       className={cn('relative [transform-style:preserve-3d]', className)}
@@ -86,15 +81,12 @@ export function TiltCard({ children, className, max = 7 }: { children: ReactNode
         mx.set((e.clientX - r.left) / r.width)
         my.set((e.clientY - r.top) / r.height)
       }}
-      onPointerEnter={() => setHover(true)}
       onPointerLeave={() => {
-        setHover(false)
         mx.set(0.5)
         my.set(0.5)
       }}
     >
       {children}
-      <motion.div aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-300" style={{ background: spot, opacity: hover ? 1 : 0 }} />
     </motion.div>
   )
 }

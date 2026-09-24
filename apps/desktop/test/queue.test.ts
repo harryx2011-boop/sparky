@@ -102,3 +102,82 @@ describe('JobQueue', () => {
     expect(q.get('a')!.status).toBe('canceled')
   })
 })
+
+describe('JobQueue edge cases', () => {
+  it('cancels a waiting job without ever running it, and can retry it', async () => {
+    const { runner, pending } = controllable()
+    const q = new JobQueue(runner, 1)
+    const finished: Job[] = []
+    q.on('finished', (j) => finished.push(j))
+    add(q, 'a')
+    add(q, 'b')
+    await tick()
+    q.cancel('b')
+    expect(q.get('b')!.status).toBe('canceled')
+    expect(finished.map((j) => j.id)).toEqual(['b'])
+    expect(pending.has('b')).toBe(false)
+    q.retry('b')
+    expect(q.get('b')!.status).toBe('queued')
+    pending.get('a')!.resolve()
+    await tick()
+    expect(q.get('b')!.status).toBe('running')
+  })
+
+  it('holds a waiting job, then cancels it', async () => {
+    const { runner } = controllable()
+    const q = new JobQueue(runner, 1)
+    add(q, 'a')
+    add(q, 'b')
+    await tick()
+    q.pause('b')
+    expect(q.get('b')!.status).toBe('paused')
+    q.cancel('b')
+    expect(q.get('b')!.status).toBe('canceled')
+  })
+
+  it('resumes a job that was still stopping after Pause', async () => {
+    let runs = 0
+    const q = new JobQueue(
+      (_job, ctx) =>
+        new Promise((_resolve, reject) => {
+          runs++
+          ctx.signal.addEventListener('abort', () => setTimeout(() => reject(new CanceledError(ctx.signal.reason)), 20))
+        }),
+      1,
+    )
+    add(q, 'a')
+    await tick()
+    q.pause('a')
+    q.resume('a')
+    await tick(40)
+    expect(q.get('a')!.status).toBe('running')
+    expect(runs).toBe(2)
+  })
+
+  it('pause all followed by resume all leaves nothing stuck', async () => {
+    const q = new JobQueue(
+      (_job, ctx) =>
+        new Promise((_resolve, reject) => {
+          ctx.signal.addEventListener('abort', () => setTimeout(() => reject(new CanceledError(ctx.signal.reason)), 20))
+        }),
+      1,
+    )
+    add(q, 'a')
+    add(q, 'b')
+    await tick()
+    q.pauseAll()
+    q.resumeAll()
+    await tick(40)
+    expect(q.list().map((j) => j.status)).toEqual(['running', 'queued'])
+  })
+
+  it('lets the rest of a batch finish when one job fails', async () => {
+    const q = new JobQueue(async (job) => {
+      if (job.id === 'b') throw new Error('Broken file')
+    }, 2)
+    ;['a', 'b', 'c'].forEach((id) => add(q, id))
+    await tick(20)
+    expect(q.list().map((j) => j.status)).toEqual(['done', 'failed', 'done'])
+    expect(q.get('b')!.error).toBe('Broken file')
+  })
+})

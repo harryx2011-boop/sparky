@@ -3,7 +3,7 @@ import { Bell, Clipboard, FolderOpen, History, Image, Inbox, RotateCcw, Scissors
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { TiltCard } from '../components/motion'
-import { Eyebrow, Heading } from '../components/ui'
+import { Heading } from '../components/ui'
 
 function Tile({ className, icon, title, children, visual, delay = 0 }: { className?: string; icon: ReactNode; title: string; children: ReactNode; visual?: ReactNode; delay?: number }) {
   const reduce = useReducedMotion()
@@ -18,7 +18,7 @@ function Tile({ className, icon, title, children, visual, delay = 0 }: { classNa
       <TiltCard className="h-full rounded-2xl">
         <article className="group flex h-full flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card p-6 transition-colors hover:border-[#3a3a3a]">
           <div className="flex flex-col gap-2.5">
-            <motion.span className="text-foreground" whileHover={reduce ? undefined : { rotate: [0, -12, 10, 0], scale: 1.15 }} transition={{ duration: 0.5 }}>
+            <motion.span className="text-foreground" whileHover={reduce ? undefined : { rotate: [0, -12, 10, 0], scale: 1.05 }} transition={{ duration: 0.5 }}>
               {icon}
             </motion.span>
             <h3 className="text-base font-bold">{title}</h3>
@@ -86,7 +86,7 @@ function ClipboardVisual() {
         <span className="truncate">
           Download this? <span className="font-mono text-subtle-foreground">youtu.be/night-bus</span>
         </span>
-        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">Grab it</span>
+        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">Download</span>
       </motion.span>
     </div>
   )
@@ -139,13 +139,7 @@ function ExtrasVisual() {
         <div className="truncate text-sm font-medium">Night bus home.mp3</div>
         <div className="truncate text-xs text-muted-foreground">Quiet Hours · Lo-fi for late nights · Track 2</div>
       </div>
-      <div className="hidden shrink-0 gap-1.5 sm:flex">
-        {['Cover', 'Tags', 'Chapters', 'EN subs'].map((t) => (
-          <span key={t} className="rounded-full border border-input px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
-            {t}
-          </span>
-        ))}
-      </div>
+      <span className="hidden shrink-0 font-mono text-[11px] text-subtle-foreground sm:inline">cover · names · chapters · subtitles</span>
     </div>
   )
 }
@@ -154,10 +148,7 @@ export function Details() {
   return (
     <section id="details" className="border-t border-[#161616] px-4 py-24 sm:px-6 lg:py-32">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12">
-        <div className="flex flex-col gap-5">
-          <Eyebrow index="05">Details</Eyebrow>
-          <Heading lines={['The little things, already handled.']} />
-        </div>
+        <Heading lines={['The little things, already handled.']} />
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6 lg:grid-rows-[auto_auto_auto_auto]">
           <Tile

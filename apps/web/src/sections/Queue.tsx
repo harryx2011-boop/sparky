@@ -3,7 +3,7 @@ import { cn } from '@sparky/ui'
 import { ArrowLeftRight, Check, Download, GripVertical, Pause } from 'lucide-react'
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { Eyebrow, Heading, Lead } from '../components/ui'
+import { Heading, Lead } from '../components/ui'
 
 interface SimJob {
   id: number
@@ -68,7 +68,6 @@ export function Queue() {
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="flex max-w-[620px] flex-col gap-5">
-            <Eyebrow index="04">Queue</Eyebrow>
             <Heading lines={['Everything waits in one line.']} />
             <Lead>
               Downloads and conversions take turns together. See how fast each one is going and how long is left, then pause,

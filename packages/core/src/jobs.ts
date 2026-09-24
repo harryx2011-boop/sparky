@@ -177,6 +177,18 @@ export interface ToolStatus {
   optional: boolean
 }
 
+/** What each bundled tool is for, shown in Settings. One place, so the app and its browser preview agree. */
+export const TOOL_LABELS: Record<ToolStatus['id'], string> = {
+  ffmpeg: 'FFmpeg (video, audio and images)',
+  ffprobe: 'FFprobe (reads file details)',
+  'yt-dlp': 'yt-dlp (downloads from links)',
+  pandoc: 'Pandoc (documents)',
+  '7zip': '7-Zip (archives)',
+  deno: 'Deno (helps with YouTube)',
+  ghostscript: 'Ghostscript (shrinks PDFs)',
+  libreoffice: 'LibreOffice (better Word to PDF)',
+}
+
 export interface SystemInfo {
   appVersion: string
   platform: string

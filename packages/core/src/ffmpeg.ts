@@ -138,7 +138,7 @@ export function buildFfmpegPlan(p: FfmpegPlanInput): FfmpegPlan {
       usedGpu = true
       args.push(...(adv.videoKbps ? ['-c:v', gpu.encoder, '-b:v', `${adv.videoKbps}k`] : gpuQualityArgs(gpu.vendor, gpu.encoder, q)))
     } else {
-      if (profile.useGpu && codec !== 'vp9') notes.push('No graphics card encoder found, so Max is using every CPU core instead.')
+      if (profile.useGpu && codec !== 'vp9') notes.push('No graphics card can help with this one, so Max is using all of your processor instead.')
       encoder = codec === 'vp9' ? 'libvpx-vp9' : CPU_ENCODERS[codec]
       args.push('-c:v', encoder)
       if (adv.videoKbps) args.push('-b:v', `${adv.videoKbps}k`)
@@ -262,12 +262,3 @@ export function gpuTestArgs(encoder: string): string[] {
   return ['-hide_banner', '-nostdin', '-f', 'lavfi', '-i', 'color=c=black:s=256x256:d=0.1', '-frames:v', '1', '-c:v', encoder, '-f', 'null', '-']
 }
 
-/** Picks a useful line from FFmpeg's stderr for an error message. */
-export function summarizeFfmpegError(stderr: string): string {
-  const lines = stderr
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean)
-  const important = lines.reverse().find((l) => /error|invalid|not found|no such|unsupported|failed|could not/i.test(l))
-  return important ?? lines[0] ?? 'FFmpeg stopped without saying why.'
-}

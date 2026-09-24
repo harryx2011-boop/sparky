@@ -55,7 +55,7 @@ export function CompressionSlider({
           <Slider.Range className="absolute h-full rounded-full bg-foreground" />
         </Slider.Track>
         <Slider.Thumb
-          className="block size-4 rounded-full border border-foreground bg-background shadow-sm transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 enabled:hover:scale-110 data-[disabled]:cursor-not-allowed"
+          className="block size-4 rounded-full border border-foreground bg-background shadow-sm transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 enabled:hover:scale-105 data-[disabled]:cursor-not-allowed"
           aria-valuetext={current}
         />
       </Slider.Root>

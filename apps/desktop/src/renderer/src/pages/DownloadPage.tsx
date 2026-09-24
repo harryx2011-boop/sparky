@@ -1,6 +1,5 @@
 import {
   asLink,
-  compressionInfo,
   formatBytes,
   formatDuration,
   FORMATS,
@@ -33,7 +32,7 @@ function convertGroups(mode: 'video' | 'audio') {
   const pick = (cat: 'video' | 'audio') => FORMATS.filter((f) => f.category === cat).map((f) => ({ value: f.ext, label: f.label, hint: f.note }))
   const audio = { heading: 'Audio', items: pick('audio') }
   if (mode === 'audio') return [audio]
-  return [{ heading: 'Keep', items: [{ value: NONE, label: 'As downloaded', hint: 'MP4, no second pass' }] }, { heading: 'Video', items: pick('video').filter((f) => !['avi'].includes(f.value)) }, audio]
+  return [{ heading: 'Keep', items: [{ value: NONE, label: 'As downloaded', hint: 'MP4, nothing extra done' }] }, { heading: 'Video', items: pick('video').filter((f) => !['avi'].includes(f.value)) }, audio]
 }
 
 export function DownloadPage() {
@@ -210,7 +209,14 @@ export function DownloadPage() {
             </div>
           </Card>
 
-          {info.kind === 'playlist' && (
+          {info.kind === 'playlist' && info.entries.length === 0 && (
+            <Card className="flex items-start gap-3 p-4">
+              <AlertCircle size={16} className="mt-0.5 shrink-0 text-subtle-foreground" />
+              <span className="text-[13px]">This playlist is empty, or its videos are hidden. Check the link and try another one.</span>
+            </Card>
+          )}
+
+          {info.kind === 'playlist' && info.entries.length > 0 && (
             <Card className="flex flex-col overflow-hidden">
               <div className="flex h-10 items-center gap-3 border-b px-3.5 text-xs text-subtle-foreground">
                 <ListVideo size={14} />
@@ -288,13 +294,13 @@ export function DownloadPage() {
               <span />
             )}
             {showCompression && (
-              <CompressionSlider value={settings.compression} onChange={(c) => void updateSettings({ compression: c })} detail={mode === 'audio' ? `${compressionInfo(settings.compression).audioKbps} kbps` : undefined} />
+              <CompressionSlider value={settings.compression} onChange={(c) => void updateSettings({ compression: c })} />
             )}
           </div>
 
           <Card className="grid grid-cols-2 gap-x-6 gap-y-3 p-4">
-            <Toggle label="Cover art" hint="Embed the thumbnail" checked={extras.thumbnail} onChange={(v) => setExtras({ thumbnail: v })} />
-            <Toggle label="Titles, artist and chapters" hint="Tags your music player can read" checked={extras.metadata} onChange={(v) => setExtras({ metadata: v })} />
+            <Toggle label="Cover art" hint="Save the video’s picture inside the file" checked={extras.thumbnail} onChange={(v) => setExtras({ thumbnail: v })} />
+            <Toggle label="Titles, artist and chapters" hint="So your music app shows the right names" checked={extras.metadata} onChange={(v) => setExtras({ metadata: v })} />
             <Toggle label="Skip sponsor segments" hint="Cut out ad reads, intros and self-promo" checked={extras.sponsorBlock} onChange={(v) => setExtras({ sponsorBlock: v })} />
             <div className="flex items-center justify-between gap-3">
               <div className="flex flex-col">
@@ -316,8 +322,8 @@ export function DownloadPage() {
                   onChange={(v) => setExtras({ subtitles: v })}
                   options={[
                     { value: 'off', label: 'Off' },
-                    { value: 'download', label: 'Save' },
-                    ...(mode === 'video' ? [{ value: 'embed' as const, label: 'Embed' }] : []),
+                    { value: 'download', label: 'Separate file' },
+                    ...(mode === 'video' ? [{ value: 'embed' as const, label: 'Inside the video' }] : []),
                   ]}
                 />
               </div>

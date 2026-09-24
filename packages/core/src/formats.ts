@@ -89,9 +89,16 @@ const EXTRA_INPUTS: Record<string, Category> = {
 
 const OUTPUT_ONLY = new Set(['folder'])
 
+/** The raw extension of a path or bare extension, ignoring dots in folder names. */
+function rawExt(extOrPath: string): string {
+  const name = extOrPath.slice(Math.max(extOrPath.lastIndexOf('/'), extOrPath.lastIndexOf('\\')) + 1)
+  if (name.includes('.')) return name.slice(name.lastIndexOf('.') + 1).toLowerCase().trim()
+  // A bare word ("mp4") is an extension; a path with no dot in its file name has none.
+  return name === extOrPath ? name.toLowerCase().trim() : ''
+}
+
 export function normalizeExt(extOrPath: string): string {
-  const raw = extOrPath.includes('.') ? extOrPath.slice(extOrPath.lastIndexOf('.') + 1) : extOrPath
-  const ext = raw.toLowerCase().trim()
+  const ext = rawExt(extOrPath)
   return ALIASES[ext] ?? ext
 }
 
@@ -101,7 +108,7 @@ export function formatInfo(ext: string): FormatInfo | undefined {
 }
 
 export function categoryOf(extOrPath: string): Category | undefined {
-  const raw = extOrPath.includes('.') ? extOrPath.slice(extOrPath.lastIndexOf('.') + 1).toLowerCase() : extOrPath.toLowerCase()
+  const raw = rawExt(extOrPath)
   if (EXTRA_INPUTS[raw]) return EXTRA_INPUTS[raw]
   const e = normalizeExt(extOrPath)
   if (OUTPUT_ONLY.has(e)) return undefined

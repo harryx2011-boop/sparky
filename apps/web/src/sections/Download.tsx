@@ -2,7 +2,7 @@ import { cn } from '@sparky/ui'
 import { Check, Link2, ListVideo, Play } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { Eyebrow, Heading, Lead } from '../components/ui'
+import { Heading, Lead } from '../components/ui'
 
 const LINK = 'youtube.com/playlist?list=lofi-for-late-nights'
 
@@ -14,7 +14,13 @@ const ITEMS = [
   { title: 'Streetlight hum', len: '3:27' },
 ]
 
-const EXTRAS = ['Cover art', 'Subtitles', 'Song names & artist', 'Skip sponsor segments'] as const
+const EXTRAS = ['Cover art', 'Subtitles', 'Song names and artist', 'Skip sponsor segments'] as const
+const EXTRA_SUMMARY: Record<(typeof EXTRAS)[number], string> = {
+  'Cover art': 'cover art',
+  Subtitles: 'subtitles',
+  'Song names and artist': 'names and artist',
+  'Skip sponsor segments': 'sponsors skipped',
+}
 
 function useTypewriter(text: string, start: boolean) {
   const reduce = useReducedMotion()
@@ -41,9 +47,10 @@ export function Download() {
   const inView = useInView(cardRef, { once: true, amount: 0.4 })
   const { typed, done } = useTypewriter(LINK, inView)
   const [checks, setChecks] = useState([true, true, false, true, true])
-  const [extras, setExtras] = useState<Record<string, boolean>>({ 'Cover art': true, 'Song names & artist': true, 'Skip sponsor segments': true })
+  const [extras, setExtras] = useState<Record<string, boolean>>({ 'Cover art': true, 'Song names and artist': true, 'Skip sponsor segments': true })
   const [mode, setMode] = useState<'Video' | 'Audio'>('Audio')
   const picked = checks.filter(Boolean).length
+  const summary = [mode === 'Audio' ? 'MP3' : 'MP4 · up to 4K', `${picked} selected`, ...EXTRAS.filter((e) => extras[e]).map((e) => EXTRA_SUMMARY[e])].join(' · ')
   const show = (delay: number) => ({
     initial: { opacity: 0, y: 14 },
     animate: done ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 },
@@ -118,22 +125,20 @@ export function Download() {
                   </button>
                 ))}
               </div>
-              <span className="text-xs text-subtle-foreground">
-                {mode === 'Audio' ? 'MP3' : 'MP4 · up to 4K'} · {picked} selected
-              </span>
+              <span className="text-xs text-subtle-foreground">{summary}</span>
             </div>
-            <span className="inline-flex h-[38px] items-center rounded-[10px] bg-primary px-4 text-[13px] font-medium text-primary-foreground">Convert</span>
+            <span className="inline-flex h-[38px] items-center rounded-[10px] bg-primary px-4 text-[13px] font-medium text-primary-foreground">Download {picked} items</span>
           </motion.div>
         </div>
 
         <div className="order-1 flex flex-col gap-5 lg:order-2">
-          <Eyebrow index="02">Download</Eyebrow>
           <Heading lines={['Paste a link.', 'Keep what you like.']} />
           <Lead>
             YouTube and well over a thousand other sites. Grab one video, a whole playlist or a channel, in sharp 4K or as music
             for your phone. Tick the ones you want and Sparky can turn them into MP3 in the same go.
           </Lead>
-          <div className="flex flex-wrap gap-2 pt-1">
+          <p className="text-sm text-subtle-foreground">Extras you can switch on. Try them: the card updates.</p>
+          <div className="flex flex-wrap gap-2">
             {EXTRAS.map((e) => (
               <button
                 key={e}

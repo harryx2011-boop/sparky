@@ -8,13 +8,16 @@ export interface PerformanceInfo {
   label: string
   /** How many of the five bars light up. */
   bars: 1 | 3 | 5
+  /** One sentence on what the level means for the person, in plain words. */
   description: string
+  /** A few words for captions: what happens to the PC while it works. */
+  outcome: string
 }
 
 export const PERFORMANCE_LEVELS: readonly PerformanceInfo[] = [
-  { id: 'low', label: 'Low', bars: 1, description: 'Stays quiet in the background. Uses one core and lets other apps go first.' },
-  { id: 'normal', label: 'Normal', bars: 3, description: 'Everyday speed. Uses several cores without taking over your PC.' },
-  { id: 'max', label: 'Max', bars: 5, description: 'Everything it has: your graphics card and every core. Best for big batches.' },
+  { id: 'low', label: 'Low', bars: 1, description: 'Quiet. Your PC stays cool and free for other things, and jobs take longer.', outcome: 'Slow and quiet' },
+  { id: 'normal', label: 'Normal', bars: 3, description: 'Steady. Good speed without getting in the way of what you’re doing.', outcome: 'Steady, PC stays usable' },
+  { id: 'max', label: 'Max', bars: 5, description: 'Fastest. Sparky takes everything your PC can give, so other apps may feel slow until it’s done.', outcome: 'Fastest, PC gets busy' },
 ]
 
 export function performanceInfo(level: PerformanceLevel): PerformanceInfo {
@@ -64,7 +67,7 @@ export interface CompressionInfo {
 }
 
 export const COMPRESSION_LEVELS: readonly CompressionInfo[] = [
-  { level: 0, label: 'Lossless-ish', hint: 'Looks the same as the original', crf: 16, audioKbps: 320, imageQuality: 95, archiveLevel: 1, pdfPreset: '/prepress' },
+  { level: 0, label: 'Near original', hint: 'Looks the same as the original', crf: 16, audioKbps: 320, imageQuality: 95, archiveLevel: 1, pdfPreset: '/prepress' },
   { level: 1, label: 'High', hint: 'Hard to tell apart, a bit smaller', crf: 20, audioKbps: 256, imageQuality: 88, archiveLevel: 3, pdfPreset: '/printer' },
   { level: 2, label: 'Balanced', hint: 'Good quality at a sensible size', crf: 23, audioKbps: 192, imageQuality: 80, archiveLevel: 5, pdfPreset: '/ebook' },
   { level: 3, label: 'Small', hint: 'Easy to share, some detail lost', crf: 28, audioKbps: 128, imageQuality: 70, archiveLevel: 7, pdfPreset: '/ebook' },

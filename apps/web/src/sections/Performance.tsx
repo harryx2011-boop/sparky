@@ -1,17 +1,13 @@
-import { PERFORMANCE_LEVELS, type PerformanceLevel } from '@sparky/core'
-import { Bolt, cn, PerformanceBars } from '@sparky/ui'
-import { Cpu, Gauge, Leaf } from 'lucide-react'
+import { PERFORMANCE_LEVELS, performanceInfo, type PerformanceLevel } from '@sparky/core'
+import { cn, PerformanceBars } from '@sparky/ui'
+import { Gauge, Leaf, Zap, type LucideIcon } from 'lucide-react'
 import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react'
 import { useRef } from 'react'
 import { Heading, Lead } from '../components/ui'
 import { useMediaQuery } from '../hooks'
 import { useDemo } from '../state'
 
-const USES: Record<PerformanceLevel, { icon: typeof Leaf; text: string }> = {
-  low: { icon: Leaf, text: 'One core, quiet fans' },
-  normal: { icon: Gauge, text: 'About half your cores' },
-  max: { icon: Cpu, text: 'Graphics card + every core' },
-}
+const ICONS: Record<PerformanceLevel, LucideIcon> = { low: Leaf, normal: Gauge, max: Zap }
 
 export function Performance() {
   const ref = useRef<HTMLDivElement>(null)
@@ -32,15 +28,12 @@ export function Performance() {
     }
   })
 
-  const uses = USES[level]
+  const Icon = ICONS[level]
   return (
     <section id="performance" className="border-t border-[#161616] px-4 sm:px-6">
       <div ref={ref} className="relative mx-auto max-w-[1200px] lg:h-[240vh]">
         <div className="flex flex-col items-center gap-12 py-24 lg:sticky lg:top-0 lg:h-screen lg:justify-center lg:py-0">
           <div className="flex max-w-[640px] flex-col items-center gap-5 text-center">
-            <span className="eyebrow inline-flex items-center gap-2">
-              <Bolt size={14} strokeWidth={2} /> 03 · Performance
-            </span>
             <Heading lines={['You decide how hard it works.']} />
             <Lead>Keep it quiet while you game or take a call, or let Sparky use everything your PC has for a big batch.</Lead>
           </div>
@@ -50,9 +43,9 @@ export function Performance() {
               <div className="flex h-[200px] items-end">
                 <PerformanceBars level={level} size="lg" running />
               </div>
-              <span className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground">
-                <uses.icon size={14} />
-                {uses.text}
+              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                <Icon size={15} />
+                {performanceInfo(level).outcome}
               </span>
             </div>
 

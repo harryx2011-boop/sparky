@@ -24,9 +24,9 @@ export const CPU_ENCODERS: Record<VideoCodec, string> = {
 }
 
 export const CODEC_LABELS: Record<VideoCodec, string> = {
-  h264: 'H.264 (most compatible)',
-  hevc: 'HEVC (smaller files)',
-  av1: 'AV1 (smallest, newest)',
+  h264: 'Standard (H.264) · plays everywhere',
+  hevc: 'Newer (HEVC) · smaller files',
+  av1: 'Newest (AV1) · smallest files, needs recent devices',
 }
 
 /** Hardware encoders that were found and actually worked on this PC. */
@@ -86,14 +86,13 @@ export function resolutionOptions(ctx: ResolutionContext): ResolutionOption[] {
   return RESOLUTIONS.map((value) => {
     const label = resolutionLabel(value)
     const hidden = ctx.sourceHeight !== undefined && ctx.sourceHeight > 0 && ctx.sourceHeight < value
-    if (hidden) return { value, label, hidden, locked: true, reason: `The source is smaller than ${label}` }
+    if (hidden) return { value, label, hidden, locked: true, reason: `The original is smaller than ${label}` }
     if (!isHighResolution(value)) return { value, label, hidden, locked: false }
     if (ctx.performance !== 'max') {
       return { value, label, hidden, locked: true, reason: 'Switch Performance to Max to unlock 1440p and 4K' }
     }
     if (!gpuEncoderFor(ctx.gpu, ctx.codec)) {
-      const needed = (['nvidia', 'amd', 'intel'] as const).map((v) => GPU_ENCODERS[v][ctx.codec]).join(', ')
-      return { value, label, hidden, locked: true, reason: `Needs a graphics card that can encode ${ctx.codec.toUpperCase()} (${needed})` }
+      return { value, label, hidden, locked: true, reason: 'Your graphics card can’t help with this video type, so 1440p and 4K stay off. Pick another video type under More options or in Settings.' }
     }
     return { value, label, hidden, locked: false }
   })

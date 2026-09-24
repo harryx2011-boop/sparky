@@ -1,5 +1,6 @@
 // Downloads with yt-dlp, then optionally converts the result in the same job.
 import {
+  explainFileError,
   explainYtDlpError,
   formatSpeed,
   inspectArgs,
@@ -31,7 +32,7 @@ class DownloadError extends Error {
 }
 
 function ytdlp(env: EngineEnv): string {
-  if (!env.tools['yt-dlp']) throw new DownloadError('The downloader (yt-dlp) is missing. Reinstall Sparky to get it back.', false)
+  if (!env.tools['yt-dlp']) throw new DownloadError('Sparky’s downloader is missing. Reinstall Sparky to get it back.', false)
   return env.tools['yt-dlp']
 }
 
@@ -61,7 +62,9 @@ export async function runDownloadJob(env: EngineEnv, job: Job, ctx: RunContext):
   const req = job.download
   if (!req) throw new Error('Download settings are missing.')
   const outputDir = path.join(env.settings().outputRoot, OUTPUT_FOLDERS.download)
-  await fs.mkdir(outputDir, { recursive: true })
+  await fs.mkdir(outputDir, { recursive: true }).catch((e) => {
+    throw new DownloadError(explainFileError(e, 'save'), false)
+  })
 
   const plan = planDownload(req, {
     outputDir,

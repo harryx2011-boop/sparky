@@ -37,7 +37,7 @@ export function ClipboardChip() {
               dismiss()
             }}
           >
-            Grab it
+            Download
           </button>
           <button type="button" aria-label="Dismiss" className="shrink-0 rounded-full p-1.5 text-subtle-foreground hover:bg-accent hover:text-foreground" onClick={dismiss}>
             <X size={13} />

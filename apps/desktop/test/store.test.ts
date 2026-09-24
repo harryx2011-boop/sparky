@@ -42,3 +42,22 @@ describe('Store', () => {
     s.close()
   })
 })
+
+describe('Store search', () => {
+  it('finds titles with quotes, brackets, backslashes and unicode', () => {
+    const s = new Store(path.join(tmp(), 'db.sqlite'))
+    const base = { kind: 'convert' as const, outputs: [], progress: 1, createdAt: 1, finishedAt: 2, status: 'done' as const }
+    s.record({ ...base, id: '1', title: "Harry's clip [final] → MP4", source: "C:\\Videos\\Harry's clip [final].mov" })
+    s.record({ ...base, id: '2', title: '日本語 "quoted" 50%_off.wav → MP3', source: 'D:\\音楽\\50%_off.wav' })
+    s.record({ ...base, id: '3', title: 'plain.mov → MP4', source: '/a/plain.mov' })
+    expect(s.search({ text: "Harry's" }).map((h) => h.id)).toEqual(['1'])
+    expect(s.search({ text: '[final]' }).map((h) => h.id)).toEqual(['1'])
+    expect(s.search({ text: 'C:\\Videos' }).map((h) => h.id)).toEqual(['1'])
+    expect(s.search({ text: '"quoted"' }).map((h) => h.id)).toEqual(['2'])
+    expect(s.search({ text: '日本語' }).map((h) => h.id)).toEqual(['2'])
+    expect(s.search({ text: '%_off' }).map((h) => h.id)).toEqual(['2'])
+    expect(s.search({ text: '_' }).map((h) => h.id)).toEqual(['2'])
+    expect(s.search({ text: '   ' }).length).toBe(3)
+    s.close()
+  })
+})

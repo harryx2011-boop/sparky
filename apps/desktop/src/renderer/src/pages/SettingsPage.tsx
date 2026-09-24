@@ -84,10 +84,10 @@ export function SettingsPage() {
         <div className="border-b px-4 py-3">
           <CompressionSlider value={settings.compression} onChange={(c) => void updateSettings({ compression: c })} />
         </div>
-        <Row title="Video codec" hint="Used for MP4, MKV and MOV unless you pick another in More options">
+        <Row title="Video type" hint="For MP4, MKV and MOV. Standard plays everywhere; the newer ones make smaller files.">
           <Select
-            label="Video codec"
-            className="w-56"
+            label="Video type"
+            className="w-80"
             value={settings.codec}
             onChange={(c) => void updateSettings({ codec: c })}
             options={(Object.keys(CODEC_LABELS) as VideoCodec[]).map((c) => ({ value: c, label: CODEC_LABELS[c] }))}
@@ -121,12 +121,12 @@ export function SettingsPage() {
 
       <Group title="Built-in tools">
         {system?.tools.map((t) => (
-          <Row key={t.id} title={t.label} hint={t.found ? t.path ?? 'Included' : t.optional ? 'Optional. Install it and restart Sparky to use it.' : 'Missing. Reinstalling Sparky brings it back.'}>
+          <Row key={t.id} title={t.label} hint={t.found ? t.path ?? 'Included' : t.optional ? 'Optional add-on. Install it and restart Sparky to use it.' : 'Missing. Reinstalling Sparky brings it back.'}>
             <span className="font-mono text-xs text-subtle-foreground">{t.version}</span>
             {t.found ? <Check size={14} className="text-success" /> : <Minus size={14} className={t.optional ? 'text-subtle-foreground' : 'text-destructive'} />}
           </Row>
         ))}
-        <Row title="Downloader updates" hint="Sites change often. Sparky updates yt-dlp when it starts; you can also do it now.">
+        <Row title="Downloader updates" hint="Sites change often. Sparky updates its downloader when it starts; you can also do it now.">
           <Button
             size="sm"
             variant="secondary"
@@ -150,7 +150,7 @@ export function SettingsPage() {
           <LogoMark size={32} />
           <div className="flex grow flex-col">
             <span className="text-[13px] font-medium">Sparky {system?.appVersion}</span>
-            <span className="text-xs text-subtle-foreground">Free and open source under the MIT license. Built on FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
+            <span className="text-xs text-subtle-foreground">Free and open source (MIT license). Built with FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
           </div>
           <Button size="sm" variant="secondary" onClick={() => void api.openExternal(CONTACT.github)}>
             <GithubIcon size={13} /> GitHub

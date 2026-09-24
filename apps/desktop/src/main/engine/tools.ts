@@ -1,5 +1,5 @@
 // Finds the bundled tools, checks their versions and tests the graphics card encoders.
-import { describeGpu, gpuTestArgs, parseEncoderList, type GpuInfo, type ToolStatus } from '@sparky/core'
+import { describeGpu, gpuTestArgs, parseEncoderList, TOOL_LABELS, type GpuInfo, type ToolStatus } from '@sparky/core'
 import fs from 'node:fs'
 import path from 'node:path'
 import { run } from './process'
@@ -30,17 +30,6 @@ const NAMES: Record<ToolId, string[]> = {
   deno: [exe('deno')],
   ghostscript: isWin ? ['gswin64c.exe', 'gswin32c.exe'] : ['gs'],
   libreoffice: isWin ? ['soffice.exe', 'soffice.com'] : ['soffice', 'libreoffice'],
-}
-
-const LABELS: Record<ToolId, string> = {
-  ffmpeg: 'FFmpeg',
-  ffprobe: 'FFprobe',
-  'yt-dlp': 'yt-dlp',
-  pandoc: 'Pandoc',
-  '7zip': '7-Zip',
-  deno: 'Deno (helps yt-dlp with YouTube)',
-  ghostscript: 'Ghostscript (shrinks PDFs)',
-  libreoffice: 'LibreOffice (better Word → PDF)',
 }
 
 const OPTIONAL: ReadonlySet<ToolId> = new Set(['deno', 'ghostscript', 'libreoffice'])
@@ -118,7 +107,7 @@ export async function toolStatuses(tools: Tools): Promise<ToolStatus[]> {
   return Promise.all(
     ids.map(async (id): Promise<ToolStatus> => {
       const p = tools[id]
-      const base = { id, label: LABELS[id], optional: OPTIONAL.has(id), path: p }
+      const base = { id, label: TOOL_LABELS[id], optional: OPTIONAL.has(id), path: p }
       if (!p) return { ...base, found: false }
       // Starting LibreOffice just to read its version is slow; its presence is enough.
       if (id === 'libreoffice') return { ...base, found: true }

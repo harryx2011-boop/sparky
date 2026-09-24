@@ -22,7 +22,7 @@ export function Footer() {
           <span className="flex items-center gap-2 text-foreground">
             <Bolt size={14} /> Sparky
           </span>
-          <span>MIT licensed. Powered by FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
+          <span>Free and open source (MIT license). Built with FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
         </div>
         <div className="flex flex-wrap gap-3">
           <a href={`mailto:${CONTACT.email}`} className={pill}>

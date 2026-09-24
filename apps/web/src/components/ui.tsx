@@ -35,15 +35,6 @@ export function Reveal({ children, className, delay = 0, y = 40 }: { children: R
   )
 }
 
-export function Eyebrow({ index, children, icon }: { index: string; children: ReactNode; icon?: ReactNode }) {
-  return (
-    <span className="eyebrow inline-flex items-center gap-2">
-      {icon}
-      {index} · {children}
-    </span>
-  )
-}
-
 /** Section heading. Each line's words rise into place when it scrolls into view. */
 export function Heading({ lines, className }: { lines: string[]; className?: string }) {
   return (

@@ -12,10 +12,12 @@ const KNOWN_HOSTS = [
   'ted.com', 'nebula.tv', 'bitchute.com', 'imgur.com', 'tumblr.com', 'loom.com',
 ]
 
-/** Returns a clean URL when the text is a single http(s) link, otherwise undefined. */
+/** Returns a clean URL when the text is a single web link, otherwise undefined. "youtu.be/x" counts too. */
 export function asLink(text: string): string | undefined {
-  const t = text.trim()
+  let t = text.trim().replace(/^<|>$/g, '')
   if (!t || /\s/.test(t) || t.length > 2048) return undefined
+  // People paste links without the https:// part all the time.
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(t) && /^(www\.)?[\w-]+(\.[\w-]+)+([/?#]|$)/i.test(t)) t = `https://${t}`
   try {
     const u = new URL(t)
     if (u.protocol !== 'http:' && u.protocol !== 'https:') return undefined
@@ -263,10 +265,16 @@ export interface YtDlpError {
 export function explainYtDlpError(stderr: string): YtDlpError {
   const lines = stderr.split(/\r?\n/).filter((l) => l.startsWith('ERROR:'))
   const raw = (lines[lines.length - 1] ?? stderr.trim().split(/\r?\n/).pop() ?? '').replace(/^ERROR:\s*(\[[^\]]+\]\s*)?(\S+:\s*)?/, '')
-  if (/Unsupported URL/i.test(raw)) return { message: "This site isn't supported yet.", suggestUpdate: true }
-  if (/Sign in to confirm|age|log ?in|private video|members-only/i.test(raw))
+  if (/Unsupported URL/i.test(raw)) return { message: 'This site isn’t supported yet.', suggestUpdate: true }
+  if (/Private video/i.test(raw)) return { message: 'This video is private, so it can’t be downloaded.', suggestUpdate: false }
+  if (/not a bot|cookies/i.test(raw))
+    return { message: 'The site is asking for a sign-in check right now. Wait a few minutes and try again, or update the downloader.', suggestUpdate: true }
+  // Whole words only: "webpage" and "API page" must not read as an age check.
+  if (/confirm your age|age[- ]?(restricted|gated)/i.test(raw))
+    return { message: 'This video is age-restricted and needs a signed-in account, so it can’t be downloaded.', suggestUpdate: false }
+  if (/members?-only|\blog ?in\b|\bsign ?in\b/i.test(raw))
     return { message: 'This video needs you to be signed in, so it can’t be downloaded.', suggestUpdate: false }
-  if (/Video unavailable|removed|does not exist|404/i.test(raw)) return { message: 'This video is unavailable or was removed.', suggestUpdate: false }
+  if (/Video unavailable|removed|does not exist|404|not available/i.test(raw)) return { message: 'This video is unavailable or was removed.', suggestUpdate: false }
   if (/Requested format is not available/i.test(raw)) return { message: 'That quality isn’t offered for this video. Try a lower one.', suggestUpdate: false }
   if (/getaddrinfo|Unable to download (webpage|API page)|timed out|Connection|proxy/i.test(raw))
     return { message: 'Couldn’t reach the site. Check your internet connection.', suggestUpdate: false }

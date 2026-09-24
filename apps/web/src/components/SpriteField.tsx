@@ -122,6 +122,8 @@ export interface SpriteFieldProps {
   getProgress: () => number
   /** Bolt height as a fraction of the canvas height. */
   boltScale?: number
+  /** Horizontal centre of the bolt and the galaxy, 0–1. */
+  boltX?: number
   /** Vertical centre of the bolt, 0–1. */
   boltY?: number
   /** Gather the dots into the bolt when the field first appears. */
@@ -129,7 +131,7 @@ export interface SpriteFieldProps {
   className?: string
 }
 
-export function SpriteField({ getProgress, boltScale = 0.62, boltY = 0.46, assembleOnMount = true, className }: SpriteFieldProps) {
+export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY = 0.46, assembleOnMount = true, className }: SpriteFieldProps) {
   const ref = useRef<HTMLCanvasElement>(null)
   const reduce = useReducedMotion()
   const progressRef = useRef(getProgress)
@@ -192,9 +194,9 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltY = 0.46, assem
       ctx.globalCompositeOperation = 'lighter'
 
       const unit = (h * boltScale) / 20
-      const ox = w / 2 - 12 * unit
+      const ox = w * boltX - 12 * unit
       const oy = h * boltY - 12 * unit
-      const cx = w / 2
+      const cx = w * boltX
       const cy = h * boltY
       const radius = Math.hypot(w, h) * 0.62
       const swirl = t * 0.03 + scroll * 1.6
@@ -266,7 +268,7 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltY = 0.46, assem
       document.removeEventListener('visibilitychange', onVis)
       window.removeEventListener('scroll', onScroll)
     }
-  }, [reduce, boltScale, boltY, assembleOnMount])
+  }, [reduce, boltScale, boltX, boltY, assembleOnMount])
 
   return <canvas ref={ref} aria-hidden className={className} />
 }

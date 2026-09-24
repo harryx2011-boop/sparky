@@ -30,6 +30,8 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   private settled = new Map<string, Promise<void>>()
   /** Cancel pressed while a pause was still stopping the process. */
   private cancelAfterStop = new Set<string>()
+  /** Resume pressed while a pause was still stopping the process: go straight back to the line. */
+  private resumeAfterStop = new Set<string>()
   private emitTimer: NodeJS.Timeout | undefined
   private lastEmit = 0
 
@@ -70,9 +72,12 @@ export class JobQueue extends EventEmitter<QueueEvents> {
 
   resume(id: string): void {
     const job = this.get(id)
-    if (job?.status === 'paused') {
+    if (!job) return
+    if (job.status === 'paused') {
       this.patch(job, { status: 'queued', speed: undefined, eta: undefined })
       this.pump()
+    } else if (job.status === 'running' && this.stoppingForPause(id)) {
+      this.resumeAfterStop.add(id)
     }
   }
 
@@ -81,8 +86,16 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   }
 
   resumeAll(): void {
-    for (const j of this.jobs) if (j.status === 'paused') this.patch(j, { status: 'queued', speed: undefined, eta: undefined })
+    for (const j of this.jobs) {
+      if (j.status === 'paused') this.patch(j, { status: 'queued', speed: undefined, eta: undefined })
+      else if (j.status === 'running' && this.stoppingForPause(j.id)) this.resumeAfterStop.add(j.id)
+    }
     this.pump()
+  }
+
+  private stoppingForPause(id: string): boolean {
+    const c = this.running.get(id)
+    return Boolean(c?.signal.aborted && c.signal.reason === 'pause')
   }
 
   cancel(id: string): void {
@@ -90,6 +103,7 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     if (!job) return
     if (job.status === 'running') {
       const c = this.running.get(id)
+      this.resumeAfterStop.delete(id)
       if (c?.signal.aborted) this.cancelAfterStop.add(id)
       else c?.abort('cancel')
     } else if (job.status === 'queued' || job.status === 'paused') {
@@ -163,9 +177,11 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     } catch (e) {
       if (e instanceof CanceledError || controller.signal.aborted) {
         const paused = controller.signal.reason === 'pause' && !this.cancelAfterStop.has(job.id)
+        const requeue = paused && this.resumeAfterStop.has(job.id)
         this.cancelAfterStop.delete(job.id)
+        this.resumeAfterStop.delete(job.id)
         this.patch(job, {
-          status: paused ? 'paused' : 'canceled',
+          status: requeue ? 'queued' : paused ? 'paused' : 'canceled',
           speed: undefined,
           eta: undefined,
           finishedAt: paused ? undefined : Date.now(),
