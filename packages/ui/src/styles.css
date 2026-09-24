@@ -1,0 +1,188 @@
+/*
+ * Sparky's shared theme. Import after "tailwindcss" in each app:
+ *   @import "tailwindcss";
+ *   @import "@sparky/ui/styles.css";
+ *   @source "<path to>/packages/ui/src";
+ * Monochrome on purpose: colour only shows up for states and the Performance bars.
+ */
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #fafafa;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #fafafa;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #111111;
+  --muted: #f2f2f2;
+  --muted-foreground: #6b6b6b;
+  --subtle-foreground: #8a8a8a;
+  --accent: #ececec;
+  --accent-foreground: #111111;
+  --border: #e4e4e4;
+  --input: #dcdcdc;
+  --ring: #a1a1a1;
+  --track: #e6e6e6;
+  --bar-off: #d9d9d9;
+  --success: #16a34a;
+  --destructive: #dc2626;
+  --warning: #d97706;
+  --radius: 8px;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #111111;
+  --card-foreground: #ededed;
+  --popover: #141414;
+  --popover-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ededed;
+  --muted: #161616;
+  --muted-foreground: #a1a1a1;
+  --subtle-foreground: #8a8a8a;
+  --accent: #1c1c1c;
+  --accent-foreground: #ededed;
+  --border: #232323;
+  --input: #2a2a2a;
+  --ring: #5a5a5a;
+  --track: #222222;
+  --bar-off: #2a2a2a;
+  --success: #4ade80;
+  --destructive: #f87171;
+  --warning: #fbbf24;
+}
+
+@theme inline {
+  --font-sans: "Geist Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, Consolas, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-track: var(--track);
+  --color-success: var(--success);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* ---------- Performance bars ---------- */
+
+.sp-bars {
+  display: flex;
+  align-items: flex-end;
+}
+.sp-bar {
+  border-radius: 2px;
+  background: var(--bar-off);
+  transform-origin: bottom;
+  transition: background-color 0.3s ease;
+}
+.sp-bar[data-on] {
+  background-size: 100% 300%;
+  animation: sp-flow 2.2s ease-in-out infinite;
+}
+.sp-bars[data-running] .sp-bar[data-on] {
+  animation: sp-flow 2.2s ease-in-out infinite, sp-flicker 1.6s ease-in-out infinite;
+}
+.sp-bars[data-level="low"] .sp-bar[data-on] {
+  background-image: linear-gradient(180deg, #9fb4c7, #5e7a94, #9fb4c7);
+}
+.sp-bars[data-level="normal"] .sp-bar[data-on] {
+  background-image: linear-gradient(180deg, #8fb8ff, #8b7cf6, #4fa3e8, #8fb8ff);
+}
+.sp-bars[data-level="max"] .sp-bar[data-on] {
+  background-image: linear-gradient(180deg, #ffd166, #ff7a45, #f0386b, #ffd166);
+}
+.sp-bar:nth-child(2) { animation-delay: 0.12s !important; }
+.sp-bar:nth-child(3) { animation-delay: 0.24s !important; }
+.sp-bar:nth-child(4) { animation-delay: 0.36s !important; }
+.sp-bar:nth-child(5) { animation-delay: 0.48s !important; }
+
+/* ---------- Progress shimmer ---------- */
+
+.sp-shimmer {
+  background: linear-gradient(90deg, var(--subtle-foreground), var(--foreground), var(--subtle-foreground));
+  background-size: 200% 100%;
+  animation: sp-shimmer 2.4s linear infinite;
+}
+
+/* ---------- Sparks ---------- */
+
+.sp-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--foreground);
+  animation: sp-twinkle 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sp-flow {
+  0% { background-position: 0 0; }
+  50% { background-position: 0 100%; }
+  100% { background-position: 0 0; }
+}
+@keyframes sp-flicker {
+  0%, 100% { transform: scaleY(1); }
+  40% { transform: scaleY(0.86); }
+  70% { transform: scaleY(0.95); }
+}
+@keyframes sp-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes sp-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-bar[data-on],
+  .sp-bars[data-running] .sp-bar[data-on],
+  .sp-shimmer,
+  .sp-spark {
+    animation: none !important;
+  }
+}
