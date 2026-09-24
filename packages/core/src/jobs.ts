@@ -288,5 +288,7 @@ export interface SparkyApi {
   }
   openExternal(url: string): Promise<void>
   copyText(text: string): Promise<void>
-  onNavigate(listener: (section: string) => void): () => void
+  onNavigate(listener: (to: { section: Section; url?: string }) => void): () => void
 }
+
+export type Section = 'convert' | 'download' | 'queue' | 'history' | 'settings'

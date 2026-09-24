@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      # The Electron binary isn't needed to type-check, test or bundle.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Install real tools for the engine tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg pandoc p7zip-full
+          pipx install yt-dlp
+          mkdir -p "$RUNNER_TEMP/bin"
+          for t in ffmpeg ffprobe pandoc 7z yt-dlp; do ln -s "$(command -v $t)" "$RUNNER_TEMP/bin/$t"; done
+          echo "SPARKY_TEST_BIN=$RUNNER_TEMP/bin" >> "$GITHUB_ENV"
+      - run: npm test
+      - run: npm run build:web
+      - run: npm run build:app

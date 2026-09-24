@@ -295,7 +295,7 @@ async function runLibreOffice(env: EngineEnv, input: string, output: string, sig
 async function pdfToText(input: string, output: string, markdown: boolean): Promise<void> {
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
   const data = new Uint8Array(await fs.readFile(input))
-  const task = pdfjs.getDocument({ data, useSystemFonts: true, isEvalSupported: false })
+  const task = pdfjs.getDocument({ data, useSystemFonts: true })
   const doc = await task.promise
   const pages: string[] = []
   for (let i = 1; i <= doc.numPages; i++) {

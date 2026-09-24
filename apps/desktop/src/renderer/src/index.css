@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@sparky/ui/styles.css";
+@source "../../../../../packages/ui/src";
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  font-size: 14px;
+  user-select: none;
+}
+input,
+textarea,
+[data-selectable] {
+  user-select: text;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--input);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ring);
+}

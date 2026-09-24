@@ -172,7 +172,7 @@ export function buildFfmpegPlan(p: FfmpegPlanInput): FfmpegPlan {
     else if (out === 'png') args.push('-c:v', 'png', '-compression_level', String(settings.compression >= 3 ? 9 : 6))
   }
 
-  args.push('-progress', 'pipe:1', '-nostats', p.output)
+  args.push('-progress', 'pipe:1', '-stats_period', '0.25', '-nostats', p.output)
   return { args, encoder, usedGpu, notes, lowPriority: profile.lowPriority }
 }
 

@@ -182,9 +182,25 @@ It's built as static HTML/React with scroll-linked animations; reduced-motion us
 | M4: System | History, tray, notifications, clipboard detection, settings |
 | M5: Ship | Installer, auto-update, landing site live |
 
-**Open questions**
+**Decisions (were open questions)**
 
-- [ ] Should DOCX → PDF bundle LibreOffice (~300 MB) or be an optional download?
-- [ ] Does the app need its own auto-update (electron-updater), or only yt-dlp updates?
-- [ ] Where will the landing site be hosted, and where does the installer download live?
-- [ ] Is a logo or icon needed for Sparky beyond the wordmark?
+- [x] **DOCX → PDF:** LibreOffice is *not* bundled. If it's installed, Sparky uses it; otherwise Pandoc turns the document into HTML and Electron's built-in Chromium prints it to PDF.
+- [x] **App updates:** yes. electron-updater checks GitHub Releases on launch, and yt-dlp still updates itself separately via `yt-dlp -U`.
+- [x] **Hosting:** the landing site deploys to GitHub Pages; the installer is `Sparky-Setup.exe` on GitHub Releases.
+- [x] **Logo:** the bolt in a rounded tile, rendered by `scripts/make-icons.mjs`.
+- [x] **License:** MIT. Bundled tools keep their own licenses (see `THIRD_PARTY_NOTICES.md`).
+- [x] **Bundled tools:** not stored in git. `scripts/fetch-tools.mjs` downloads the Windows builds before packaging, so users still get zero setup.
+
+## Build notes
+
+Places where the build refines the draft spec:
+
+- **Presets are the Compression levels.** "Small", "Balanced" and "High quality" already appear as Compression stops, so the format picker shows the chosen level (for example "MP4 · Balanced") instead of a second preset list.
+- **Mixed batches:** when files of different types are dropped together, each type gets its own format picker, and they all share Performance, Compression and Resolution.
+- **Output folders follow the output:** sound pulled from a video goes to `Audio`, not `Video`.
+- **PDF input** can become TXT or MD (text pulled out with pdf.js), or a smaller PDF. Shrinking PDFs needs Ghostscript, which is optional; the control explains this when it's missing.
+- **RAR** extraction uses the full 7-Zip (`7z.exe` + `7z.dll`). If only the standalone `7za` could be fetched, RAR shows a friendly error.
+- **YouTube** needs a JavaScript runtime for yt-dlp these days, so Deno is bundled and passed with `--js-runtimes`.
+- **Pause:** Windows can't freeze a child process, so pausing stops it. Downloads resume where they left off (yt-dlp keeps partial files); conversions start over. The UI says so.
+- **Max without a GPU encoder**, or when the driver rejects a job, falls back to the CPU and says so on the job.
+- **Plain language:** the interface says "graphics card", "shrink" and "sound quality" instead of encoder and codec terms. The technical options live under "More options".

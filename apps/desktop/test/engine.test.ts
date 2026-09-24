@@ -62,6 +62,8 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     const ffmpeg = path.join(BIN!, 'ffmpeg')
     // A 3-second 720p test clip with a tone.
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=30:duration=3', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', path.join(dir, 'clip.mov')])
+    // A longer one so progress has time to be reported mid-way.
+    await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=30:duration=20', '-c:v', 'libx264', '-preset', 'ultrafast', path.join(dir, 'long.mov')])
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=640x480', '-frames:v', '1', path.join(dir, 'photo.png')])
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'sine=frequency=330:duration=2', path.join(dir, 'tone.wav')])
     fs.writeFileSync(path.join(dir, 'notes.md'), '# Hello\n\nSome **bold** text.\n\n- one\n- two\n')
@@ -88,20 +90,22 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     const progress: number[] = []
     const onChange = (jobs: Job[]) => jobs.forEach((j) => j.status === 'running' && progress.push(j.progress))
     engine.queue.on('change', onChange)
-    const job = await convert(path.join(dir, 'clip.mov'), { output: 'mp4', resolution: 720 })
+    const job = await convert(path.join(dir, 'long.mov'), { output: 'mp4', resolution: 720, performance: 'low' })
     engine.queue.off('change', onChange)
     expect(job.status).toBe('done')
-    expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip.mp4'))
+    expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'long.mp4'))
     expect(fs.statSync(job.outputs[0]!).size).toBeGreaterThan(1000)
     expect(job.sizeBefore).toBeGreaterThan(0)
     expect(progress.some((p) => p > 0 && p < 1)).toBe(true)
     // Originals are kept by default.
-    expect(fs.existsSync(path.join(dir, 'clip.mov'))).toBe(true)
+    expect(fs.existsSync(path.join(dir, 'long.mov'))).toBe(true)
   })
 
   it('scales down, never up, and names copies without clobbering', async () => {
     const job = await convert(path.join(dir, 'clip.mov'), { output: 'mp4', resolution: 1080, compression: 4 })
-    expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip (2).mp4'))
+    const again = await convert(path.join(dir, 'clip.mov'), { output: 'mp4' })
+    expect(again.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip (2).mp4'))
+    expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip.mp4'))
     const [p] = await engine.probe([job.outputs[0]!])
     expect(p!.height).toBe(360) // Tiny halves the size
   })
@@ -178,7 +182,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
 
   it.skipIf(!has('yt-dlp'))('downloads a link and converts it in the same job', async () => {
     // yt-dlp's generic extractor handles a direct video link served locally.
-    const server = http.createServer((req, res) => {
+    const server = http.createServer((_req, res) => {
       const file = path.join(dir, 'clip.mov')
       res.writeHead(200, { 'Content-Type': 'video/quicktime', 'Content-Length': fs.statSync(file).size })
       fs.createReadStream(file).pipe(res)

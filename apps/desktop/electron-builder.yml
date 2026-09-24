@@ -1,0 +1,45 @@
+appId: com.sparky.app
+productName: Sparky
+copyright: Copyright © 2026 harryx2011-boop and Sparky contributors
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - "!**/*.map"
+asarUnpack:
+  # Native modules must live outside the asar archive.
+  - "**/node_modules/sharp/**"
+  - "**/node_modules/@img/**"
+  - "**/node_modules/better-sqlite3/**"
+extraResources:
+  - from: resources/bin
+    to: bin
+    filter: ["**/*", "!.gitkeep"]
+  - from: resources/icon.png
+    to: icon.png
+  - from: resources/tray.png
+    to: tray.png
+  - from: ../../THIRD_PARTY_NOTICES.md
+    to: THIRD_PARTY_NOTICES.md
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.png
+  artifactName: Sparky-Setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Sparky
+  deleteAppDataOnUninstall: false
+  license: ../../LICENSE
+publish:
+  provider: github
+  owner: harryx2011-boop
+  repo: sparky
+  releaseType: release
