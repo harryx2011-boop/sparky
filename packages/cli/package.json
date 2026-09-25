@@ -1,6 +1,6 @@
 {
   "name": "@sparky-labs/cli",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sparky from the terminal and for agents: convert files, run PDF, video and image tools, download from links, and serve them over MCP or HTTP.",
   "license": "MIT",
   "homepage": "https://sparky-labs.vercel.app",

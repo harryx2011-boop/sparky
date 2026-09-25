@@ -118,6 +118,8 @@ Agents: Opus coder in `D:\Helix` (delete `apps/converter`, `apps/dashboard/lib/c
 
 Then: Sparky version from the diff, tag, release workflow; Helix version from the diff (MAJOR by the rules; Harry decides); ElixirLabs chapter 05 copy; README, context.md, CONTRIBUTING in both repos.
 
+**Done 2026-09-25.** Helix: 175 files deleted, 39 edited, lockfiles refreshed, API 1360/1360, dashboard build green, committed as `6f1f7a7`; five files (context.md, CLAUDE.md, DESKTOP-PLAN.md, sidebar-nav.tsx, the tools layout) hold a concurrent Helix session's uncommitted edits in the same hunks and were left for that session to commit (HEAD has two dead links, builds). Helix's version was not bumped: another session holds an uncommitted 1.24.0 bump; the context note records that this removal makes the next release MAJOR. ElixirLabs tagline updated (`3aa7288`). Sparky: 1.1.0 across every manifest, tag `v1.1.0`. Not done: npm publish (scope `sparky-labs` must be created first), the MCP eval through a live Claude Code session, launching the 1.1.0 app on this PC (Harry's 1.0.0 instance holds the single-instance lock).
+
 ## Beyond the ask (proposals, not scheduled)
 
 - Explorer right-click "Convert with Sparky" and a folder-watch mode.
