@@ -5,10 +5,12 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { createEngine, type Engine } from '../src/main/engine'
-import { run } from '../src/main/engine/process'
+import { createEngine, type Engine } from '../src'
+import { run } from '../src/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
+// A skip must never pass for green in CI.
+if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 const has = (name: string) => Boolean(BIN && [name, `${name}.exe`].some((f) => fs.existsSync(path.join(BIN, f))))
 const RAW_TOOL_TEXT = /ENOENT|EACCES|EPERM|ENOTDIR|Invalid data found|Compressed: 0|Can't open as archive|moov atom/i
 
@@ -22,11 +24,11 @@ describe.skipIf(!BIN)('engine edge cases', () => {
     new Promise<Job>((resolve) => {
       const check = (job: Job) => {
         if (job.id === id) {
-          engine.queue.off('finished', check)
+          engine.off('finished', check)
           resolve(job)
         }
       }
-      engine.queue.on('finished', check)
+      engine.on('finished', check)
     })
   const convert = async (file: string, settings: Partial<ConvertSettings>) => {
     const [job] = engine.startConvert([file], { ...base, ...settings })

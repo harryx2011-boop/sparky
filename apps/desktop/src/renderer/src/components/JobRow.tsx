@@ -11,7 +11,7 @@ export function statusText(job: Job): string {
     case 'queued':
       return 'Waiting'
     case 'paused':
-      return job.kind === 'convert' ? 'Paused · starts over when resumed' : 'Paused'
+      return job.restartsOnResume ? 'Paused · starts over when resumed' : 'Paused'
     case 'canceled':
       return 'Canceled'
     case 'failed':

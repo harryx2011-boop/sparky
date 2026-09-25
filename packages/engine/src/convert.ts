@@ -13,9 +13,10 @@ import {
   ghostscriptArgs,
   isCompressOnly,
   libreOfficeArgs,
+  normalizeDocExt,
   normalizeExt,
-  OUTPUT_FOLDERS,
-  outputName,
+  OP_TEXT,
+  opUnavailableError,
   pandocArgs,
   parseFfprobe,
   parseSevenZipProgress,
@@ -25,7 +26,6 @@ import {
   type ConvertSettings,
   type FfprobeInfo,
   type GpuInfo,
-  type Job,
   type ProbeResult,
   type Settings,
   type VideoCodec,
@@ -35,14 +35,17 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import type { RunContext } from './queue'
+import { convertDocument } from './document'
+import { freeName, planOutput, samePath, splitOut } from './output'
 import { run, runOk, throwIfAborted } from './process'
 import type { Tools } from './tools'
 
+/** What the running app lends the engine. Outside the app both are missing, and the ops that need them say so before starting. */
 export interface EngineHost {
   /** Renders an HTML file to PDF (Electron's printToPDF in the app). */
-  printToPdf(htmlPath: string, pdfPath: string): Promise<void>
+  printToPdf?(htmlPath: string, pdfPath: string): Promise<void>
   /** Moves a file to the Recycle Bin. */
-  trash(filePath: string): Promise<void>
+  trash?(filePath: string): Promise<void>
 }
 
 export interface EngineEnv {
@@ -57,14 +60,6 @@ export interface EngineEnv {
 function need<T>(value: T | undefined, what: string): T {
   if (!value) throw new Error(`A part of Sparky is missing (${what}). Reinstalling Sparky will fix it.`)
   return value
-}
-
-/** Output paths claimed by jobs that are still moving their file into place, so two jobs never pick the same name. */
-const claimed = new Set<string>()
-
-async function freeName(dir: string, inputName: string, ext: string, suffix = ''): Promise<string> {
-  const taken = new Set(await fs.readdir(dir).catch(() => [] as string[]))
-  return outputName(inputName, ext, (n) => taken.has(n) || claimed.has(path.join(dir, n)), suffix)
 }
 
 export async function probe(env: EngineEnv, file: string): Promise<FfprobeInfo | undefined> {
@@ -117,26 +112,16 @@ export interface ConvertOutcome {
 }
 
 /** Where the finished file goes, and what to do with the original afterwards. */
-async function planOutput(env: EngineEnv, input: string, settings: ConvertSettings, outDirOverride?: string) {
+async function planConvertOutput(env: EngineEnv, input: string, settings: ConvertSettings, target?: string) {
   const ext = normalizeExt(settings.output)
   // The folder follows what the file becomes: sound pulled from a video goes to Audio.
   const category = formatInfo(ext)?.category ?? categoryOf(input) ?? 'document'
   const sameFormat = isCompressOnly(input, ext)
   const replace = settings.originals === 'replace'
-  const dir = outDirOverride ?? (replace ? path.dirname(input) : path.join(env.settings().outputRoot, OUTPUT_FOLDERS[category]))
-  await fs.mkdir(dir, { recursive: true }).catch((e) => {
-    throw new Error(explainFileError(e, 'save'))
-  })
-  const tmpPath = path.join(dir, `.sparky-${randomUUID().slice(0, 8)}${ext === 'folder' ? '' : `.${ext}`}`)
   // Replacing in place keeps the original name; otherwise pick a free one ("clip (2).mp4").
   // The name is claimed only once the file is ready, so a batch of same-named files can't collide.
-  const claimFinal = async () => {
-    const finalName = replace && sameFormat ? path.basename(input) : await freeName(dir, path.basename(input), ext, sameFormat && !replace ? ' (smaller)' : '')
-    const finalPath = path.join(dir, finalName)
-    claimed.add(finalPath)
-    return finalPath
-  }
-  return { ext, dir, tmpPath, replace, sameFormat, claimFinal }
+  const plan = await planOutput(env.settings, { input, ext, category, replace, suffix: sameFormat && !replace ? ' (smaller)' : '', out: target })
+  return { ...plan, ext, replace, sameFormat }
 }
 
 export async function convertFile(
@@ -144,15 +129,24 @@ export async function convertFile(
   input: string,
   settings: ConvertSettings,
   ctx: Pick<RunContext, 'signal' | 'update'>,
-  opts: { outDir?: string; codec?: VideoCodec } = {},
+  opts: { out?: string; codec?: VideoCodec } = {},
 ): Promise<ConvertOutcome> {
   const stat = await fs.stat(input).catch(() => undefined)
   if (!stat) throw new Error('The file is gone. It may have been moved or deleted.')
   const tools = env.tools
   const engine = engineFor(input, settings.output, { libreoffice: Boolean(tools.libreoffice) })
-  if (!engine) throw new Error(`Sparky can’t turn ${normalizeExt(input).toUpperCase()} into ${normalizeExt(settings.output).toUpperCase()}.`)
+  if (!engine) {
+    // Some pairs (old Excel to PDF) only open up once LibreOffice is installed.
+    if (engineFor(input, settings.output, { libreoffice: true })) throw new Error(opUnavailableError(OP_TEXT.convert.label, ['libreoffice']))
+    throw new Error(`Sparky can’t turn ${normalizeExt(input).toUpperCase()} into ${normalizeExt(settings.output).toUpperCase()}.`)
+  }
+  // An `out` naming the source itself is a swap in place: the original is set aside before the new file lands on its name.
+  const intoSource = opts.out !== undefined && samePath(splitOut(opts.out).file, input)
+  // "Replace" means the original goes; with a destination of the caller's choosing that is the Recycle Bin, not a swap in place.
+  if (opts.out && !intoSource && settings.originals === 'replace') settings = { ...settings, originals: 'trash' }
 
-  const out = await planOutput(env, input, settings, opts.outDir)
+  const out = await planConvertOutput(env, input, settings, opts.out)
+  const inPlace = (out.replace && out.sameFormat) || intoSource
   let note: string | undefined
   const cleanup = () => fs.rm(out.tmpPath, { recursive: true, force: true }).catch(() => undefined)
 
@@ -187,6 +181,9 @@ export async function convertFile(
         ctx.update({ progress: -1 })
         await pdfToText(input, out.tmpPath, out.ext === 'md')
         break
+      case 'document':
+        await convertDocument(input, out.tmpPath, need(normalizeDocExt(out.ext) ?? undefined, 'Documents'), {}, (pct) => ctx.update({ progress: pct / 100 }), ctx.signal)
+        break
       case '7zip':
         await runArchive(env, input, out.tmpPath, out.ext, settings, ctx)
         break
@@ -195,7 +192,7 @@ export async function convertFile(
 
     // A compressed copy that came out bigger isn't worth keeping in place of the original.
     const sizeAfter = await dirSize(out.tmpPath)
-    if (out.sameFormat && out.replace && sizeAfter >= stat.size) {
+    if (out.sameFormat && inPlace && sizeAfter >= stat.size) {
       await cleanup()
       return { output: input, sizeBefore: stat.size, sizeAfter: stat.size, note: 'Already as small as it gets, so the original was kept.' }
     }
@@ -203,24 +200,23 @@ export async function convertFile(
     const finalPath = await out.claimFinal()
     try {
       // Put the new file in place before touching the original, so a failure never loses both.
-      if (out.replace && out.sameFormat) {
-        const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), out.ext, ' (original)'))
+      if (inPlace) {
+        const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), normalizeExt(input), ' (original)'))
         await fs.rename(input, aside)
         try {
-          await fs.rename(out.tmpPath, finalPath)
+          await out.place(finalPath)
         } catch (e) {
           await fs.rename(aside, input).catch(() => undefined)
           throw e
         }
         note = await trashOriginal(env, aside, note)
       } else {
-        await fs.rename(out.tmpPath, finalPath)
-        if (out.replace || settings.originals === 'trash') note = await trashOriginal(env, input, note)
+        await out.place(finalPath)
+        if ((out.replace || settings.originals === 'trash') && !samePath(finalPath, input)) note = await trashOriginal(env, input, note)
       }
     } catch (e) {
+      await out.release()
       throw (e as NodeJS.ErrnoException).code ? new Error(explainFileError(e, 'save')) : e
-    } finally {
-      claimed.delete(finalPath)
     }
     return { output: finalPath, sizeBefore: stat.size, sizeAfter, note }
   } catch (e) {
@@ -231,6 +227,7 @@ export async function convertFile(
 
 async function trashOriginal(env: EngineEnv, file: string, note: string | undefined): Promise<string | undefined> {
   try {
+    if (!env.host.trash) throw new Error('No Recycle Bin here')
     await env.host.trash(file)
     return note
   } catch {
@@ -335,7 +332,7 @@ async function printToPdf(env: EngineEnv, input: string, output: string, signal:
       await runOk(need(env.tools.pandoc, 'Pandoc'), args, { signal })
     }
     throwIfAborted(signal)
-    await env.host.printToPdf(html, output)
+    await need(env.host.printToPdf, 'printing')(html, output)
   } finally {
     await fs.rm(work, { recursive: true, force: true })
   }
@@ -403,11 +400,4 @@ async function runArchive(env: EngineEnv, input: string, output: string, ext: st
   } finally {
     if (twoSteps) await fs.rm(unpackTo, { recursive: true, force: true })
   }
-}
-
-/** Queue runner for a convert job. */
-export async function runConvertJob(env: EngineEnv, job: Job, ctx: RunContext): Promise<Partial<Job>> {
-  const settings = need(job.convert, 'Convert settings')
-  const result = await convertFile(env, job.source, settings, ctx)
-  return { outputs: [result.output], sizeBefore: result.sizeBefore, sizeAfter: result.sizeAfter, note: result.note }
 }

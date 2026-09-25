@@ -9,6 +9,7 @@ import {
   parseYtDlpLine,
   planDownload,
   postprocessLabel,
+  type DownloadRequest,
   type Job,
   type LinkInfo,
 } from '@sparky/core'
@@ -58,10 +59,9 @@ export async function updateYtDlp(env: EngineEnv): Promise<{ ok: boolean; messag
   }
 }
 
-export async function runDownloadJob(env: EngineEnv, job: Job, ctx: RunContext): Promise<Partial<Job>> {
-  const req = job.download
-  if (!req) throw new Error('Download settings are missing.')
-  const outputDir = path.join(env.settings().outputRoot, OUTPUT_FOLDERS.download)
+/** Downloads one request into `outDir` (default: the output root's Downloads folder). */
+export async function downloadLink(env: EngineEnv, req: DownloadRequest, ctx: Pick<RunContext, 'signal' | 'update'>, outDir?: string): Promise<Pick<Job, 'outputs' | 'sizeAfter' | 'note'>> {
+  const outputDir = outDir ?? path.join(env.settings().outputRoot, OUTPUT_FOLDERS.download)
   await fs.mkdir(outputDir, { recursive: true }).catch((e) => {
     throw new DownloadError(explainFileError(e, 'save'), false)
   })
@@ -131,7 +131,7 @@ export async function runDownloadJob(env: EngineEnv, job: Job, ctx: RunContext):
             ctx.update({ ...p, progress: 0.5 + ((i + local) / files.length) * 0.5 })
           },
         },
-        { outDir: path.dirname(file) },
+        { out: path.dirname(file) },
       )
       // The downloaded copy was only a stepping stone.
       if (result.output !== file) await fs.rm(file, { force: true })

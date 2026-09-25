@@ -1,11 +1,11 @@
 // Electron main process: window, tray, notifications, clipboard and IPC.
-import { isKnownMediaLink, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type Section, type Settings } from '@sparky/core'
+import { isKnownMediaLink, OP_TEXT, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type Section, type Settings } from '@sparky/core'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, shell, Tray } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import path from 'node:path'
-import { createEngine, type Engine } from './engine'
+import { createEngine, opById, type Engine } from '@sparky/engine'
 
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
@@ -160,7 +160,7 @@ function notifyFinished(job: Job): void {
   if (win?.isVisible() && win.isFocused()) return
   const ok = job.status === 'done'
   const n = new Notification({
-    title: ok ? `${job.kind === 'download' ? 'Downloaded' : 'Converted'}: ${job.title}` : `Couldn’t finish: ${job.title}`,
+    title: ok ? `${opById(job.op)?.doneLabel ?? OP_TEXT.unknown.done}: ${job.title}` : `Couldn’t finish: ${job.title}`,
     body: ok ? (job.outputs.length > 1 ? `${job.outputs.length} files saved.` : 'Click to open it.') : (job.error ?? 'Something went wrong.'),
     icon: path.join(resources, 'icon.png'),
     silent: false,
@@ -214,22 +214,21 @@ function registerIpc(): void {
   handle('download:inspect', (url: string) => engine.inspect(url))
   handle('download:start', (req: DownloadRequest) => engine.startDownload(req))
 
-  const q = () => engine.queue
-  handle('queue:list', () => q().list())
-  handle('queue:pause', (id: string) => q().pause(id))
-  handle('queue:resume', (id: string) => q().resume(id))
-  handle('queue:cancel', (id: string) => q().cancel(id))
-  handle('queue:retry', (id: string) => q().retry(id))
-  handle('queue:remove', (id: string) => q().remove(id))
-  handle('queue:reorder', (ids: string[]) => q().reorder(ids))
-  handle('queue:pauseAll', () => q().pauseAll())
-  handle('queue:resumeAll', () => q().resumeAll())
-  handle('queue:clearFinished', () => q().clearFinished())
+  handle('queue:list', () => engine.listJobs())
+  handle('queue:pause', (id: string) => engine.pause(id))
+  handle('queue:resume', (id: string) => engine.resume(id))
+  handle('queue:cancel', (id: string) => engine.cancelJob(id))
+  handle('queue:retry', (id: string) => engine.retry(id))
+  handle('queue:remove', (id: string) => engine.remove(id))
+  handle('queue:reorder', (ids: string[]) => engine.reorder(ids))
+  handle('queue:pauseAll', () => engine.pauseAll())
+  handle('queue:resumeAll', () => engine.resumeAll())
+  handle('queue:clearFinished', () => engine.clearFinished())
 
   handle('history:search', (query: HistoryQuery) => engine.history(query))
   handle('history:rerun', (id: string) => engine.rerun(id))
-  handle('history:remove', (id: string) => engine.store.remove(id))
-  handle('history:clear', () => engine.store.clear())
+  handle('history:remove', (id: string) => engine.removeHistory(id))
+  handle('history:clear', () => engine.clearHistory())
 
   handle('settings:get', () => engine.getSettings())
   handle('settings:set', (patch: Partial<Settings>) => {
@@ -282,11 +281,11 @@ if (primary) app.whenReady().then(async () => {
   nativeTheme.themeSource = engine.getSettings().theme
 
   registerIpc()
-  engine.queue.on('change', (jobs) => {
+  engine.on('change', (jobs) => {
     send('queue:change', jobs)
     updateTray(jobs)
   })
-  engine.queue.on('finished', notifyFinished)
+  engine.on('finished', notifyFinished)
 
   ready = true
   createWindow()

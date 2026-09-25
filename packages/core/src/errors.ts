@@ -1,4 +1,5 @@
 // Turns tool output and file-system errors into sentences that say what happened and what to do.
+import { OPTIONAL_TOOLS, TOOL_NAMES, type ToolStatus } from './jobs'
 
 const DAMAGED = 'This file looks damaged, or it isn’t really what its name says. Try opening it in another app to check.'
 const GONE = 'The file is gone. It may have been moved or deleted.'
@@ -78,3 +79,37 @@ export function explainSevenZipError(output: string, inputExt: string, ctx: Seve
   if (/Data Error|CRC Failed|Unexpected end|Headers Error|Unavailable data/i.test(output)) return 'This archive is damaged or incomplete. Try copying or downloading it again.'
   return ctx.fallback ?? 'Sparky couldn’t work with this archive.'
 }
+
+/** Asked for an op the engine doesn't have. */
+export function unknownOpError(id: string): string {
+  return `Sparky doesn’t have a tool called “${id}”.`
+}
+
+/** An op's input didn't match its schema. `problems` are "field: what's wrong" lines. */
+export function invalidOpArgsError(label: string, problems: string[]): string {
+  return `${label} can’t start: ${problems.join('; ')}.`
+}
+
+/** What the app itself provides, named for a person reading why an op can't run outside it. */
+const HOST_NEEDS: Record<string, string> = {
+  print: 'printing to PDF',
+  trash: 'the Recycle Bin',
+}
+
+/** An op needs something that isn't here. `missing` holds tool ids ("libreoffice") and app capabilities ("print", "trash"). */
+export function opUnavailableError(label: string, missing: string[]): string {
+  const tools = missing.filter((m): m is ToolStatus['id'] => m in TOOL_NAMES)
+  const addOns = tools.filter((t) => OPTIONAL_TOOLS.has(t)).map((t) => TOOL_NAMES[t])
+  const bundled = tools.filter((t) => !OPTIONAL_TOOLS.has(t)).map((t) => TOOL_NAMES[t])
+  const host = missing.flatMap((m) => HOST_NEEDS[m] ?? [])
+  const parts: string[] = []
+  if (bundled.length) parts.push(`A part of Sparky is missing (${bundled.join(', ')}). Reinstalling Sparky will fix it.`)
+  if (addOns.length) parts.push(`${label} needs ${addOns.join(' and ')}. Install it and restart Sparky.`)
+  if (host.length) parts.push(`${label} needs ${host.join(' and ')}, which only works while the Sparky app is open.`)
+  return parts.join(' ')
+}
+
+export const OUT_NEEDS_FOLDER = 'This makes more than one file, so the output has to be a folder, not a file name.'
+
+/** A download given a file name that turned out to hold several items. */
+export const OUT_FILE_BECAME_FOLDER = 'This link held more than one file, so they were saved in that file name’s folder under their own names.'

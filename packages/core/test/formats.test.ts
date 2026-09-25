@@ -22,7 +22,9 @@ describe('formats', () => {
   it('offers only valid outputs', () => {
     expect(outputsFor('a.mov').map((f) => f.ext)).toContain('mp3')
     expect(outputsFor('a.rar').map((f) => f.ext)).toEqual(['zip', '7z', 'folder'])
-    expect(outputsFor('a.pdf').map((f) => f.ext)).toEqual(['pdf', 'txt', 'md'])
+    expect(outputsFor('a.pdf').map((f) => f.ext)).toEqual(['pdf', 'txt', 'md', 'html'])
+    expect(outputsFor('a.csv').map((f) => f.ext)).toEqual(['xlsx', 'json', 'xml', 'html', 'md', 'txt', 'pdf'])
+    expect(outputsFor('a.xls').map((f) => f.ext)).toEqual(['pdf'])
     expect(outputsFor('a.md').map((f) => f.ext)).not.toContain('md')
     expect(outputsFor('a.heic').map((f) => f.ext)).not.toContain('heic')
     expect(canConvert('a.wav', 'png')).toBe(false)
@@ -55,5 +57,15 @@ describe('formats', () => {
     expect(engineFor('a.pdf', 'txt')).toBe('pdf-text')
     expect(engineFor('a.zip', '7z')).toBe('7zip')
     expect(engineFor('a.mp3', 'png')).toBeUndefined()
+    // The document module takes the data formats and pdf to html; every pair that worked before keeps its engine.
+    for (const [from, to] of [['csv', 'xlsx'], ['csv', 'pdf'], ['xlsx', 'csv'], ['json', 'xml'], ['xml', 'json'], ['xml', 'html'], ['pdf', 'html']] as [string, string][]) {
+      expect(engineFor(`a.${from}`, to), `${from} to ${to}`).toBe('document')
+    }
+    expect(engineFor('a.md', 'html')).toBe('pandoc')
+    expect(engineFor('a.txt', 'pdf')).toBe('pdf-print')
+    expect(engineFor('a.pdf', 'md')).toBe('pdf-text')
+    expect(engineFor('a.xls', 'pdf')).toBeUndefined()
+    expect(engineFor('a.xls', 'pdf', { libreoffice: true })).toBe('libreoffice')
+    expect(engineFor('a.csv', 'docx')).toBeUndefined()
   })
 })

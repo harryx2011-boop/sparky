@@ -59,12 +59,12 @@ npm run package:win      # build Sparky-Setup.exe (run on Windows)
 apps/
   desktop/        Electron app
     src/main/         window, tray, notifications, IPC
-    src/main/engine/  job queue and tool runners (no Electron imports, tested on its own)
     src/preload/      the small API the interface is allowed to use
     src/renderer/     React + Tailwind + shadcn/ui interface
   web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to Vercel
 packages/
   core/           shared logic: formats, levels, 1440p/4K rules, tool command lines, progress parsing
+  engine/         op registry, job queue, tool runners, history (no Electron imports, tested on its own)
   ui/             shared look: theme, Performance bars, Compression slider, Resolution picker
 scripts/          fetch-tools (bundled binaries) and make-icons
 docs/             product spec and the original design mockup

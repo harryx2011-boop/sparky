@@ -12,7 +12,10 @@ export interface RunContext {
 
 export type Runner = (job: Job, ctx: RunContext) => Promise<Partial<Job> | void>
 
-export type NewJob = Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'createdAt'> & Partial<Pick<Job, 'id'>>
+/** A job before the queue gives it an id and a status. `op` defaults to the kind, the way rows from before ops read back. */
+export type NewJob = Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'createdAt' | 'op'> & Partial<Pick<Job, 'id' | 'op'>>
+
+const SETTLED = new Set<Job['status']>(['done', 'failed', 'canceled', 'paused'])
 
 interface QueueEvents {
   change: [jobs: Job[]]
@@ -32,6 +35,8 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   private cancelAfterStop = new Set<string>()
   /** Resume pressed while a pause was still stopping the process: go straight back to the line. */
   private resumeAfterStop = new Set<string>()
+  /** Callers waiting for a job to stop (done, failed, canceled or paused). */
+  private waiters = new Map<string, ((job: Job | undefined) => void)[]>()
   private emitTimer: NodeJS.Timeout | undefined
   private lastEmit = 0
 
@@ -56,7 +61,7 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   }
 
   add(input: NewJob): Job {
-    const job: Job = { ...input, id: input.id ?? randomUUID(), status: 'queued', progress: 0, outputs: [], createdAt: Date.now() }
+    const job: Job = { ...input, op: input.op ?? input.kind, id: input.id ?? randomUUID(), status: 'queued', progress: 0, outputs: [], createdAt: Date.now() }
     this.jobs.push(job)
     this.changed(true)
     this.pump()
@@ -126,6 +131,7 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     const job = this.get(id)
     if (!job || job.status === 'running') return
     this.jobs = this.jobs.filter((j) => j.id !== id)
+    this.settle(job)
     this.changed(true)
   }
 
@@ -139,6 +145,20 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     const pos = new Map(ids.map((id, i) => [id, i]))
     this.jobs = [...this.jobs].sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
     this.changed(true)
+  }
+
+  /** Resolves with the job the next time it stops: done, failed, canceled or paused (or removed). Unknown ids resolve undefined. */
+  whenSettled(id: string): Promise<Job | undefined> {
+    const job = this.get(id)
+    if (!job || SETTLED.has(job.status)) return Promise.resolve(job && { ...job })
+    return new Promise((resolve) => this.waiters.set(id, [...(this.waiters.get(id) ?? []), resolve]))
+  }
+
+  private settle(job: Job): void {
+    const list = this.waiters.get(job.id)
+    if (!list) return
+    this.waiters.delete(job.id)
+    for (const resolve of list) resolve({ ...job })
   }
 
   activeCount(): number {
@@ -188,7 +208,7 @@ export class JobQueue extends EventEmitter<QueueEvents> {
           speed: undefined,
           eta: undefined,
           finishedAt: paused ? undefined : Date.now(),
-          ...(paused && job.kind === 'convert' ? { progress: 0 } : {}),
+          ...(paused && job.restartsOnResume ? { progress: 0 } : {}),
         })
       } else {
         const err = e as Error & { suggestUpdate?: boolean }
@@ -204,6 +224,7 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   private patch(job: Job, p: Partial<Job>): void {
     Object.assign(job, p)
     this.changed(true)
+    if (SETTLED.has(job.status)) this.settle(job)
   }
 
   /** Progress updates are throttled to ~10 per second; status changes go out right away. */

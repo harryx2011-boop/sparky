@@ -1,5 +1,5 @@
 // Job, settings and IPC types shared by the app's main process and its UI.
-import type { Category } from './formats'
+import { normalizeExt, type Category } from './formats'
 import type { GpuInfo, VideoCodec } from './gpu'
 import type { CompressionLevel, PerformanceLevel, Resolution } from './levels'
 
@@ -69,9 +69,18 @@ export interface JobStage {
   label: string
 }
 
+/** The app's bucket for a job: its icon, its History filter. Which op ran it is `Job.op`. */
+export type JobKind = 'convert' | 'download' | 'tool'
+
 export interface Job {
   id: string
-  kind: 'convert' | 'download'
+  kind: JobKind
+  /** The engine op that runs this job, e.g. "convert" or "pdf.merge". */
+  op: string
+  /** The op's input as validated by its schema, including the caller's `out`. */
+  args?: unknown
+  /** Pausing throws the work away, so a resumed job starts from the beginning. */
+  restartsOnResume?: boolean
   title: string
   /** File path or link. */
   source: string
@@ -101,6 +110,8 @@ export interface Job {
 export interface HistoryEntry {
   id: string
   kind: Job['kind']
+  op: string
+  args?: unknown
   title: string
   source: string
   outputs: string[]
@@ -112,6 +123,27 @@ export interface HistoryEntry {
   finishedAt: number
   convert?: ConvertSettings
   download?: DownloadRequest
+}
+
+/** Plain-language words for the engine's ops: `label` for the app and the CLI help, `done` for the finished notification. One row per op. */
+export const OP_TEXT = {
+  convert: { label: 'Convert a file', done: 'Converted' },
+  download: { label: 'Download from a link', done: 'Downloaded' },
+  /** A job whose op this build doesn't know, such as one queued by a newer CLI. */
+  unknown: { label: 'A task', done: 'Finished' },
+} as const
+
+/** Queue title for a conversion, e.g. "clip.mov → MP4". */
+export function convertTitle(input: string, output: string): string {
+  const name = input.split(/[\\/]/).pop() ?? input
+  const ext = normalizeExt(output)
+  return `${name} → ${ext === 'folder' ? 'Folder' : ext.toUpperCase()}`
+}
+
+/** Queue title for a download, e.g. "Night bus home → MP3". */
+export function downloadTitle(req: Pick<DownloadRequest, 'url' | 'title' | 'mode' | 'convertTo'>): string {
+  const target = req.convertTo ? ` → ${req.convertTo.toUpperCase()}` : req.mode === 'audio' ? ' → MP3' : ''
+  return `${req.title ?? req.url}${target}`
 }
 
 export interface HistoryQuery {
@@ -190,6 +222,9 @@ export const TOOL_LABELS: Record<ToolStatus['id'], string> = {
   ghostscript: 'Shrinks PDFs',
   libreoffice: 'Better Word to PDF',
 }
+
+/** Tools the user installs; the rest ship inside Sparky. */
+export const OPTIONAL_TOOLS: ReadonlySet<ToolStatus['id']> = new Set(['deno', 'ghostscript', 'libreoffice'])
 
 /** The tools' own names, for the credits line and the add-on hints where a person has to find them by name. */
 export const TOOL_NAMES: Record<ToolStatus['id'], string> = {

@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { probeFiles, type EngineEnv } from '../src/main/engine/convert'
+import { probeFiles, type EngineEnv } from '../src/convert'
 
 const dirs: string[] = []
 const tmp = () => {

@@ -17,10 +17,10 @@ const MB = 1024 * 1024
 let settings: Settings = { ...defaultSettings('C:\\Users\\you\\Documents\\Sparky'), performance: 'max', theme: 'dark' }
 let jobs: Job[] = []
 const history: HistoryEntry[] = [
-  { id: 'h1', kind: 'convert', title: 'trip-recap.mov → MP4', source: 'C:\\Videos\\trip-recap.mov', outputs: ['C:\\Users\\you\\Documents\\Sparky\\Video\\trip-recap.mp4'], status: 'done', sizeBefore: 318 * MB, sizeAfter: 96 * MB, durationMs: 42_000, finishedAt: Date.now() - 3_600_000 },
-  { id: 'h2', kind: 'download', title: 'Lo-fi for late nights → MP3', source: 'https://youtube.com/playlist?list=demo', outputs: ['a.mp3', 'b.mp3'], status: 'done', sizeAfter: 64 * MB, durationMs: 95_000, finishedAt: Date.now() - 86_400_000 },
-  { id: 'h3', kind: 'convert', title: 'report.docx → PDF', source: 'C:\\Docs\\report.docx', outputs: ['C:\\Users\\you\\Documents\\Sparky\\Documents\\report.pdf'], status: 'done', sizeBefore: 2.4 * MB, sizeAfter: 0.62 * MB, durationMs: 2_100, finishedAt: Date.now() - 2 * 86_400_000 },
-  { id: 'h4', kind: 'download', title: 'https://example.com/private-video', source: 'https://example.com/private-video', outputs: [], status: 'failed', error: 'This video needs you to be signed in, so it can’t be downloaded.', durationMs: 3_000, finishedAt: Date.now() - 3 * 86_400_000 },
+  { id: 'h1', kind: 'convert', op: 'convert', title: 'trip-recap.mov → MP4', source: 'C:\\Videos\\trip-recap.mov', outputs: ['C:\\Users\\you\\Documents\\Sparky\\Video\\trip-recap.mp4'], status: 'done', sizeBefore: 318 * MB, sizeAfter: 96 * MB, durationMs: 42_000, finishedAt: Date.now() - 3_600_000 },
+  { id: 'h2', kind: 'download', op: 'download', title: 'Lo-fi for late nights → MP3', source: 'https://youtube.com/playlist?list=demo', outputs: ['a.mp3', 'b.mp3'], status: 'done', sizeAfter: 64 * MB, durationMs: 95_000, finishedAt: Date.now() - 86_400_000 },
+  { id: 'h3', kind: 'convert', op: 'convert', title: 'report.docx → PDF', source: 'C:\\Docs\\report.docx', outputs: ['C:\\Users\\you\\Documents\\Sparky\\Documents\\report.pdf'], status: 'done', sizeBefore: 2.4 * MB, sizeAfter: 0.62 * MB, durationMs: 2_100, finishedAt: Date.now() - 2 * 86_400_000 },
+  { id: 'h4', kind: 'download', op: 'download', title: 'https://example.com/private-video', source: 'https://example.com/private-video', outputs: [], status: 'failed', error: 'This video needs you to be signed in, so it can’t be downloaded.', durationMs: 3_000, finishedAt: Date.now() - 3 * 86_400_000 },
 ]
 
 type Listener<T> = (v: T) => void
@@ -98,7 +98,7 @@ export const mockApi: SparkyApi = {
     open: noop,
   },
   convert: {
-    start: async (paths, s) => paths.map((p) => addJob({ kind: 'convert', title: `${p.split(/[\\/]/).pop()} → ${s.output.toUpperCase()}`, source: p, convert: s, sizeBefore: 80 * MB })),
+    start: async (paths, s) => paths.map((p) => addJob({ kind: 'convert', op: 'convert', restartsOnResume: true, title: `${p.split(/[\\/]/).pop()} → ${s.output.toUpperCase()}`, source: p, convert: s, sizeBefore: 80 * MB })),
   },
   download: {
     inspect: async (url): Promise<LinkInfo> => {
@@ -115,7 +115,7 @@ export const mockApi: SparkyApi = {
         }
       return { url, kind: 'single', title: 'A walk through Kyoto in the rain', uploader: 'Slow Travel', duration: 734, maxHeight: 2160, sizeEstimate: 1.4 * 1024 * MB, entries: [], subtitleLangs: ['en', 'ja'] }
     },
-    start: async (req) => addJob({ kind: 'download', title: `${req.title ?? req.url}${req.convertTo ? ` → ${req.convertTo.toUpperCase()}` : ''}`, source: req.url, download: req }),
+    start: async (req) => addJob({ kind: 'download', op: 'download', title: `${req.title ?? req.url}${req.convertTo ? ` → ${req.convertTo.toUpperCase()}` : ''}`, source: req.url, download: req }),
   },
   queue: {
     list: async () => jobs,

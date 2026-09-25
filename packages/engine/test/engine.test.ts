@@ -8,10 +8,13 @@ import type { AddressInfo } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { createEngine, type Engine } from '../src/main/engine'
-import { run } from '../src/main/engine/process'
+import { createEngine, type Engine } from '../src'
+import { samePath } from '../src/output'
+import { run } from '../src/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
+// A skip must never pass for green in CI.
+if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 const has = (name: string) => Boolean(BIN && [name, `${name}.exe`].some((f) => fs.existsSync(path.join(BIN, f))))
 
 const base: ConvertSettings = { output: 'mp4', compression: 2, resolution: null, performance: 'normal', originals: 'keep', advanced: {} }
@@ -26,11 +29,11 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     new Promise<Job>((resolve) => {
       const check = (job: Job) => {
         if (job.id === id) {
-          engine.queue.off('finished', check)
+          engine.off('finished', check)
           resolve(job)
         }
       }
-      engine.queue.on('finished', check)
+      engine.on('finished', check)
     })
 
   const convert = async (file: string, settings: Partial<ConvertSettings>) => {
@@ -89,9 +92,9 @@ describe.skipIf(!BIN)('engine with real tools', () => {
   it('converts a video to MP4, reporting progress and sizes', async () => {
     const progress: number[] = []
     const onChange = (jobs: Job[]) => jobs.forEach((j) => j.status === 'running' && progress.push(j.progress))
-    engine.queue.on('change', onChange)
+    engine.on('change', onChange)
     const job = await convert(path.join(dir, 'long.mov'), { output: 'mp4', resolution: 720, performance: 'low' })
-    engine.queue.off('change', onChange)
+    engine.off('change', onChange)
     expect(job.status).toBe('done')
     expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'long.mp4'))
     expect(fs.statSync(job.outputs[0]!).size).toBeGreaterThan(1000)
@@ -146,6 +149,20 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     expect(fs.existsSync(copy)).toBe(true)
   })
 
+  it('keeps the new file when out names the source itself', async () => {
+    const self = path.join(dir, 'self.png')
+    fs.copyFileSync(path.join(dir, 'photo.png'), self)
+    for (const out of [self, self.toUpperCase()]) {
+      const before = trashed.length
+      const [job] = await engine.runOp('convert', { files: [self], output: 'png', compression: 4, originals: 'trash', out })
+      expect(job!.status, job!.error).toBe('done')
+      expect(samePath(job!.outputs[0]!, self)).toBe(true)
+      expect(fs.statSync(self).size).toBeGreaterThan(0)
+      // Only the set-aside original may go to the Recycle Bin, never the result.
+      expect(trashed.slice(before).every((p) => !samePath(p, self))).toBe(true)
+    }
+  })
+
   it('converts documents with Pandoc and prints PDFs', async () => {
     const docx = await convert(path.join(dir, 'notes.md'), { output: 'docx' })
     expect(docx.status, docx.error).toBe('done')
@@ -195,7 +212,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
       expect(info.kind).toBe('single')
       const stages = new Set<string>()
       const onChange = (jobs: Job[]) => jobs.forEach((j) => j.stage && stages.add(j.stage.label))
-      engine.queue.on('change', onChange)
+      engine.on('change', onChange)
       const job = engine.startDownload({
         url,
         title: info.title,
@@ -207,7 +224,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
         extras: { thumbnail: false, subtitles: 'off', subtitleLangs: [], metadata: false, sponsorBlock: false },
       })
       const done = await waitFor(job.id)
-      engine.queue.off('change', onChange)
+      engine.off('change', onChange)
       expect(done.status, done.error).toBe('done')
       expect(done.outputs[0]).toMatch(/Downloads[\\/].*\.webm$/)
       expect(fs.existsSync(done.outputs[0]!)).toBe(true)
@@ -244,10 +261,42 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     const [job] = engine.startConvert([path.join(dir, 'clip.mov')], { ...base, output: 'webm', compression: 0, performance: 'low' })
     const done = waitFor(job!.id)
     await new Promise((r) => setTimeout(r, 300))
-    engine.queue.cancel(job!.id)
+    engine.cancelJob(job!.id)
     const result = await done
     expect(result.status).toBe('canceled')
     expect(fs.readdirSync(path.join(dir, 'Sparky', 'Video')).some((f) => f.startsWith('.sparky-'))).toBe(false)
+  })
+
+  it('runs an op to the end and honours out as a file or a folder', async () => {
+    const file = path.join(dir, 'custom', 'tone-out.mp3')
+    const [one] = await engine.runOp('convert', { files: [path.join(dir, 'tone.wav')], output: 'mp3', out: file })
+    expect(one!.status, one!.error).toBe('done')
+    expect(one!.outputs).toEqual([file])
+    expect(fs.statSync(file).size).toBeGreaterThan(0)
+
+    const folder = path.join(dir, 'custom-folder')
+    const both = await engine.runOp('convert', { files: [path.join(dir, 'tone.wav'), path.join(dir, 'clip.mov')], output: 'mp3', out: `${folder}${path.sep}` })
+    expect(both.map((j) => j.status)).toEqual(['done', 'done'])
+    for (const j of both) expect(path.dirname(j.outputs[0]!)).toBe(folder)
+    expect(fs.readdirSync(folder).sort()).toEqual(['clip.mp3', 'tone.mp3'])
+  })
+
+  it('converts data documents through the document module', async () => {
+    const csv = path.join(dir, 'sample.csv')
+    fs.copyFileSync(path.join(__dirname, 'fixtures', 'document', 'sample.csv'), csv)
+    for (const output of ['xlsx', 'pdf']) {
+      const [job] = await engine.runOp('convert', { files: [csv], output })
+      expect(job!.status, `${output}: ${job!.error}`).toBe('done')
+      expect(path.basename(job!.outputs[0]!)).toBe(`sample.${output}`)
+      expect(path.basename(path.dirname(job!.outputs[0]!))).toBe('Documents')
+      expect(fs.statSync(job!.outputs[0]!).size).toBeGreaterThan(0)
+    }
+  })
+
+  it('offers the targets a file can become', () => {
+    const [docx] = engine.targetsFor([path.join(dir, 'notes.docx')])
+    expect(docx!.targets.find((t) => t.ext === 'pdf')).toMatchObject({ op: 'convert', available: true })
+    expect(engine.listOps().find((o) => o.id === 'convert')).toMatchObject({ available: true, missing: [] })
   })
 
   it('keeps finished jobs in history and can run them again', async () => {

@@ -1,7 +1,7 @@
 import { batchConcurrency, type Job } from '@sparky/core'
 import { describe, expect, it } from 'vitest'
-import { CanceledError } from '../src/main/engine/process'
-import { JobQueue, type RunContext } from '../src/main/engine/queue'
+import { CanceledError } from '../src/process'
+import { JobQueue, type RunContext } from '../src/queue'
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms))
 

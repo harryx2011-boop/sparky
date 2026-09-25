@@ -1,5 +1,5 @@
 // Finds the bundled tools, checks their versions and tests the graphics card encoders.
-import { describeGpu, gpuTestArgs, parseEncoderList, TOOL_LABELS, type GpuInfo, type ToolStatus } from '@sparky/core'
+import { describeGpu, gpuTestArgs, OPTIONAL_TOOLS, parseEncoderList, TOOL_LABELS, type GpuInfo, type ToolStatus } from '@sparky/core'
 import fs from 'node:fs'
 import path from 'node:path'
 import { run } from './process'
@@ -32,7 +32,7 @@ const NAMES: Record<ToolId, string[]> = {
   libreoffice: isWin ? ['soffice.exe', 'soffice.com'] : ['soffice', 'libreoffice'],
 }
 
-const OPTIONAL: ReadonlySet<ToolId> = new Set(['deno', 'ghostscript', 'libreoffice'])
+const OPTIONAL = OPTIONAL_TOOLS
 
 /** Folders where optional tools usually live when installed by the user. */
 function wellKnownDirs(id: ToolId): string[] {

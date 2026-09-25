@@ -76,6 +76,8 @@ Agents: `backend-architect` reviews the op registry design first; two Opus `gene
 
 Exit: `npm run check` green, desktop app runs unchanged against `@sparky/engine`, `DOC_TARGETS` pairs convert end to end under Node.
 
+**Done 2026-09-25.** Engine in `packages/engine` behind `src/ops/`; Helix's validators, ffmpeg builders and document pipeline in `packages/core` and `packages/engine/src/document`; csv/xlsx/json/xml reachable through `convert`. Reviewer found 2 critical, 4 major and 7 minor defects, all fixed with failing-first tests. Final check: typecheck 5 workspaces, core 158 + engine 147 tests (0 skipped), both builds. The running app was not launched by hand; the bundle builds and resolves `@sparky/engine`.
+
 ### Phase 2: utilities
 
 Agents: three Opus coders in parallel, one per module, each with tests against real tools.

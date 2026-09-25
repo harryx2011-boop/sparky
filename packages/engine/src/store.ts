@@ -1,6 +1,7 @@
 // History and settings, kept in one SQLite file.
 import { defaultSettings, type HistoryEntry, type HistoryQuery, type Job, type Settings } from '@sparky/core'
 import Database from 'better-sqlite3'
+import { opById } from './ops'
 
 interface HistoryRow {
   id: string
@@ -15,13 +16,24 @@ interface HistoryRow {
   duration_ms: number
   finished_at: number
   settings: string | null
+  op: string | null
+  args: string | null
 }
+
+/** Schema changes in order; PRAGMA user_version counts how many have run. Append only. */
+const MIGRATIONS = [
+  `ALTER TABLE history ADD COLUMN op TEXT;
+   ALTER TABLE history ADD COLUMN args TEXT;
+   CREATE INDEX IF NOT EXISTS history_op ON history (op);`,
+]
 
 export class Store {
   private db: Database.Database
 
   constructor(file: string) {
     this.db = new Database(file)
+    // The app and the CLI can share this file.
+    this.db.pragma('busy_timeout = 5000')
     this.db.pragma('journal_mode = WAL')
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS history (
@@ -41,6 +53,19 @@ export class Store {
       CREATE INDEX IF NOT EXISTS history_finished ON history (finished_at DESC);
       CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
     `)
+    this.migrate()
+  }
+
+  private migrate(): void {
+    const version = () => this.db.pragma('user_version', { simple: true }) as number
+    if (version() >= MIGRATIONS.length) return
+    // IMMEDIATE takes the write lock before reading the version, so two processes never run the same step twice.
+    this.db
+      .transaction(() => {
+        for (const sql of MIGRATIONS.slice(version())) this.db.exec(sql)
+        this.db.pragma(`user_version = ${MIGRATIONS.length}`)
+      })
+      .immediate()
   }
 
   close(): void {
@@ -54,12 +79,13 @@ export class Store {
     const settings = job.convert ? { convert: job.convert } : job.download ? { download: job.download } : null
     this.db
       .prepare(
-        `INSERT OR REPLACE INTO history (id, kind, title, source, outputs, status, error, size_before, size_after, duration_ms, finished_at, settings)
-         VALUES (@id, @kind, @title, @source, @outputs, @status, @error, @size_before, @size_after, @duration_ms, @finished_at, @settings)`,
+        `INSERT OR REPLACE INTO history (id, kind, op, title, source, outputs, status, error, size_before, size_after, duration_ms, finished_at, settings, args)
+         VALUES (@id, @kind, @op, @title, @source, @outputs, @status, @error, @size_before, @size_after, @duration_ms, @finished_at, @settings, @args)`,
       )
       .run({
         id: job.id,
         kind: job.kind,
+        op: job.op,
         title: job.title,
         source: job.source,
         outputs: JSON.stringify(job.outputs),
@@ -70,6 +96,7 @@ export class Store {
         duration_ms: job.startedAt && job.finishedAt ? job.finishedAt - job.startedAt : 0,
         finished_at: job.finishedAt ?? Date.now(),
         settings: settings ? JSON.stringify(settings) : null,
+        args: job.args === undefined ? null : JSON.stringify(job.args),
       })
   }
 
@@ -136,9 +163,10 @@ export class Store {
 
 function toEntry(r: HistoryRow): HistoryEntry {
   const settings = r.settings ? (JSON.parse(r.settings) as Pick<HistoryEntry, 'convert' | 'download'>) : {}
-  return {
+  const entry: HistoryEntry = {
     id: r.id,
     kind: r.kind as HistoryEntry['kind'],
+    op: r.op ?? r.kind,
     title: r.title,
     source: r.source,
     outputs: JSON.parse(r.outputs) as string[],
@@ -150,9 +178,16 @@ function toEntry(r: HistoryRow): HistoryEntry {
     finishedAt: r.finished_at,
     ...settings,
   }
+  // Rows from before ops kept only their convert or download block; the op rebuilds its input from that.
+  try {
+    entry.args = r.args ? (JSON.parse(r.args) as unknown) : opById(entry.op)?.fromHistory?.(entry)
+  } catch {
+    /* a malformed row still lists; it just can't be run again */
+  }
+  return entry
 }
 
-/** Keeps settings inside their allowed ranges even if the file was edited by hand. */
+/** Keeps settings within their allowed ranges even if the file was edited by hand. */
 export function sanitize(s: Settings, base: Settings): Settings {
   const oneOf = <T,>(v: T, allowed: readonly T[], fallback: T) => (allowed.includes(v) ? v : fallback)
   return {

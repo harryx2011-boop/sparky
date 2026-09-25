@@ -1,4 +1,5 @@
 // What Sparky can read, what it can write, and which tool does the work.
+import { docTargetsFor } from './documents'
 
 export type Category = 'video' | 'audio' | 'image' | 'document' | 'archive'
 
@@ -55,6 +56,10 @@ export const FORMATS: readonly FormatInfo[] = [
   { ext: 'md', label: 'MD', category: 'document', note: 'Markdown text' },
   { ext: 'html', label: 'HTML', category: 'document', note: 'Web page' },
   { ext: 'txt', label: 'TXT', category: 'document', note: 'Plain text' },
+  { ext: 'csv', label: 'CSV', category: 'document', note: 'Spreadsheet rows as text' },
+  { ext: 'xlsx', label: 'XLSX', category: 'document', note: 'Excel workbook' },
+  { ext: 'json', label: 'JSON', category: 'document', note: 'Data for programs' },
+  { ext: 'xml', label: 'XML', category: 'document', note: 'Structured data' },
   { ext: 'zip', label: 'ZIP', category: 'archive', note: 'Opens on any PC' },
   { ext: '7z', label: '7Z', category: 'archive', note: 'Smaller archives' },
   { ext: 'rar', label: 'RAR', category: 'archive', note: 'Extract only' },
@@ -85,9 +90,13 @@ const EXTRA_INPUTS: Record<string, Category> = {
   '3gp': 'video',
   mpg: 'video',
   mpeg: 'video',
+  xls: 'document',
 }
 
 const OUTPUT_ONLY = new Set(['folder'])
+
+/** Data formats only the engine's document module reads. */
+const DATA_DOCS = new Set(['csv', 'xlsx', 'json', 'xml'])
 
 /** The raw extension of a path or bare extension, ignoring dots in folder names. */
 function rawExt(extOrPath: string): string {
@@ -137,7 +146,10 @@ export function outputsFor(extOrPath: string): FormatInfo[] {
     case 'image':
       return pick(['png', 'jpg', 'webp', 'avif', 'ico'])
     case 'document':
-      if (input === 'pdf') return pick(['pdf', 'txt', 'md'])
+      if (input === 'pdf') return pick(['pdf', 'txt', 'md', 'html'])
+      // Old Excel files only print, and only through LibreOffice.
+      if (input === 'xls') return pick(['pdf'])
+      if (DATA_DOCS.has(input)) return pick([...docTargetsFor(input)])
       return pick(['pdf', 'docx', 'md', 'html', 'txt']).filter((f) => f.ext !== input)
     case 'archive':
       return pick(['zip', '7z', 'folder'])
@@ -168,7 +180,7 @@ export function resolutionApplies(output: string): boolean {
   return formatInfo(ext)?.category === 'video' && ext !== 'gif'
 }
 
-export type Engine = 'ffmpeg' | 'sharp' | 'pandoc' | 'pdf-print' | 'libreoffice' | 'ghostscript' | 'pdf-text' | '7zip'
+export type Engine = 'ffmpeg' | 'sharp' | 'pandoc' | 'pdf-print' | 'libreoffice' | 'ghostscript' | 'pdf-text' | '7zip' | 'document'
 
 const SHARP_IN = new Set(['png', 'jpg', 'webp', 'avif', 'gif', 'tiff'])
 const SHARP_OUT = new Set(['png', 'jpg', 'webp', 'avif'])
@@ -192,7 +204,10 @@ export function engineFor(from: string, to: string, ctx: EngineContext = { libre
     case 'archive':
       return '7zip'
     case 'document':
-      if (input === 'pdf') return output === 'pdf' ? 'ghostscript' : 'pdf-text'
+      if (input === 'xls') return ctx.libreoffice ? 'libreoffice' : undefined
+      if (input === 'pdf') return output === 'pdf' ? 'ghostscript' : output === 'html' ? 'document' : 'pdf-text'
+      // Pairs Pandoc and printing already handle keep them; the document module takes the rest of its matrix.
+      if (DATA_DOCS.has(input) && (docTargetsFor(input) as readonly string[]).includes(output)) return 'document'
       if (output === 'pdf') return input === 'docx' && ctx.libreoffice ? 'libreoffice' : 'pdf-print'
       return 'pandoc'
   }

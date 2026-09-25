@@ -16,7 +16,7 @@ npm run check      # type checks, tests and builds for everything
 ## Where things go
 
 - **Pure logic** (formats, settings rules, tool command lines, output parsing) belongs in `packages/core`, with a test in `packages/core/test`.
-- **Anything that runs a tool or touches files** belongs in `apps/desktop/src/main/engine`. Keep Electron imports out of it so it stays testable under Node; pass Electron features in through `EngineHost`.
+- **Anything that runs a tool or touches files** belongs in `packages/engine`. Keep Electron imports out of it so it stays testable under Node; pass Electron features in through `EngineHost`. A new capability is an op: one file in `packages/engine/src/ops/`, one line in its `OPS` list, and its words in core's `OP_TEXT`.
 - **Shared visuals** used by both the site and the app belong in `packages/ui`.
 
 ## Style
