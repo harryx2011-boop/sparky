@@ -1,7 +1,7 @@
 # Sparky — Project Context
 
 **Current version:** 1.0.0 (root and `apps/desktop/package.json`)
-**Last updated:** 2026-09-24 (v1.0.0 shipped)
+**Last updated:** 2026-09-25 (1.1 plan settled)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -45,6 +45,10 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 - `npm run package:win` builds `apps/desktop/release/Sparky-Setup.exe` + `latest.yml`.
 - **VS Code terminals export `ELECTRON_RUN_AS_NODE=1`**, which makes Electron run as plain Node (`electron.app` undefined). Clear it before `npm run dev:app` or launching the exe.
 - Electron is pinned to an exact version (`apps/desktop/package.json`): electron-builder can't resolve a range when npm hoists Electron to the workspace root.
+
+## Plan in progress: 1.1 (2026-09-25)
+
+Settled over 20 questions, written up in `docs/plans/sparky-1.1-agents-utilities.md` with research in `docs/research/`. Summary: the engine moves to `packages/engine` behind an op registry; Helix's converter code (ffmpeg arg builders, option validators, the csv/xlsx/json/xml/md/html/txt/pdf document pipeline) ports into it and Helix deletes its converter entirely; a PDF toolkit, media and image editing ops, LibreOffice-gated Office targets and tesseract.js OCR are added; agents reach Sparky through an MCP stdio server, a loopback HTTP API on 8600 (token file in app data) and a `sparky` CLI, bundled in the installer and published to npm; file rows and the format picker show the Windows-associated icon with a vendored VS Code icon fallback; the Settings "Built-in tools" group becomes a Diagnostics group and an Agents group is added. Five phases, one per turn: Engine, Utilities, Surfaces, Icons/UI, Helix removal and release. Ports: site dev 4600, renderer dev:ui 4601, API 8600.
 
 ## Open
 
