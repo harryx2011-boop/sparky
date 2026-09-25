@@ -2,7 +2,6 @@ import { BrandMark, cn, LinkMark } from '@sparky/ui'
 import { Link2, ListVideo, Play } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { SiteStrip } from '../components/SiteStrip'
 import { Heading, Lead } from '../components/ui'
 
 const LINK = 'youtube.com/playlist?list=lofi-for-late-nights'
@@ -159,7 +158,6 @@ export function Download() {
           </Lead>
         </div>
       </div>
-      <SiteStrip />
     </section>
   )
 }

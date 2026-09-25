@@ -2,6 +2,7 @@ import { Footer } from './components/Footer'
 import { GridCells } from './components/GridCells'
 import { ScrollProgress } from './components/motion'
 import { Nav } from './components/Nav'
+import { SiteStrip } from './components/SiteStrip'
 import { Convert } from './sections/Convert'
 import { Details } from './sections/Details'
 import { DragDemo } from './sections/DragDemo'
@@ -26,6 +27,7 @@ export function App() {
         <DragDemo />
         <Convert />
         <Download />
+        <SiteStrip />
         <Performance />
         <Queue />
         <Details />
