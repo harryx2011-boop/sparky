@@ -1,6 +1,6 @@
 {
   "name": "@sparky/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Pure logic shared by the Sparky app and site: formats, levels, tool arguments and progress parsing.",
   "license": "MIT",

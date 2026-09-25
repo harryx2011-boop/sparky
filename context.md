@@ -1,7 +1,7 @@
 # Sparky — Project Context
 
-**Current version:** 1.1.0 (root manifest; every workspace manifest carries the same number)
-**Last updated:** 2026-09-25 (v1.1.0 released)
+**Current version:** 1.1.1 (root manifest; every workspace manifest carries the same number)
+**Last updated:** 2026-09-25 (v1.1.1: single downloads open their folder automatically)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -70,6 +70,7 @@ Settled over 20 questions, written up in `docs/plans/sparky-1.1-agents-utilities
 
 ## Release history
 
+- **v1.1.1** (2026-09-25): a finished single download (not a playlist) now opens File Explorer to the saved file automatically, no notification click needed (`apps/desktop/src/main/index.ts` `notifyFinished`); Settings gets an "Open folder when a download finishes" toggle (`openFolderOnDownload`, default on). Multi-file downloads keep the existing click-to-open notification.
 - **v1.1.0** (2026-09-25): the engine moved to `packages/engine` behind an op registry; Helix's converter code (option validators, ffmpeg builders, the csv/xlsx/json/xml/md/html/txt/pdf document pipeline) ported in and Helix's converter deleted (`D:\Helix` commit `6f1f7a7`); twenty tools (twelve PDF, four media, three image, OCR of images and PDFs), TIFF output, Office targets through LibreOffice; a Tools page generated from each op's schema; agent surfaces: loopback HTTP API on 8600 with a token file and a hello HMAC challenge, `sparky` CLI (Electron-as-Node shims on PATH, the npm-shaped package `@sparky-labs/cli` is built into the installer and, by Harry's decision on 2026-09-25, not published), MCP stdio server, `sparky init` and a Settings Agents group for Claude Code, Cursor, Codex and Windsurf; Windows-association file icons with a vendored vscode-icons fallback; Settings Diagnostics group replaces Built-in tools; the flowing compression bar; site Tools and Agents sections. Five review rounds fixed 5 critical, 23 major and 43 minor findings before release. Tag `v1.1.0` pushed; the release workflow builds `Sparky-Setup.exe`.
 - **v1.0.0** (2026-09-24): first release. Tag pushed, `.github/workflows/release.yml` built and published `Sparky-Setup.exe` + `latest.yml` (+ `.blockmap`) to GitHub Releases. The site's download button and `electron-updater` both verified live: `releases/latest/download/Sparky-Setup.exe` returns 200, `latest.yml` carries a valid version/sha512/size.
   - **Bug hit and fixed:** electron-builder's publish step raced itself (two near-simultaneous `publishing`/`creating GitHub release` calls in the job log) and created **two release objects for the same `v1.0.0` tag** — the canonical one held the installer and `latest.yml`, an orphan held only `Sparky-Setup.exe.blockmap`. A stray release sharing a `tag_name` makes GitHub 422 any `gh release edit` on either one (`Release.tag_name already exists`), which is why the workflow's "Write the release notes" step failed even though the build/publish step itself succeeded. Fixed manually for v1.0.0 (moved the blockmap onto the canonical release, deleted the orphan, then set the title/notes) and hardened the workflow with a "Collapse a duplicate release" step before the notes step, so any future tag self-heals instead of leaving a broken release + a stuck edit step.

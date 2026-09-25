@@ -1,6 +1,6 @@
 {
   "name": "@sparky/engine",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Sparky's job engine: the op registry, queue, tools, history and settings. Node 22, no Electron imports.",
   "license": "MIT",
