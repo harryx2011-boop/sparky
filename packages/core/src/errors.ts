@@ -118,3 +118,37 @@ export const OUT_NEEDS_FOLDER = 'This makes more than one file, so the output ha
 
 /** A download given a file name that turned out to hold several items. */
 export const OUT_FILE_BECAME_FOLDER = 'This link held more than one file, so they were saved in that file name’s folder under their own names.'
+
+/** Local HTTP API: a request without the right bearer token. */
+export const API_UNAUTHORIZED = 'This request needs Sparky’s API token, sent as “Authorization: Bearer <token>”. The token is in the api-token file in Sparky’s data folder.'
+
+/** Local HTTP API: the body isn't JSON, or isn't the shape the route takes. `problems` are "field: what's wrong" lines. */
+export function apiInvalidRequestError(problems: string[]): string {
+  return problems.length ? `The request isn’t valid: ${problems.join('; ')}.` : 'The request isn’t valid JSON.'
+}
+
+/** Local HTTP API: no route at this method and path. */
+export function apiRouteNotFoundError(method: string, url: string): string {
+  return `Sparky’s API has no ${method} ${url}.`
+}
+
+/** Local HTTP API: a job id Sparky doesn't know, or one already removed from the queue. */
+export function jobNotFoundError(id: string): string {
+  return `Sparky has no job with the id “${id}”. It may have been removed from the queue.`
+}
+
+/** Local HTTP API: anything unexpected. Never carries a stack. */
+export const API_INTERNAL = 'Something went wrong inside Sparky. Try again, and restart Sparky if it keeps happening.'
+
+/** Local HTTP API: asked to listen anywhere but this PC. */
+export function apiLoopbackOnlyError(host: string): string {
+  return `Sparky’s API only listens on 127.0.0.1, never on “${host}”.`
+}
+
+/** Local HTTP API: SPARKY_API_PORT isn't a port number. */
+export function apiBadPortError(value: string): string {
+  return `SPARKY_API_PORT must be a whole number from 0 to 65535, not “${value}”.`
+}
+
+/** Local HTTP API: /v1/hello without a usable nonce. */
+export const API_BAD_NONCE = 'The nonce must be 16 to 64 hexadecimal characters.'

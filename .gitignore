@@ -17,3 +17,5 @@ apps/desktop/src/renderer/public/fonts/satoshi/
 
 .vercel
 .env*
+# The CLI bundle is built by packages/cli and staged by scripts/stage-cli.mjs; the shims and lib/ helpers are committed
+apps/desktop/resources/cli/lib/sparky.js

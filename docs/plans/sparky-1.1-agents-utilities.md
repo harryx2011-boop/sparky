@@ -94,7 +94,9 @@ Exit: every op has a test that runs the real binary when `SPARKY_TEST_BIN` is se
 
 Agents: `mcp-builder` skill loaded; Opus coder A (HTTP API + token + app hosting on 8600), Opus coder B (`@sparky/cli`: commands, `mcp`, `serve`, `init`, HARNESSES); `reviewer`; `test-runner`. An MCP eval: Claude Code calls `sparky_images_to_pdf` on two PNGs and the PDF exists.
 
-Exit: `claude mcp add sparky -- sparky mcp` works; `curl` with the token converts a file; installer puts `sparky.exe` on PATH; `npm pack` of `@sparky-labs/cli` installs cleanly (npm org name to verify before publish).
+Exit: `claude mcp add sparky -- cmd /c sparky mcp` works; `curl` with the token converts a file; installer puts `sparky.exe` on PATH; `npm pack` of `@sparky-labs/cli` installs cleanly (npm org name to verify before publish).
+
+**Done 2026-09-25.** HTTP API with token file and a hello HMAC challenge; `sparky` CLI (Electron-as-Node shims on PATH, npm bundle) and MCP stdio server generated from the registry; `sparky init` for four clients; OCR of PDFs. The real installer was built and silently installed/uninstalled in a scratch folder: PATH entry added once and removed exactly, `sparky` works from cmd, PowerShell and Git Bash, OCR runs under asar, MCP lists 26 tools. Reviewer: 0 critical, 5 major, 11 minor, all fixed (remote wait hang, secrets on argv, config file mode/symlink, Codex duplicate table, impostor-port token leak, token file race). Final check: typecheck 6 workspaces, cli 100 + core 173 + engine 308 + desktop 7 tests (3 skipped), all builds. Not done: npm publish (the `sparky-labs` scope does not exist; Harry creates it), the MCP eval through a live Claude Code session.
 
 ### Phase 4: icons and UI
 

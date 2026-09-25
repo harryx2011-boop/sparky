@@ -69,6 +69,7 @@ const api: SparkyApi = {
   openExternal: (url) => invoke('shell:openExternal', url),
   copyText: (text) => invoke('clipboard:write', text),
   onNavigate: (l) => listen('navigate', l),
+  api: { info: () => invoke('api:info'), revealToken: () => invoke('api:revealToken') },
 }
 
 contextBridge.exposeInMainWorld('sparky', api)

@@ -1,5 +1,5 @@
 // download: a link (or a playlist) through yt-dlp, optionally converted in the same job.
-import { downloadTitle, OP_TEXT, OUT_FILE_BECAME_FOLDER, type DownloadRequest, type Settings } from '@sparky/core'
+import { downloadTitle, DOWNLOAD_TEXT, OP_TEXT, OUT_FILE_BECAME_FOLDER, type DownloadRequest, type Settings } from '@sparky/core'
 import fs from 'node:fs/promises'
 import { z } from 'zod/v4'
 import { downloadLink } from '../download'
@@ -7,24 +7,26 @@ import { splitOut } from '../output'
 import { compressionField, defined, heights, legacyRun, performanceField } from './fields'
 import type { Op } from './types'
 
+const F = DOWNLOAD_TEXT.fields
+
 const input = z.object({
-  urls: z.array(z.string().min(1)).min(1),
+  urls: z.array(z.string().min(1)).min(1).meta(F.urls),
   /** Title shown in the queue. */
-  title: z.string().optional(),
-  mode: z.enum(['video', 'audio']).optional(),
-  quality: z.union([z.literal('best'), ...heights]).optional(),
+  title: z.string().optional().meta(F.title),
+  mode: z.enum(['video', 'audio']).optional().meta(F.mode),
+  quality: z.union([z.literal('best'), ...heights]).optional().meta(F.quality),
   /** 1-based playlist positions; left out downloads everything. */
-  items: z.array(z.number().int().positive()).optional(),
+  items: z.array(z.number().int().positive()).optional().meta(F.items),
   /** How many items this will download, for overall progress. */
-  count: z.number().int().positive().optional(),
-  convertTo: z.string().min(1).optional(),
-  compression: compressionField.optional(),
-  performance: performanceField.optional(),
-  thumbnail: z.boolean().optional(),
-  subtitles: z.enum(['off', 'download', 'embed']).optional(),
-  subtitleLangs: z.array(z.string().min(1)).optional(),
-  metadata: z.boolean().optional(),
-  sponsorBlock: z.boolean().optional(),
+  count: z.number().int().positive().optional().meta(F.count),
+  convertTo: z.string().min(1).optional().meta(F.convertTo),
+  compression: compressionField.optional().meta(F.compression),
+  performance: performanceField.optional().meta(F.performance),
+  thumbnail: z.boolean().optional().meta(F.thumbnail),
+  subtitles: z.enum(['off', 'download', 'embed']).optional().meta(F.subtitles),
+  subtitleLangs: z.array(z.string().min(1)).optional().meta(F.subtitleLangs),
+  metadata: z.boolean().optional().meta(F.metadata),
+  sponsorBlock: z.boolean().optional().meta(F.sponsorBlock),
 })
 
 export type DownloadArgs = z.infer<typeof input>

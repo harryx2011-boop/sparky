@@ -1,6 +1,7 @@
 // convert: one file into another format, or the same format made smaller.
 import {
   categoryOf,
+  CONVERT_TEXT,
   convertTitle,
   engineFor,
   isSupportedInput,
@@ -17,23 +18,25 @@ import { convertFile } from '../convert'
 import { compressionField, defined, heights, legacyRun, performanceField } from './fields'
 import type { Capability, Op } from './types'
 
+const F = CONVERT_TEXT.fields
+
 const input = z.object({
-  files: z.array(z.string().min(1)).min(1),
+  files: z.array(z.string().min(1)).min(1).meta(F.files),
   /** Target extension; the input's own extension means "just make it smaller". */
-  output: z.string().min(1),
-  compression: compressionField.optional(),
-  resolution: z.union([z.literal('source'), ...heights]).optional(),
-  performance: performanceField.optional(),
-  originals: z.enum(['keep', 'replace', 'trash']).optional(),
-  codec: z.enum(['h264', 'hevc', 'av1']).optional(),
-  videoKbps: z.number().positive().optional(),
-  audioKbps: z.number().positive().optional(),
-  imageQuality: z.number().positive().max(100).optional(),
-  trimStart: z.number().min(0).optional(),
-  trimEnd: z.number().min(0).optional(),
-  width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  fps: z.number().positive().optional(),
+  output: z.string().min(1).meta(F.output),
+  compression: compressionField.optional().meta(F.compression),
+  resolution: z.union([z.literal('source'), ...heights]).optional().meta(F.resolution),
+  performance: performanceField.optional().meta(F.performance),
+  originals: z.enum(['keep', 'replace', 'trash']).optional().meta(F.originals),
+  codec: z.enum(['h264', 'hevc', 'av1']).optional().meta(F.codec),
+  videoKbps: z.number().positive().optional().meta(F.videoKbps),
+  audioKbps: z.number().positive().optional().meta(F.audioKbps),
+  imageQuality: z.number().positive().max(100).optional().meta(F.imageQuality),
+  trimStart: z.number().min(0).optional().meta(F.trimStart),
+  trimEnd: z.number().min(0).optional().meta(F.trimEnd),
+  width: z.number().positive().optional().meta(F.width),
+  height: z.number().positive().optional().meta(F.height),
+  fps: z.number().positive().optional().meta(F.fps),
 })
 
 export type ConvertArgs = z.infer<typeof input>

@@ -12,7 +12,7 @@
     "dev": "npm run app-deps && electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
-    "package": "npm run app-deps && electron-vite build && electron-builder --win --x64",
+    "package": "npm run app-deps && node ../../scripts/stage-cli.mjs && electron-vite build && electron-builder --win --x64",
     "typecheck": "tsc -p tsconfig.node.json && tsc -p tsconfig.web.json",
     "dev:ui": "vite --config vite.ui.config.ts",
     "test": "vitest run",

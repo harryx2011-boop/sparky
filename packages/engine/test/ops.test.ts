@@ -41,6 +41,25 @@ describe('op registry', () => {
     }
   })
 
+  it('words every field of every op, and every choice of every pick-one field', () => {
+    expect(allOps()).toHaveLength(22)
+    for (const op of allOps()) {
+      for (const [name, field] of Object.entries(inputSchema(op).properties as Record<string, { title?: string; description?: string; enum?: unknown[]; anyOf?: { const?: unknown }[]; labels?: Record<string, string> }>)) {
+        if (name === 'out') continue
+        expect(field.title, `${op.id}.${name} title`).toBeTruthy()
+        expect(field.description, `${op.id}.${name} description`).toBeTruthy()
+        expect(field.title, `${op.id}.${name} title`).not.toMatch(/codec|bitrate|kbps|crf|encoder|ffmpeg/i)
+        const choices = field.enum ?? field.anyOf?.map((c) => c.const)
+        if (choices) expect(Object.keys(field.labels ?? {}).sort(), `${op.id}.${name} labels`).toEqual(choices.map(String).sort())
+      }
+    }
+    const convert = inputSchema(opById('convert')!).properties as Record<string, { title: string; labels?: Record<string, string> }>
+    expect(convert.videoKbps!.title).toBe('Video data rate')
+    expect(convert.resolution!.labels).toMatchObject({ source: 'Same as the file', '2160': '4K' })
+    expect(convert.codec!.labels).toEqual({ h264: 'Standard (H.264)', hevc: 'Smaller (HEVC)', av1: 'Smallest (AV1)' })
+    expect(convert.compression!.labels).toMatchObject({ '0': 'Lossless', '4': 'Tiny' })
+  })
+
   it('never lets an op declare a name the surfaces keep for themselves', () => {
     for (const op of allOps()) for (const name of RESERVED_INPUTS) expect(Object.keys(op.input.shape), `${op.id}.${name}`).not.toContain(name)
   })

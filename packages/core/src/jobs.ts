@@ -388,6 +388,20 @@ export interface SparkyApi {
   openExternal(url: string): Promise<void>
   copyText(text: string): Promise<void>
   onNavigate(listener: (to: { section: Section; url?: string }) => void): () => void
+  api: {
+    info(): Promise<ApiInfo>
+    /** Shows the token file in Explorer; the token itself never reaches the UI or the clipboard. */
+    revealToken(): Promise<void>
+  }
 }
 
 export type Section = 'convert' | 'download' | 'tools' | 'queue' | 'history' | 'settings'
+
+/** The local HTTP API as the app hosts it, for the Settings Agents group. */
+export interface ApiInfo {
+  /** False when the port was taken at startup. */
+  running: boolean
+  port: number
+  /** The token file clients read. */
+  tokenPath: string
+}

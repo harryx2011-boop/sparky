@@ -2,6 +2,7 @@ import { ARCHIVE_COMPRESSION_LABELS, COMPRESSION_LEVELS, compressionInfo, type C
 import { Slider } from 'radix-ui'
 import { useId } from 'react'
 import { cn } from './cn'
+import { FlowingTrack } from './FlowingTrack'
 
 export interface CompressionSliderProps {
   value: CompressionLevel
@@ -42,7 +43,7 @@ export function CompressionSlider({
         </span>
       </div>
       <Slider.Root
-        className="relative flex h-5 w-full touch-none select-none items-center"
+        className="sp-flow relative flex h-7 w-full touch-none select-none items-center"
         min={0}
         max={4}
         step={1}
@@ -51,13 +52,8 @@ export function CompressionSlider({
         onValueChange={(v) => onChange((v[0] ?? 2) as CompressionLevel)}
         aria-labelledby={id}
       >
-        <Slider.Track className="relative h-1 grow overflow-hidden rounded-full bg-track">
-          <Slider.Range className="absolute h-full rounded-full bg-foreground" />
-        </Slider.Track>
-        <Slider.Thumb
-          className="block size-4 rounded-full border border-foreground bg-background shadow-sm transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 enabled:hover:scale-105 data-[disabled]:cursor-not-allowed"
-          aria-valuetext={current}
-        />
+        <FlowingTrack />
+        <Slider.Thumb className="sp-flow-thumb" aria-valuetext={current} />
       </Slider.Root>
       {showStops && (
         <div className="grid grid-cols-5 font-mono text-[11px] text-subtle-foreground">

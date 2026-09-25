@@ -6,17 +6,18 @@
 //   node scripts/fetch-tools.mjs --force    fetch everything again
 //
 // Set GITHUB_TOKEN to avoid GitHub's API rate limit on shared CI runners.
+//
+// `fetchTools({ binDir, force })` is the same work as a function; `sparky setup` calls it for npm installs that have no app.
 import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { gzipSync } from 'node:zlib'
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
-const binDir = path.join(root, 'apps/desktop/resources/bin')
-const force = process.argv.includes('--force')
+const here = fileURLToPath(import.meta.url)
+const root = path.dirname(path.dirname(here))
 const headers = {
   'User-Agent': 'sparky-fetch-tools',
   Accept: 'application/vnd.github+json',
@@ -81,18 +82,18 @@ const DATA = [
   },
 ]
 
-async function fetchData(item) {
+async function fetchData(item, { binDir, force, log, write }) {
   const dest = path.join(binDir, item.dest)
   if (fs.existsSync(dest) && !force) {
-    console.log(`✓ ${item.id} already present`)
+    log(`✓ ${item.id} already present`)
     return undefined
   }
   fs.mkdirSync(path.dirname(dest), { recursive: true })
   const work = fs.mkdtempSync(path.join(os.tmpdir(), `sparky-${item.id}-`))
   try {
     const file = path.join(work, path.basename(new URL(item.url).pathname))
-    console.log(`↓ ${item.id} ${item.version} (${path.basename(file)})`)
-    await download(item.url, file)
+    log(`↓ ${item.id} ${item.version} (${path.basename(file)})`)
+    await download(item.url, file, write)
     const body = fs.readFileSync(file)
     fs.writeFileSync(dest, item.gzip ? gzipSync(body, { level: 9 }) : body)
     return { id: item.id, version: item.version, asset: item.url, license: item.license }
@@ -108,7 +109,7 @@ async function release(repo, tag) {
   return res.json()
 }
 
-async function download(url, dest) {
+async function download(url, dest, write) {
   const res = await fetch(url, { headers: { 'User-Agent': headers['User-Agent'] }, redirect: 'follow' })
   if (!res.ok || !res.body) throw new Error(`Download failed (${res.status}): ${url}`)
   const total = Number(res.headers.get('content-length')) || 0
@@ -120,28 +121,65 @@ async function download(url, dest) {
     got += chunk.length
     const pct = total ? Math.floor((got / total) * 100) : 0
     if (pct >= lastPct + 10) {
-      process.stdout.write(`  ${pct}%`)
+      write(`  ${pct}%`)
       lastPct = pct
     }
   }
   await new Promise((r) => file.end(r))
-  process.stdout.write('\n')
+  write('\n')
 }
 
-/** Finds something that can unpack .zip, .7z and the 7-Zip installer. */
-function extractor() {
+/**
+ * Finds something that can unpack .zip, .7z and the 7-Zip installer: an installed 7-Zip, else 7zip-bin's 7za.
+ * `path7za` is 7zip-bin's path as the caller resolved it; a bundled caller passes it, since this file's own location
+ * says nothing about where its node_modules are.
+ *
+ * @param {{ path7za?: string }} [opts]
+ * @returns {string}
+ */
+export function findExtractor({ path7za } = {}) {
   const candidates = [
     path.join(process.env.ProgramFiles ?? 'C:\\Program Files', '7-Zip', '7z.exe'),
     '/usr/bin/7z',
     '/usr/bin/7zz',
   ]
   for (const c of candidates) if (fs.existsSync(c)) return c
-  try {
-    const require = createRequire(path.join(root, 'package.json'))
-    return require('7zip-bin').path7za
-  } catch {
-    throw new Error('Need 7-Zip to unpack the downloads. Install it, or run "npm install" so the 7zip-bin package is available.')
+  let bin = path7za
+  if (!bin) {
+    try {
+      bin = createRequire(path.join(root, 'package.json'))('7zip-bin').path7za
+    } catch {
+      bin = undefined
+    }
   }
+  if (!bin || !fs.existsSync(bin)) throw new Error('Need 7-Zip to unpack the downloads. Install it, or run "npm install" so the 7zip-bin package is available.')
+  // npm drops the execute bit on 7zip-bin's Linux and macOS binaries.
+  if (process.platform !== 'win32') fs.chmodSync(bin, 0o755)
+  return bin
+}
+
+/** True when every tool's files are in `dir` (either download option counts). */
+function toolPresent(tool, dir) {
+  const has = (keep) => keep.every((k) => fs.existsSync(path.join(dir, path.basename(k))))
+  return has(tool.keep) || Boolean(tool.fallback && has(tool.fallback.keep))
+}
+
+/**
+ * What fetchTools would do, without doing it.
+ *
+ * @param {{ binDir: string, force?: boolean }} opts
+ * @returns {{ id: string, present: boolean, from: string, to: string }[]}
+ */
+export function planTools({ binDir, force = false }) {
+  return [
+    ...TOOLS.map((t) => ({ id: t.id, present: !force && toolPresent(t, binDir), from: `https://github.com/${t.repo}/releases`, to: binDir })),
+    ...DATA.map((d) => ({ id: d.id, present: !force && fs.existsSync(path.join(binDir, d.dest)), from: d.url, to: path.join(binDir, d.dest) })),
+  ]
+}
+
+/** True when `dir` already holds every tool and data file, as the installed app's resources\bin does. */
+export function hasAllTools(dir) {
+  return planTools({ binDir: dir }).every((p) => p.present)
 }
 
 function findFile(dir, relative) {
@@ -158,10 +196,10 @@ function findFile(dir, relative) {
   return undefined
 }
 
-async function fetchTool(tool, unpack) {
+async function fetchTool(tool, unpack, { binDir, force, log, write }) {
   const already = tool.keep.every((k) => fs.existsSync(path.join(binDir, path.basename(k))))
   if (already && !force) {
-    console.log(`✓ ${tool.id} already present`)
+    log(`✓ ${tool.id} already present`)
     return undefined
   }
   const rel = await release(tool.repo, tool.tag)
@@ -173,8 +211,8 @@ async function fetchTool(tool, unpack) {
     const work = fs.mkdtempSync(path.join(os.tmpdir(), `sparky-${tool.id}-`))
     try {
       const file = path.join(work, asset.name)
-      console.log(`↓ ${tool.id} ${rel.tag_name} (${asset.name})`)
-      await download(asset.browser_download_url, file)
+      log(`↓ ${tool.id} ${rel.tag_name} (${asset.name})`)
+      await download(asset.browser_download_url, file, write)
       if (/\.exe$/i.test(asset.name) && attempt.keep.length === 1 && attempt.keep[0] === asset.name) {
         fs.copyFileSync(file, path.join(binDir, asset.name))
       } else {
@@ -182,13 +220,13 @@ async function fetchTool(tool, unpack) {
         try {
           execFileSync(unpack, ['x', '-y', `-o${out}`, file], { stdio: 'ignore' })
         } catch {
-          console.log(`  could not unpack ${asset.name}, trying the next option`)
+          log(`  could not unpack ${asset.name}, trying the next option`)
           continue
         }
         const found = attempt.keep.map((k) => [k, findFile(out, k)])
         const missing = found.filter(([, f]) => !f).map(([k]) => k)
         if (missing.length) {
-          console.log(`  ${asset.name} is missing ${missing.join(', ')}, trying the next option`)
+          log(`  ${asset.name} is missing ${missing.join(', ')}, trying the next option`)
           continue
         }
         for (const [, f] of found) fs.copyFileSync(f, path.join(binDir, path.basename(f)))
@@ -201,29 +239,57 @@ async function fetchTool(tool, unpack) {
   throw new Error(`${tool.id}: no usable download in ${tool.repo} ${rel.tag_name}`)
 }
 
-fs.mkdirSync(binDir, { recursive: true })
-const unpack = extractor()
-const manifestFile = path.join(binDir, 'VERSIONS.json')
-const manifest = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : {}
-let failed = false
-for (const tool of TOOLS) {
+/**
+ * Fetches every tool and data file into `binDir` and updates its VERSIONS.json.
+ * Returns the ids that failed; the others are in place either way.
+ *
+ * @param {{ binDir: string, force?: boolean, log?: (line: string) => void, warn?: (line: string) => void, write?: (text: string) => void, path7za?: string }} opts
+ * @returns {Promise<{ ok: boolean, failed: string[], binDir: string }>}
+ */
+export async function fetchTools({ binDir, force = false, log = console.log, warn = console.error, write = (t) => process.stdout.write(t), path7za }) {
+  const io = { binDir, force, log, write }
+  fs.mkdirSync(binDir, { recursive: true })
+  const unpack = findExtractor({ path7za })
+  const manifestFile = path.join(binDir, 'VERSIONS.json')
+  const manifest = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : {}
+  const failed = []
+  for (const tool of TOOLS) {
+    try {
+      const info = await fetchTool(tool, unpack, io)
+      if (info) manifest[info.id] = info
+    } catch (e) {
+      failed.push(tool.id)
+      warn(`✗ ${tool.id}: ${e.message}`)
+    }
+  }
+  for (const item of DATA) {
+    try {
+      const info = await fetchData(item, io)
+      if (info) manifest[info.id] = info
+    } catch (e) {
+      failed.push(item.id)
+      warn(`✗ ${item.id}: ${e.message}`)
+    }
+  }
+  fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`)
+  return { ok: failed.length === 0, failed, binDir }
+}
+
+// Run as a script only when this file itself is the entry point, never when bundled into another program.
+// Compared as real paths, case-insensitively on Windows, so a linked folder or a lower-case drive letter still counts.
+function isEntry() {
+  if (path.basename(here) !== 'fetch-tools.mjs' || !process.argv[1]) return false
   try {
-    const info = await fetchTool(tool, unpack)
-    if (info) manifest[info.id] = info
-  } catch (e) {
-    failed = true
-    console.error(`✗ ${tool.id}: ${e.message}`)
+    const a = pathToFileURL(fs.realpathSync(process.argv[1])).href
+    const b = pathToFileURL(fs.realpathSync(here)).href
+    return process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b
+  } catch {
+    return false
   }
 }
-for (const item of DATA) {
-  try {
-    const info = await fetchData(item)
-    if (info) manifest[info.id] = info
-  } catch (e) {
-    failed = true
-    console.error(`✗ ${item.id}: ${e.message}`)
-  }
+if (isEntry()) {
+  const binDir = path.join(root, 'apps/desktop/resources/bin')
+  const { ok } = await fetchTools({ binDir, force: process.argv.includes('--force') })
+  console.log(`\nTools are in ${path.relative(root, binDir)}`)
+  if (!ok) process.exit(1)
 }
-fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`)
-console.log(`\nTools are in ${path.relative(root, binDir)}`)
-if (failed) process.exit(1)

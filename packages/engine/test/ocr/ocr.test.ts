@@ -22,14 +22,23 @@ async function textImage(text: string, file: string): Promise<void> {
   fs.writeFileSync(file, await canvas.encode('png'))
 }
 
-async function pdfText(file: string): Promise<string> {
+async function pdfText(file: string, pageNumber = 1): Promise<string> {
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
   const task = pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(file)), useSystemFonts: true })
   const doc = await task.promise
-  const page = await doc.getPage(1)
+  const page = await doc.getPage(pageNumber)
   const content = await page.getTextContent()
   await task.destroy()
   return content.items.map((i) => ('str' in i ? i.str : '')).join(' ')
+}
+
+/** A two-page letter-size PDF with one large word per page, drawn with a standard font pdf.js renders without system fonts. */
+async function twoPagePdf(file: string, words: [string, string]): Promise<void> {
+  const { PDFDocument, StandardFonts } = await import('pdf-lib')
+  const doc = await PDFDocument.create()
+  const font = await doc.embedFont(StandardFonts.HelveticaBold)
+  for (const word of words) doc.addPage([612, 792]).drawText(word, { x: 60, y: 500, size: 36, font })
+  fs.writeFileSync(file, await doc.save())
 }
 
 describe.skipIf(!hasEnglish)('ocr', () => {
@@ -67,6 +76,47 @@ describe.skipIf(!hasEnglish)('ocr', () => {
     const pdf = fs.readFileSync(outs[1]!)
     expect(pdf.subarray(0, 5).toString('latin1')).toBe('%PDF-')
     expect(await pdfText(outs[1]!)).toContain('SPARKY')
+  })
+
+  it('reads every page of a PDF into one text file, pages in order and split by a form feed', async () => {
+    const pdf = path.join(h.dir, 'letters.pdf')
+    await twoPagePdf(pdf, ['FIRST', 'SECOND'])
+    const [job] = await h.engine.runOp('ocr', { files: [pdf] })
+    expect(job).toMatchObject({ status: 'done', title: 'Read text in letters.pdf → TXT' })
+    const out = job!.outputs![0]!
+    expect(path.basename(out)).toBe('letters.txt')
+    const text = fs.readFileSync(out, 'utf8')
+    const pages = text.split('\f')
+    expect(pages).toHaveLength(2)
+    expect(pages[0]).toContain('FIRST')
+    expect(pages[1]).toContain('SECOND')
+  })
+
+  it('makes one searchable PDF from a PDF, the source page size kept', async () => {
+    const pdf = path.join(h.dir, 'pair.pdf')
+    await twoPagePdf(pdf, ['FIRST', 'SECOND'])
+    const [job] = await h.engine.runOp('ocr', { files: [pdf], output: 'pdf', dpi: 150 })
+    expect(job?.error).toBeUndefined()
+    const out = job!.outputs![0]!
+    expect(path.basename(out)).toBe('pair (searchable).pdf')
+    const { PDFDocument } = await import('pdf-lib')
+    const doc = await PDFDocument.load(fs.readFileSync(out))
+    expect(doc.getPageCount()).toBe(2)
+    for (const page of doc.getPages()) {
+      expect(page.getWidth()).toBeCloseTo(612, 0)
+      expect(page.getHeight()).toBeCloseTo(792, 0)
+    }
+    expect(await pdfText(out, 1)).toContain('FIRST')
+    expect(await pdfText(out, 2)).toContain('SECOND')
+  })
+
+  it('fails a damaged PDF in plain words', async () => {
+    const bad = path.join(h.dir, 'broken.pdf')
+    fs.writeFileSync(bad, '%PDF-1.4')
+    const [job] = await h.engine.runOp('ocr', { files: [bad] })
+    expect(job).toMatchObject({ status: 'failed' })
+    expect(job!.error).toBeTruthy()
+    expect(job!.error).not.toMatch(/Invalid PDF|Error:/)
   })
 
   it('says so when a picture has no text', async () => {
@@ -127,9 +177,9 @@ describe.skipIf(!hasEnglish)('ocr', () => {
   })
 
   it('refuses what it can’t read, before starting the worker', async () => {
-    const pdf = path.join(h.dir, 'scan.pdf')
-    fs.writeFileSync(pdf, '%PDF-1.4')
-    expect((await h.engine.runOp('ocr', { files: [pdf] }))[0]!.error).toMatch(/can’t read text from scan\.pdf/)
+    const doc = path.join(h.dir, 'scan.docx')
+    fs.writeFileSync(doc, 'PK')
+    expect((await h.engine.runOp('ocr', { files: [doc] }))[0]!.error).toMatch(/can’t read text from scan\.docx/)
     expect(() => h.engine.startOp('ocr', { files: [png], language: '../eng' })).toThrow(/language/)
     expect(() => h.engine.startOp('ocr', { files: [png], output: 'both', out: path.join(h.dir, 'one.txt') })).toThrow(/folder/)
   })

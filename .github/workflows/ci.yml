@@ -26,6 +26,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      # The CLI bundle ships in the installer and on npm; its tests run with the rest in npm test.
+      - run: npm run build:cli
       - name: Install real tools for the engine tests
         run: |
           sudo apt-get update

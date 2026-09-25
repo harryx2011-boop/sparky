@@ -1,11 +1,11 @@
 // Electron main process: window, tray, notifications, clipboard and IPC.
-import { isKnownMediaLink, OP_TEXT, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type Section, type Settings } from '@sparky/core'
+import { isKnownMediaLink, OP_TEXT, type ApiInfo, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type Section, type Settings } from '@sparky/core'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, shell, Tray } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import path from 'node:path'
-import { createEngine, opById, OpInputError, type Engine } from '@sparky/engine'
+import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
 
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
@@ -16,6 +16,8 @@ const userBin = path.join(app.getPath('userData'), 'bin')
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
 let engine: Engine
+/** The local HTTP API agents use; null when it could not bind (another Sparky or program holds the port). */
+let api: ApiServer | null = null
 let quitting = false
 let lastOffered = ''
 const dismissed = new Set<string>()
@@ -263,6 +265,33 @@ function registerIpc(): void {
     if (/^https?:|^mailto:/.test(url)) return shell.openExternal(url)
   })
   handle('clipboard:write', (text: string) => clipboard.writeText(text))
+
+  // The token never crosses IPC or the clipboard (Windows keeps clipboard history and may sync it): the renderer can only show the file.
+  handle('api:info', (): ApiInfo => ({ running: api !== null, port: api?.port ?? configuredApiPort(), tokenPath: tokenPath(app.getPath('userData')) }))
+  handle('api:revealToken', () => {
+    ensureToken(app.getPath('userData'))
+    shell.showItemInFolder(tokenPath(app.getPath('userData')))
+  })
+}
+
+function configuredApiPort(): number {
+  try {
+    return apiPort()
+  } catch {
+    return DEFAULT_API_PORT
+  }
+}
+
+async function startApi(): Promise<void> {
+  try {
+    const started = await startApiServer(engine, { dataDir: app.getPath('userData'), host: 'app', version: app.getVersion() })
+    // Quit began while it was binding.
+    if (shutDown) await started.close()
+    else api = started
+  } catch (e) {
+    // The app works without it; agents fall back to running the engine themselves.
+    console.error('Sparky API not started', e)
+  }
 }
 
 app.on('second-instance', showWindow)
@@ -274,7 +303,10 @@ app.on('before-quit', (e) => {
   // Give running jobs a moment to stop and remove their half-written files.
   e.preventDefault()
   shutDown = true
-  void engine.shutdown().finally(() => app.quit())
+  void (api?.close() ?? Promise.resolve())
+    .catch(() => undefined)
+    .then(() => engine.shutdown())
+    .finally(() => app.quit())
 })
 
 app.on('window-all-closed', () => {
@@ -300,6 +332,7 @@ if (primary) app.whenReady().then(async () => {
     updateTray(jobs)
   })
   engine.on('finished', notifyFinished)
+  void startApi()
 
   ready = true
   createWindow()

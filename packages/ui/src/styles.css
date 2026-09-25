@@ -241,12 +241,134 @@
   50% { opacity: 1; transform: scale(1.4); }
 }
 
+/* ---------- Compression flow ---------- */
+/* A lime pill that flows: motion only, never a second hue. The sheen and sparks live in track space and the fill clips them. */
+
+.sp-flow {
+  --sp-flow-hi: var(--card);
+  /* The sheen is the lime a step lighter on light, a step deeper on dark, where the lime is already near white. */
+  --sp-flow-sheen: color-mix(in srgb, var(--card) 34%, transparent);
+  --sp-flow-edge: transparent;
+  --sp-flow-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dark .sp-flow {
+  --sp-flow-hi: var(--foreground);
+  --sp-flow-sheen: color-mix(in srgb, var(--lime-foreground) 14%, transparent);
+  --sp-flow-edge: color-mix(in srgb, var(--lime-foreground) 22%, transparent);
+}
+.sp-flow-track {
+  position: relative;
+  flex-grow: 1;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--track);
+  container-type: inline-size;
+}
+.sp-flow-range {
+  position: absolute;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--lime);
+  transition: right 180ms var(--sp-flow-ease);
+}
+.sp-flow-layer {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 100cqw;
+  pointer-events: none;
+}
+.sp-flow-sheen {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 40cqw;
+  background: linear-gradient(90deg, transparent, var(--sp-flow-sheen), transparent);
+  animation: sp-flow-sheen 9s var(--sp-flow-ease) infinite;
+}
+.sp-flow-sheen[data-slow] {
+  width: 65cqw;
+  opacity: 0.7;
+  animation-duration: 14s;
+  animation-delay: -6s;
+}
+.sp-flow-spark {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--sp-flow-hi);
+  box-shadow: 0 0 0 1px var(--sp-flow-edge);
+  opacity: 0;
+  animation-name: sp-flow-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.sp-flow[data-disabled] .sp-flow-sheen,
+.sp-flow[data-disabled] .sp-flow-spark {
+  animation-play-state: paused;
+}
+.sp-flow > span:has(> .sp-flow-thumb) {
+  transition: left 180ms var(--sp-flow-ease);
+}
+.sp-flow-thumb {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: grab;
+}
+.sp-flow-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: var(--sp-flow-hi);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.14);
+  transition: transform 160ms var(--sp-flow-ease), box-shadow 160ms var(--sp-flow-ease);
+}
+.dark .sp-flow-thumb::before {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 8px rgb(0 0 0 / 0.4);
+}
+.sp-flow:not([data-disabled]) .sp-flow-thumb:hover::before {
+  transform: scale(1.04);
+}
+.sp-flow:not([data-disabled]):active .sp-flow-thumb {
+  cursor: grabbing;
+}
+.sp-flow:not([data-disabled]):active .sp-flow-thumb::before {
+  transform: scale(1.05);
+}
+.sp-flow-thumb:focus-visible::before {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--ring) 45%, transparent), 0 1px 2px rgb(0 0 0 / 0.16);
+}
+.sp-flow[data-disabled] .sp-flow-thumb {
+  cursor: not-allowed;
+}
+
+@keyframes sp-flow-sheen {
+  0% { transform: translateX(-70cqw); }
+  100% { transform: translateX(110cqw); }
+}
+@keyframes sp-flow-drift {
+  0% { opacity: 0; transform: translate(0, 0); }
+  30%, 70% { opacity: var(--sp-flow-peak); }
+  100% { opacity: 0; transform: translate(var(--sp-flow-dx), -3px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sp-bar[data-on],
   .sp-bars[data-running] .sp-bar[data-on],
   .sp-running,
   .sp-spark {
     animation: none !important;
+  }
+  /* The compression pill keeps its plain fill. */
+  .sp-flow-layer {
+    display: none;
   }
   /* Everything else settles instantly: accordion, dialog, spinners, colour transitions. */
   *,

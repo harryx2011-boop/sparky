@@ -1,0 +1,42 @@
+{
+  "name": "@sparky-labs/cli",
+  "version": "1.0.0",
+  "description": "Sparky from the terminal and for agents: convert files, run PDF, video and image tools, download from links, and serve them over MCP or HTTP.",
+  "license": "MIT",
+  "homepage": "https://sparky-labs.vercel.app",
+  "repository": "github:harryx2011-boop/sparky",
+  "type": "module",
+  "bin": {
+    "sparky": "./dist/sparky.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "pretest": "npm rebuild better-sqlite3 --silent"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.9",
+    "7zip-bin": "^5.2.0",
+    "better-sqlite3": "^13.0.3",
+    "pdfjs-dist": "^6.3.289",
+    "sharp": "^0.35.4",
+    "tesseract.js": "^7.0.0",
+    "turndown": "^7.2.4"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.1",
+    "@sparky/core": "*",
+    "@sparky/engine": "*",
+    "@types/node": "^22.20.4",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

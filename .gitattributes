@@ -1,0 +1,3 @@
+# The sparky shims: the POSIX one breaks with CR, the cmd one wants CRLF
+apps/desktop/resources/cli/sparky text eol=lf
+apps/desktop/resources/cli/sparky.cmd text eol=crlf

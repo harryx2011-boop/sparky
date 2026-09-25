@@ -30,7 +30,7 @@ jobs:
         run: node scripts/fetch-tools.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and publish the installer
+      - name: Build and publish the installer (builds and stages the CLI bundle first)
         run: npm run package -w @sparky/desktop -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

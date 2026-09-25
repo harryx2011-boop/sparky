@@ -88,6 +88,34 @@ async function stageLanguage(lang: string, setup: OcrSetup, signal: AbortSignal)
   writeWhole(cached, gunzipSync(Buffer.from(await res.arrayBuffer())))
 }
 
+interface MessageSource {
+  listeners(event: 'message'): Function[]
+  off(event: 'message', listener: (...args: unknown[]) => void): unknown
+  on(event: 'message', listener: (m: unknown) => void): unknown
+}
+
+/**
+ * tesseract.js's worker answers a failed initialize twice: a reject, then a resolve for the same job
+ * (its initialize has no return after `res.reject`). The second answer finds no pending job and throws
+ * a TypeError inside the thread's message listener, an uncaught exception. Answers after the first for
+ * a job are dropped here; a job's first answer, progress and every other job's messages pass untouched.
+ */
+export function dropRepeatAnswers(thread: MessageSource): void {
+  const answered = new Set<string>()
+  for (const listener of thread.listeners('message')) {
+    thread.off('message', listener as (...args: unknown[]) => void)
+    thread.on('message', (m) => {
+      const { status, action, jobId } = (m ?? {}) as { status?: string; action?: string; jobId?: string }
+      if (status === 'resolve' || status === 'reject') {
+        const key = `${action}-${jobId}`
+        if (answered.has(key)) return
+        answered.add(key)
+      }
+      ;(listener as (m: unknown) => void)(m)
+    })
+  }
+}
+
 /** Rejects when the signal fires, so a job never waits on a worker that was stopped. */
 function whenAborted(signal: AbortSignal): Promise<never> {
   return new Promise((_, reject) => {
@@ -125,6 +153,9 @@ export async function openReader(setup: OcrSetup, signal: AbortSignal): Promise<
     void starting.then((w) => w.terminate()).catch(() => undefined)
     throw e
   })
+  // The worker thread tesseract.js listens on; not in its typings.
+  const thread = (worker as unknown as { worker?: MessageSource }).worker
+  if (thread) dropRepeatAnswers(thread)
   const stop = () => void worker.terminate()
   signal.addEventListener('abort', stop, { once: true })
 

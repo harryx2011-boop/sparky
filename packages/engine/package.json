@@ -21,6 +21,7 @@
     "better-sqlite3": "^13.0.3",
     "exceljs": "^4.4.0",
     "fast-xml-parser": "^5.11.1",
+    "fastify": "^5.12.5",
     "marked": "^18.0.14",
     "papaparse": "^5.7.0",
     "pdf-lib": "^1.17.1",

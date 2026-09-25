@@ -1,0 +1,9 @@
+#!/bin/sh
+# The sparky command for Git Bash and other POSIX shells on Windows. cmd and PowerShell use sparky.cmd.
+dir=$(cd "$(dirname "$0")" && pwd)
+# Sparky.exe needs Windows paths: NODE_PATH is never converted from the MSYS form.
+win=$(cygpath -w "$dir" 2>/dev/null || (cd "$dir" && pwd -W) 2>/dev/null || printf '%s' "$dir")
+export ELECTRON_RUN_AS_NODE=1
+export NODE_PATH="$win\\..\\app.asar.unpacked\\node_modules;$win\\..\\app.asar\\node_modules"
+export SPARKY_BIN_DIR="$win\\..\\bin"
+exec "$dir/../../Sparky.exe" --require "$win\\lib\\esm-resolve.cjs" "$win\\lib\\sparky.js" "$@"

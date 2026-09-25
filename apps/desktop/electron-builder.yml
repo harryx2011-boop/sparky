@@ -31,6 +31,10 @@ extraResources:
     to: tray.png
   - from: ../../THIRD_PARTY_NOTICES.md
     to: THIRD_PARTY_NOTICES.md
+  # The sparky command: the CLI bundle plus a shim that runs it with Sparky.exe as Node.
+  # The installer puts this folder on the user PATH (build/installer.nsh).
+  - from: resources/cli
+    to: cli
 win:
   target:
     - target: nsis
@@ -39,6 +43,7 @@ win:
   # Fixed name on purpose: the site links to releases/latest/download/Sparky-Setup.exe.
   artifactName: Sparky-Setup.${ext}
 nsis:
+  include: build/installer.nsh
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true

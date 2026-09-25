@@ -61,12 +61,13 @@ describe('image and ocr op declarations', () => {
     expect(checked.sort()).toEqual(['image.edit.fit', 'image.edit.flip', 'image.edit.output', 'image.edit.rotate', 'ocr.output'])
   })
 
-  it('accepts only pictures sharp opens (OCR also takes BMP)', () => {
+  it('accepts only pictures sharp opens (OCR also takes BMP and PDF)', () => {
     const edit = opById('image.edit')!
     for (const ext of ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'tif', 'tiff']) expect(edit.accepts(ext), ext).toBe(true)
     for (const ext of ['heic', 'bmp', 'pdf', 'mp4', 'txt']) expect(edit.accepts(ext), ext).toBe(false)
     expect(opById('ocr')!.accepts('bmp')).toBe(true)
-    expect(opById('ocr')!.accepts('pdf')).toBe(false)
+    expect(opById('ocr')!.accepts('pdf')).toBe(true)
+    expect(opById('ocr')!.accepts('docx')).toBe(false)
   })
 })
 

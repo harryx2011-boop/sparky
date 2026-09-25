@@ -317,4 +317,5 @@ export const mockApi: SparkyApi = {
   openExternal: async (url) => void window.open(url, '_blank'),
   copyText: async (t) => navigator.clipboard?.writeText(t),
   onNavigate: () => () => undefined,
+  api: { info: async () => ({ running: true, port: 8600, tokenPath: 'C:\\Users\\you\\AppData\\Roaming\\Sparky\\api-token' }), revealToken: noop },
 }
