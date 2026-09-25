@@ -4,6 +4,7 @@ import { GridCells } from './components/GridCells'
 import { ScrollProgress } from './components/motion'
 import { Nav } from './components/Nav'
 import { SiteStrip } from './components/SiteStrip'
+import { Agents } from './sections/Agents'
 import { Convert } from './sections/Convert'
 import { Details } from './sections/Details'
 import { DragDemo } from './sections/DragDemo'
@@ -12,6 +13,7 @@ import { Get } from './sections/Get'
 import { Hero } from './sections/Hero'
 import { Performance } from './sections/Performance'
 import { Queue } from './sections/Queue'
+import { Tools } from './sections/Tools'
 import { DemoProvider } from './state'
 
 export function App() {
@@ -33,6 +35,8 @@ export function App() {
           <Performance />
           <Queue />
           <Details />
+          <Tools />
+          <Agents />
           <Get />
         </main>
         <Footer />

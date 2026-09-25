@@ -1,7 +1,7 @@
-import { CODEC_LABELS, OUTPUT_FOLDERS, TOOL_NAMES, type Theme, type VideoCodec } from '@sparky/core'
+import { CODEC_LABELS, OUTPUT_FOLDERS, TOOL_NAMES, type AgentClient, type ApiInfo, type Theme, type VideoCodec } from '@sparky/core'
 import { CompressionSlider, CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
-import { Check, FolderOpen, Loader2, Minus, RefreshCw } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { Check, FolderOpen, Loader2, Minus, Plus, RefreshCw } from 'lucide-react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader, PerformancePicker } from '@/components/Controls'
 import { Button } from '@/components/ui/button'
@@ -23,12 +23,72 @@ function Row({ title, hint, children }: { title: string; hint?: ReactNode; child
   )
 }
 
-function Group({ title, children }: { title: string; children: ReactNode }) {
+function Group({ title, note, children }: { title: string; note?: ReactNode; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2">
       <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-subtle-foreground">{title}</h2>
       <Card>{children}</Card>
+      {note && <p className="px-1 text-xs text-subtle-foreground">{note}</p>}
     </section>
+  )
+}
+
+function AgentsGroup() {
+  const [info, setInfo] = useState<ApiInfo>()
+  const [clients, setClients] = useState<AgentClient[]>([])
+  const [adding, setAdding] = useState<string>()
+
+  const refresh = useCallback(async () => {
+    const [i, c] = await Promise.all([api.api.info(), api.agents.detect()])
+    setInfo(i)
+    setClients(c)
+  }, [])
+  useEffect(() => void refresh(), [refresh])
+
+  const add = async (c: AgentClient) => {
+    setAdding(c.id)
+    const res = await api.agents.install(c.id)
+    setAdding(undefined)
+    if (res.ok) toast.success(res.message)
+    else toast.error(res.message)
+    await refresh()
+  }
+
+  return (
+    <Group title="Agents" note={<>For terminals: the <span className="font-mono">sparky</span> command is installed with Sparky.</>}>
+      <Row title="Local API" hint={info ? (info.running ? `Running on port ${info.port}` : 'Not running') : undefined}>
+        {info?.running ? <Check size={14} className="text-success" /> : <Minus size={14} className="text-subtle-foreground" />}
+      </Row>
+      <Row title="Token file" hint="Programs on this PC use it to talk to Sparky.">
+        <Button size="sm" variant="secondary" onClick={() => void api.api.revealToken()}>
+          <FolderOpen size={13} /> Show file
+        </Button>
+      </Row>
+      {clients
+        .filter((c) => c.found)
+        .map((c) => (
+          <Row key={c.id} title={c.label} hint={c.configPath}>
+            {c.installed && c.current ? (
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Check size={14} className="text-success" /> Added
+              </span>
+            ) : (
+              <Button size="sm" variant="secondary" disabled={adding !== undefined} onClick={() => void add(c)}>
+                {adding === c.id ? <Loader2 size={13} className="animate-spin" /> : c.installed ? <RefreshCw size={13} /> : <Plus size={13} />}
+                {c.installed ? 'Update' : `Add to ${c.label}`}
+              </Button>
+            )}
+          </Row>
+        ))}
+      {clients
+        .filter((c) => !c.found)
+        .map((c) => (
+          <div key={c.id} className="flex items-center justify-between gap-6 border-b px-4 py-3 text-subtle-foreground last:border-b-0">
+            <span className="text-[13px]">{c.label}</span>
+            <span className="text-xs">Not installed</span>
+          </div>
+        ))}
+    </Group>
   )
 }
 
@@ -83,6 +143,8 @@ export function SettingsPage() {
         </Row>
       </Group>
 
+      <AgentsGroup />
+
       <Group title="App">
         <Row title="Theme">
           <Segmented<Theme>
@@ -107,7 +169,7 @@ export function SettingsPage() {
         </Row>
       </Group>
 
-      <Group title="Built-in tools">
+      <Group title="Diagnostics">
         {system?.tools.map((t) => (
           <Row key={t.id} title={t.label} hint={t.found ? (t.optional ? 'Found on this PC' : 'Ready') : t.optional ? `Optional add-on. Install ${TOOL_NAMES[t.id]} and restart Sparky to use it.` : 'Missing. Reinstalling Sparky brings it back.'}>
             {t.found ? <Check size={14} className="text-success" /> : <Minus size={14} className={t.optional ? 'text-subtle-foreground' : 'text-destructive'} />}

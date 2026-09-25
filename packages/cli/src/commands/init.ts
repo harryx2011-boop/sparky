@@ -4,7 +4,7 @@ import os from 'node:os'
 import { parseArgv } from '../args'
 import { cliApiPort, cliPaths } from '../env'
 import { EXIT, UsageError } from '../errors'
-import { apply, detectHarnesses, diff, harnessById, HARNESSES, mcpEntry, type Harness } from '../harnesses'
+import { detectHarnesses, diff, harnessById, HARNESSES, installHarness, mcpEntry, type Harness } from '../harnesses'
 import type { Command, Io } from './types'
 
 const CLIENTS = HARNESSES.map((h) => h.id).join('|')
@@ -29,19 +29,18 @@ export function runInit(opts: InitOptions, io: Io): number {
       return h
     })
   } else {
-    targets = detectHarnesses(home)
+    targets = detectHarnesses(home, env)
+      .filter((s) => s.found)
+      .map((s) => harnessById(s.id)!)
     if (!targets.length) throw new UsageError(`Found no agent client in ${home}. Name one: sparky init --client ${CLIENTS}`)
   }
 
   const entry = mcpEntry(opts.platform)
   for (const h of targets) {
-    const r = h.plan(home, env, entry)
+    const r = installHarness(h.id, { home, vars: env, ...entry, dryRun: opts.dryRun })
     if (!r.changed) io.out(`${h.label}: already set up in ${r.file}`)
     else if (opts.dryRun) io.out(`${h.label}: would update ${r.file}\n${diff(r)}`)
-    else {
-      apply(r)
-      io.out(`${h.label}: added "sparky" to ${r.file}. Restart ${h.label} to load it.`)
-    }
+    else io.out(`${h.label}: added "sparky" to ${r.file}. Restart ${h.label} to load it.`)
     if (h.equivalent) io.out(`  Same thing by hand: ${h.equivalent(entry)}`)
   }
   const paths = cliPaths(env)

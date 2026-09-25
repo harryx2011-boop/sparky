@@ -2,15 +2,8 @@ import { CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
 import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useState } from 'react'
 import { Magnetic } from './motion'
+import { SECTION_LINKS } from './sections'
 import { ButtonLink } from './ui'
-
-const LINKS = [
-  ['Watch', '#watch'],
-  ['Convert', '#convert'],
-  ['Download', '#download'],
-  ['Performance', '#performance'],
-  ['Details', '#details'],
-] as const
 
 export function Nav() {
   const { scrollY } = useScroll()
@@ -33,8 +26,8 @@ export function Nav() {
           <LogoMark size={28} />
           Sparky
         </a>
-        <nav aria-label="Sections" className="hidden gap-8 text-sm text-muted-foreground md:flex">
-          {LINKS.map(([label, href]) => (
+        <nav aria-label="Sections" className="hidden gap-7 text-sm text-muted-foreground lg:flex">
+          {SECTION_LINKS.map(([label, href]) => (
             <a key={href} href={href} className="transition-colors hover:text-foreground">
               {label}
             </a>

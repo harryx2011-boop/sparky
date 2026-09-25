@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "gen:ops": "node ../../scripts/gen-site-ops.mjs"
   },
   "dependencies": {
     "@sparky/core": "*",

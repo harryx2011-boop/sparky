@@ -1,7 +1,9 @@
 import { describeSaving, formatDuration, type Job } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { AlertCircle, ArrowLeftRight, Check, Download, FolderOpen, GripVertical, Pause, Play, RotateCcw, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Check, Download, FolderOpen, GripVertical, Pause, Play, RotateCcw, Wrench, X } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { api } from '@/lib/api'
+import { ExtIcon } from '@/lib/fileIcons'
 import { Button } from './ui/button'
 import { Progress } from './ui/progress'
 import { Tip } from './ui/tooltip'
@@ -25,9 +27,30 @@ export function statusText(job: Job): string {
   }
 }
 
+/** What a job works on: source → result icons for a conversion, a glyph for a download or a tool. `badge` sits on the last icon. */
+export function JobIcons({ job, size, badge }: { job: Pick<Job, 'kind' | 'source' | 'convert' | 'outputs'>; size: number; badge?: ReactNode }) {
+  const target = job.convert?.output ?? job.outputs[0] ?? ''
+  const last = (icon: ReactNode) => (
+    <span className="relative flex shrink-0">
+      {icon}
+      {badge && <span className="absolute -bottom-1 -right-1 flex size-3 items-center justify-center rounded-full bg-background">{badge}</span>}
+    </span>
+  )
+  if (job.kind === 'convert' && target) {
+    return (
+      <span className="flex items-center gap-1 text-subtle-foreground">
+        <ExtIcon ext={job.source} size={size} />
+        <ArrowRight size={10} className="shrink-0" />
+        {last(<ExtIcon ext={target} size={size} />)}
+      </span>
+    )
+  }
+  const Glyph = job.kind === 'download' ? Download : Wrench
+  return <span className="flex items-center text-subtle-foreground">{last(<Glyph size={size - 2} />)}</span>
+}
+
 /** One job with its progress and controls. `compact` is the dock layout. */
 export function JobRow({ job, compact, draggable, onUpdate }: { job: Job; compact?: boolean; draggable?: boolean; onUpdate?: () => void }) {
-  const Icon = job.kind === 'download' ? Download : ArrowLeftRight
   const running = job.status === 'running'
   const act = (fn: (id: string) => Promise<void>) => () => void fn(job.id).then(onUpdate)
   const tone = job.status === 'done' ? 'success' : job.status === 'failed' ? 'error' : job.status === 'canceled' ? 'muted' : 'default'
@@ -91,7 +114,9 @@ export function JobRow({ job, compact, draggable, onUpdate }: { job: Job; compac
     return (
       <div className="grid grid-cols-[minmax(0,220px)_minmax(0,1fr)_minmax(0,220px)_auto] items-center gap-4 text-xs">
         <span className="flex min-w-0 items-center gap-2">
-          <Icon size={12} className="shrink-0 text-subtle-foreground" />
+          <span className="flex w-12 shrink-0">
+            <JobIcons job={job} size={14} />
+          </span>
           <span className="truncate">{job.title}</span>
         </span>
         <Progress value={progress} running={running} tone={tone} />
@@ -106,8 +131,8 @@ export function JobRow({ job, compact, draggable, onUpdate }: { job: Job; compac
   return (
     <div className="group flex items-center gap-3 px-4 py-3">
       {draggable ? <GripVertical size={14} className="shrink-0 cursor-grab text-subtle-foreground/50 group-hover:text-subtle-foreground" /> : <span className="w-3.5" />}
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary">
-        {job.status === 'done' ? <Check size={14} className="text-success" /> : job.status === 'failed' ? <AlertCircle size={14} className="text-destructive" /> : <Icon size={14} />}
+      <span className="flex h-8 w-14 shrink-0 items-center">
+        <JobIcons job={job} size={18} badge={job.status === 'done' ? <Check size={9} strokeWidth={3} className="text-success" /> : job.status === 'failed' ? <AlertCircle size={10} className="text-destructive" /> : undefined} />
       </span>
       <div className="flex min-w-0 grow flex-col gap-1.5">
         <div className="flex items-baseline justify-between gap-3">

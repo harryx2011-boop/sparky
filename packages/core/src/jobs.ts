@@ -422,6 +422,8 @@ export interface AgentClient {
   found: boolean
   /** Its config already lists Sparky. */
   installed: boolean
+  /** Installed, and it starts this copy of Sparky the way Sparky would write it now. False means an update is offered. */
+  current: boolean
   configPath: string
 }
 

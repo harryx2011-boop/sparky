@@ -6,6 +6,8 @@ import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import path from 'node:path'
 import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
+import { registerAgentsIpc } from './agents'
+import { registerIconIpc } from './icons'
 
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
@@ -272,6 +274,8 @@ function registerIpc(): void {
     ensureToken(app.getPath('userData'))
     shell.showItemInFolder(tokenPath(app.getPath('userData')))
   })
+  registerAgentsIpc(ipcMain)
+  registerIconIpc(ipcMain)
 }
 
 function configuredApiPort(): number {

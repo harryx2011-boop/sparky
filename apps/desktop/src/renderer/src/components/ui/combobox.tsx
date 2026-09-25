@@ -6,7 +6,7 @@ import { useState, type ReactNode } from 'react'
 
 export interface ComboGroup {
   heading: string
-  items: { value: string; label: string; hint?: string }[]
+  items: { value: string; label: string; hint?: string; icon?: ReactNode }[]
 }
 
 /** Searchable, grouped picker (shadcn's Combobox pattern: Popover + Command). */
@@ -18,6 +18,7 @@ export function Combobox({
   display,
   className,
   label,
+  icon,
 }: {
   value: string
   onChange: (v: string) => void
@@ -26,6 +27,8 @@ export function Combobox({
   display: ReactNode
   className?: string
   label: string
+  /** Leads the closed picker; the search glyph when omitted. */
+  icon?: ReactNode
 }) {
   const [open, setOpen] = useState(false)
   return (
@@ -38,7 +41,7 @@ export function Combobox({
         )}
       >
         <span className="flex min-w-0 items-center gap-2 truncate">
-          <Search size={13} className="shrink-0 text-subtle-foreground" />
+          {icon ?? <Search size={13} className="shrink-0 text-subtle-foreground" />}
           {display}
         </span>
         <ChevronDown size={14} className="shrink-0 text-subtle-foreground" />
@@ -65,6 +68,7 @@ export function Combobox({
                       className="flex h-8 cursor-default items-center gap-2 rounded-md px-2 text-[13px] outline-none data-[selected=true]:bg-accent"
                     >
                       <Check size={13} className={cn(value === it.value ? 'opacity-100' : 'opacity-0')} />
+                      {it.icon}
                       <span className="font-medium">{it.label}</span>
                       {it.hint && <span className="truncate text-xs text-subtle-foreground">{it.hint}</span>}
                     </Command.Item>

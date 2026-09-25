@@ -321,10 +321,10 @@ export const mockApi: SparkyApi = {
   icons: { forExt: async () => null },
   agents: {
     detect: async () => [
-      { id: 'claude-code', label: 'Claude Code', found: true, installed: false, configPath: 'C:\\Users\\you\\.claude.json' },
-      { id: 'cursor', label: 'Cursor', found: true, installed: true, configPath: 'C:\\Users\\you\\.cursor\\mcp.json' },
-      { id: 'codex', label: 'Codex', found: false, installed: false, configPath: 'C:\\Users\\you\\.codex\\config.toml' },
-      { id: 'windsurf', label: 'Windsurf', found: false, installed: false, configPath: 'C:\\Users\\you\\.codeium\\windsurf\\mcp_config.json' },
+      { id: 'claude-code', label: 'Claude Code', found: true, installed: false, current: false, configPath: 'C:\\Users\\you\\.claude.json' },
+      { id: 'cursor', label: 'Cursor', found: true, installed: true, current: true, configPath: 'C:\\Users\\you\\.cursor\\mcp.json' },
+      { id: 'codex', label: 'Codex', found: false, installed: false, current: false, configPath: 'C:\\Users\\you\\.codex\\config.toml' },
+      { id: 'windsurf', label: 'Windsurf', found: false, installed: false, current: false, configPath: 'C:\\Users\\you\\.codeium\\windsurf\\mcp_config.json' },
     ],
     install: async () => ({ ok: true, message: 'Added Sparky to Claude Code.' }),
   },

@@ -110,6 +110,8 @@ Agents: `frontend` skill; `visual-designer` spec first; two Opus coders (icons; 
 
 Exit: kansei token check passes, no raw colour outside the token set, lime stays the one accent.
 
+**Done 2026-09-25.** Windows-association icons with a vendored vscode-icons fallback in every file list; Settings Diagnostics and Agents groups (one-click add to Claude Code, Cursor, Codex, Windsurf through the shared harness registry); site Tools and Agents sections generated from the registry; README. Reviewer: 0 critical, 4 major, 6 minor (stale agent entries shown as Added, a dev-tree shim written into a real config, cmd quoting of special characters, Codex dotted keys), all fixed with failing-first tests; the MCP entry now launches Sparky.exe directly with the shim's environment. Final check: typecheck 6 workspaces, 647 tests (5 skipped), all builds, a test keeps ops.json in step with the registry. The flowing compression bar (asked for mid-Phase 3) shipped with Phase 3.
+
 ### Phase 5: Helix removal, docs, release
 
 Agents: Opus coder in `D:\Helix` (delete `apps/converter`, `apps/dashboard/lib/converter`, `components/converter`, `app/converter.css`, `/convert` routes, `CONVERTER-CONTRACT.md`, `apps/api/src/routes/convert.ts` and its test, extract `convert.py` and tests, the `convert` operationId and schemas in `openapi.yaml`, nav and footer rows, README and context mentions; grep `convert` across the repo until only unrelated hits remain); `reviewer`; `test-runner` in Helix.

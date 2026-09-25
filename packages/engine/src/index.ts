@@ -343,3 +343,5 @@ export { API_BIND, apiPort, DEFAULT_API_PORT, startApiServer, type ApiServer, ty
 export type { ApiErrorBody, ApiErrorCode } from './http/errors'
 export type { ApiHost } from './http/routes'
 export { ensureToken, readToken, tokenPath } from './token'
+export * from './agents/harnesses'
+export * from './agents/entry'

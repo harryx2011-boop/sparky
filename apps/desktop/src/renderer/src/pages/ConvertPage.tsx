@@ -20,22 +20,21 @@ import {
   type VideoCodec,
 } from '@sparky/core'
 import { cn, CompressionSlider, ResolutionPicker } from '@sparky/ui'
-import { Archive, FileText, Image, Loader2, Music, Upload, Video, X, type LucideIcon } from 'lucide-react'
+import { Loader2, Upload, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, Field, PageHeader, PerformancePicker } from '@/components/Controls'
 import { Disclosure } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
-import { Combobox } from '@/components/ui/combobox'
+import { Combobox, type ComboGroup } from '@/components/ui/combobox'
 import { ConfirmDialog } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { api } from '@/lib/api'
 import { joinWords, needsList } from '@/lib/ops'
+import { ExtIcon } from '@/lib/fileIcons'
 import { useApp } from '@/lib/state'
-
-const ICONS: Record<Category, LucideIcon> = { video: Video, audio: Music, image: Image, document: FileText, archive: Archive }
 
 const DEFAULT_OUTPUT: Record<Category, string[]> = {
   video: ['mp4'],
@@ -147,7 +146,6 @@ function FileList({ files, onRemove }: { files: ProbeResult[]; onRemove: (p: str
     <Card className="max-h-[220px] overflow-y-auto">
       <AnimatePresence initial={false}>
         {files.map((f) => {
-          const Icon = f.category ? ICONS[f.category] : FileText
           const meta = [
             f.ext.toUpperCase(),
             formatBytes(f.size),
@@ -162,7 +160,7 @@ function FileList({ files, onRemove }: { files: ProbeResult[]; onRemove: (p: str
               exit={{ opacity: 0, height: 0 }}
               className="group flex items-center gap-3 border-b px-3.5 text-[13px] last:border-b-0"
             >
-              <Icon size={14} className="shrink-0 text-subtle-foreground" />
+              <ExtIcon ext={f.name} size={16} family={f.category} className="text-subtle-foreground" />
               <span className="grow truncate" title={f.path}>
                 {f.name}
               </span>
@@ -300,6 +298,7 @@ export function ConvertPage() {
                     label={`Output format for ${CATEGORY_LABELS[group.category]}`}
                     value={output}
                     onChange={(v) => setPicked((p) => ({ ...p, [group.category]: v }))}
+                    icon={output ? <ExtIcon ext={output} size={16} /> : undefined}
                     display={
                       <>
                         {formatInfo(output)?.label ?? output.toUpperCase()}
@@ -427,12 +426,12 @@ export function ConvertPage() {
 }
 
 function groupOptions(options: string[]) {
-  const byCat = new Map<string, { value: string; label: string; hint?: string }[]>()
+  const byCat = new Map<string, ComboGroup['items']>()
   for (const ext of options) {
     const f = formatInfo(ext)
     if (!f) continue
     const heading = CATEGORY_LABELS[f.category]
-    byCat.set(heading, [...(byCat.get(heading) ?? []), { value: ext, label: f.label, hint: f.note }])
+    byCat.set(heading, [...(byCat.get(heading) ?? []), { value: ext, label: f.label, hint: f.note, icon: <ExtIcon ext={ext} size={16} /> }])
   }
   return [...byCat.entries()].map(([heading, items]) => ({ heading, items }))
 }

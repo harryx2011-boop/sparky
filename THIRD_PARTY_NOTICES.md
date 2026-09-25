@@ -28,5 +28,6 @@ Sparky also uses these libraries, which are bundled into the app:
 | ExcelJS, Papa Parse, marked, Turndown, fast-xml-parser, zod | MIT |
 | Radix UI, cmdk, sonner, lucide-react, Motion, Tailwind CSS | MIT (lucide-react: ISC) |
 | Simple Icons (brand icons) | CC0-1.0; brand marks belong to their owners |
+| vscode-icons (file-type icons, vendored subset in `packages/ui/src/file-icons`) | MIT, Copyright (c) 2016 Roberto Huertas; brand marks belong to their owners |
 | IBM Plex Mono | SIL Open Font License 1.1 |
 | Satoshi (fetched at build time, not in git) | ITF Free Font License, Indian Type Foundry via Fontshare |

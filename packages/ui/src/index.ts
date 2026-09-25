@@ -5,3 +5,4 @@ export { ResolutionPicker, type ResolutionPickerProps } from './ResolutionPicker
 export { Bolt, DiscordIcon, GithubIcon, GmailIcon, LogoMark } from './icons'
 export { BRAND_MARKS, BrandMark, hasMark, LinkMark, type BrandMarkProps } from './brands'
 export { CONTACT } from './contact'
+export { EXT_ICONS, extOf, FileIcon, fileIconFor, fileIconName, PACK_ONLY_EXTS, type FileFamily, type FileIconName, type FileIconProps } from './file-icons'

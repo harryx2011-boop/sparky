@@ -1,8 +1,9 @@
 import { describeSaving, formatDuration, type HistoryEntry, type HistoryQuery } from '@sparky/core'
-import { AlertCircle, ArrowLeftRight, Download, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
+import { AlertCircle, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader } from '@/components/Controls'
+import { JobIcons } from '@/components/JobRow'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -76,12 +77,11 @@ export function HistoryPage() {
       <Card className="overflow-hidden">
         {entries.length === 0 && <div className="px-6 py-12 text-center text-[13px] text-subtle-foreground">{query.text ? 'Nothing matches that search.' : 'Finished jobs are saved here so you can find or repeat them.'}</div>}
         {entries.map((h) => {
-          const Icon = h.status === 'failed' ? AlertCircle : h.kind === 'download' ? Download : ArrowLeftRight
           const detail = h.status === 'failed' ? h.error : h.status === 'canceled' ? 'Canceled' : describeSaving(h.sizeBefore, h.sizeAfter) ?? `${h.outputs.length} ${h.outputs.length === 1 ? 'file' : 'files'}`
           return (
             <div key={h.id} className="group flex items-center gap-3 border-b px-4 py-2.5 last:border-b-0">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary">
-                <Icon size={14} className={h.status === 'failed' ? 'text-destructive' : ''} />
+              <span className="flex h-8 w-14 shrink-0 items-center">
+                <JobIcons job={h} size={18} badge={h.status === 'failed' ? <AlertCircle size={10} className="text-destructive" /> : undefined} />
               </span>
               <div className="flex min-w-0 grow flex-col">
                 <span className="truncate text-[13px] font-medium" title={h.source}>

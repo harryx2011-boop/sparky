@@ -1,0 +1,35 @@
+The SVGs in svg/ (and their copies in svgs.ts) come from vscode-icons.
+
+Pack:    vscode-icons 12.19.0
+Source:  https://github.com/vscode-icons/vscode-icons/tree/d2fc92ede72121115e17daf4db40afef6b2c22e4/icons
+Commit:  d2fc92ede72121115e17daf4db40afef6b2c22e4 (master, 2026-09-25)
+Fetched: vendor.mjs in this folder, which pins that commit.
+
+Changes from the originals, all made by vendor.mjs:
+- The <title> element is removed, so an inline icon shows no "file_type_..." tooltip.
+- A fill that disappears on one theme takes the text colour (currentColor) instead:
+  default_file (#c5c5c5), file_type_audio (#00007f), file_type_avif (the "AV"
+  letters, unfilled black), file_type_markdown (#755838), file_type_text
+  (the page outline, #c2c2c2). Brand colours are never changed.
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Roberto Huertas
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -25,6 +25,42 @@ A free, open-source file converter and link downloader for Windows. Everything h
 
 No uploads, no account, nothing to set up. Your originals are kept unless you ask otherwise, and even then they go to the Recycle Bin.
 
+## Tools
+
+Beyond converting and downloading, the **Tools** page (Ctrl+3) and the `sparky` command run:
+
+- **PDF**: images to PDF, PDF to images, merge, split, rotate, remove or extract pages, save the images inside, flatten, and (with Ghostscript) shrink, add or remove a password.
+- **Video and audio**: trim, crop, turn, resize, change speed or volume, shrink to a target size, make thumbnails, turn a clip into a GIF.
+- **Images**: resize, rotate, strip metadata, make a Windows icon, turn several images into a GIF.
+- **Text**: read the text in an image or PDF, as plain text or a searchable PDF.
+
+`sparky ops` lists them all and which ones can run on this PC.
+
+## For agents
+
+Every tool is also open to AI agents, scripts and other programs. The work runs on your PC and your files never leave it.
+
+- **Claude Code and other agents (MCP):** `claude mcp add --scope user sparky -- cmd /c sparky mcp`, or open **Settings → Agents** in the app and add Sparky to your agent with one click. `sparky init --client claude-code|cursor|codex|windsurf` does the same from a terminal.
+- **Terminal:** the installer puts `sparky` on your PATH.
+
+  ```sh
+  sparky pdf merge a.pdf b.pdf
+  sparky convert clip.mov --to mp4
+  ```
+
+  Add `--json` for output a script can read. Without the app, install the CLI with `npm i -g @sparky-labs/cli` and run `sparky setup`.
+- **Any program (HTTP):** while the app is open it takes jobs at `http://127.0.0.1:8600`, reachable only from this PC. Each request carries the token in `%APPDATA%\Sparky\api-token`, which only your Windows account can read.
+
+  ```powershell
+  $token = Get-Content "$env:APPDATA\Sparky\api-token"
+  $body = '{"op":"pdf.merge","args":{"files":["C:/a.pdf","C:/b.pdf"]}}'
+  Invoke-RestMethod -Method Post http://127.0.0.1:8600/v1/jobs `
+    -Headers @{ Authorization = "Bearer $token" } `
+    -ContentType 'application/json' -Body $body
+  ```
+
+Full details: [packages/cli/README.md](packages/cli/README.md).
+
 ## Install
 
 Download `Sparky-Setup.exe` from the [latest release](https://github.com/harryx2011-boop/sparky/releases/latest) and run it. Sparky needs Windows 10 or 11 (64-bit). It updates itself, and it keeps its downloader current so sites keep working.
@@ -43,7 +79,7 @@ git clone https://github.com/harryx2011-boop/sparky.git
 cd sparky
 npm install
 
-npm run dev:web          # the landing site at http://localhost:5173
+npm run dev:web          # the landing site at http://localhost:4600
 npm run dev:ui -w @sparky/desktop   # the app's interface in a browser, with sample data
 npm run fetch-fonts      # download the Satoshi font (optional; falls back to system fonts)
 npm run fetch-tools      # download FFmpeg, yt-dlp, Pandoc, 7-Zip and Deno (Windows builds)
@@ -61,12 +97,13 @@ apps/
     src/main/         window, tray, notifications, IPC
     src/preload/      the small API the interface is allowed to use
     src/renderer/     React + Tailwind + shadcn/ui interface
-  web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to Vercel
+  web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to Vercel; its Tools list is src/data/ops.json, written by scripts/gen-site-ops.mjs
 packages/
+  cli/            the sparky command, MCP server and init, bundled into the installer and published to npm
   core/           shared logic: formats, levels, 1440p/4K rules, tool command lines, progress parsing
   engine/         op registry, job queue, tool runners, history (no Electron imports, tested on its own)
   ui/             shared look: theme, Performance bars, Compression slider, Resolution picker
-scripts/          fetch-tools (bundled binaries) and make-icons
+scripts/          fetch-tools (bundled binaries), make-icons, stage-cli and gen-site-ops
 docs/             product spec and the original design mockup
 ```
 

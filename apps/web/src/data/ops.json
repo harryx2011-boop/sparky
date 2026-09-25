@@ -1,0 +1,284 @@
+[
+  {
+    "id": "convert",
+    "label": "Convert a file",
+    "category": "convert",
+    "fields": [
+      "Files",
+      "Convert to",
+      "Compression",
+      "Video size",
+      "Speed",
+      "Originals",
+      "Video type",
+      "Video data rate",
+      "Audio data rate",
+      "Picture quality",
+      "Start at (seconds)",
+      "End at (seconds)",
+      "Width (pixels)",
+      "Height (pixels)",
+      "Frames per second"
+    ]
+  },
+  {
+    "id": "download",
+    "label": "Download from a link",
+    "category": "download",
+    "fields": [
+      "Links",
+      "Queue title",
+      "Save as",
+      "Video quality",
+      "Playlist items",
+      "Number of items",
+      "Then convert to",
+      "Compression",
+      "Speed",
+      "Cover art",
+      "Subtitles",
+      "Subtitle languages",
+      "Titles, artist and chapters",
+      "Skip sponsor segments"
+    ]
+  },
+  {
+    "id": "pdf.from_images",
+    "label": "Images to PDF",
+    "category": "pdf",
+    "fields": [
+      "Pictures",
+      "Page size",
+      "Orientation",
+      "Margin (mm)",
+      "Picture fit",
+      "One PDF for all"
+    ]
+  },
+  {
+    "id": "pdf.to_images",
+    "label": "PDF to images",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Picture format",
+      "Resolution (DPI)",
+      "Pages",
+      "Quality"
+    ]
+  },
+  {
+    "id": "pdf.merge",
+    "label": "Merge PDFs",
+    "category": "pdf",
+    "fields": [
+      "PDF files"
+    ]
+  },
+  {
+    "id": "pdf.split",
+    "label": "Split a PDF",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Split by",
+      "Ranges",
+      "Pages per file"
+    ]
+  },
+  {
+    "id": "pdf.rotate",
+    "label": "Rotate PDF pages",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Turn by",
+      "Pages"
+    ]
+  },
+  {
+    "id": "pdf.remove_pages",
+    "label": "Remove PDF pages",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Pages to remove"
+    ]
+  },
+  {
+    "id": "pdf.extract_pages",
+    "label": "Extract PDF pages",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Pages to keep"
+    ]
+  },
+  {
+    "id": "pdf.extract_images",
+    "label": "Save the images in a PDF",
+    "category": "pdf",
+    "fields": [
+      "PDF files"
+    ]
+  },
+  {
+    "id": "pdf.compress",
+    "label": "Shrink a PDF",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Compression"
+    ]
+  },
+  {
+    "id": "pdf.protect",
+    "label": "Add a password to a PDF",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Password to open",
+      "Password to change",
+      "Allow printing",
+      "Allow copying text and pictures"
+    ]
+  },
+  {
+    "id": "pdf.unlock",
+    "label": "Remove a PDF password",
+    "category": "pdf",
+    "fields": [
+      "PDF files",
+      "Password"
+    ]
+  },
+  {
+    "id": "pdf.flatten",
+    "label": "Flatten a PDF",
+    "category": "pdf",
+    "fields": [
+      "PDF files"
+    ]
+  },
+  {
+    "id": "media.edit",
+    "label": "Edit a video or audio file",
+    "category": "video",
+    "fields": [
+      "Files",
+      "Save as",
+      "Start at",
+      "End at",
+      "Crop from the left",
+      "Crop from the top",
+      "Crop width",
+      "Crop height",
+      "Turn",
+      "Flip",
+      "Width",
+      "Height",
+      "Frames per second",
+      "Remove sound",
+      "Volume",
+      "Fade in",
+      "Fade out",
+      "Play backwards",
+      "Speed",
+      "Quality",
+      "Performance"
+    ]
+  },
+  {
+    "id": "media.compress",
+    "label": "Make a video or audio file smaller",
+    "category": "video",
+    "fields": [
+      "Files",
+      "Aim for",
+      "Size in MB",
+      "Save as",
+      "Performance"
+    ]
+  },
+  {
+    "id": "media.thumbs",
+    "label": "Make thumbnails from a video",
+    "category": "video",
+    "fields": [
+      "Files",
+      "Kind",
+      "Take from",
+      "Frames",
+      "Frames per row",
+      "Width",
+      "Preview length",
+      "Frames per second",
+      "Performance"
+    ]
+  },
+  {
+    "id": "media.gif",
+    "label": "Turn a video into a GIF",
+    "category": "video",
+    "fields": [
+      "Files",
+      "Frames per second",
+      "Width",
+      "Loop",
+      "Colour blending",
+      "Start at",
+      "End at",
+      "Performance"
+    ]
+  },
+  {
+    "id": "image.edit",
+    "label": "Edit an image",
+    "category": "image",
+    "fields": [
+      "Pictures",
+      "Width",
+      "Height",
+      "Scale",
+      "Fit",
+      "Rotate",
+      "Flip",
+      "Strip metadata",
+      "Quality",
+      "Lossless",
+      "Background",
+      "Format"
+    ]
+  },
+  {
+    "id": "image.ico",
+    "label": "Make a Windows icon",
+    "category": "image",
+    "fields": [
+      "Pictures",
+      "Sizes"
+    ]
+  },
+  {
+    "id": "image.gif",
+    "label": "Turn images into a GIF",
+    "category": "image",
+    "fields": [
+      "Pictures",
+      "Frame time",
+      "Loop",
+      "Width"
+    ]
+  },
+  {
+    "id": "ocr",
+    "label": "Read the text in an image or PDF",
+    "category": "tool",
+    "fields": [
+      "Pictures or PDFs",
+      "Save as",
+      "PDF resolution (DPI)",
+      "Language"
+    ]
+  }
+]
