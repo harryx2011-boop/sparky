@@ -1,7 +1,7 @@
 # Sparky — Project Context
 
 **Current version:** 1.0.0 (root and `apps/desktop/package.json`)
-**Last updated:** 2026-09-24 (downloads default, layout fill)
+**Last updated:** 2026-09-24 (v1.0.0 shipped)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -48,6 +48,10 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 
 ## Open
 
-- First release: push tag `v1.0.0` to publish the installer; until then the site's download button 404s. Confirmed 2026-09-24: no tags and no releases yet on `harryx2011-boop/sparky`, so `electron-updater` (wired correctly — `publish.provider: github` at the right repo, `autoUpdater.checkForUpdatesAndNotify()` on ready) has nothing to check against until the first tag ships.
 - Code signing certificate (removes the SmartScreen warning).
 - Older commits (before `10de03f`) carry a Claude co-author trailer from the web session that scaffolded the repo; rewriting them needs a force-push.
+
+## Release history
+
+- **v1.0.0** (2026-09-24): first release. Tag pushed, `.github/workflows/release.yml` built and published `Sparky-Setup.exe` + `latest.yml` (+ `.blockmap`) to GitHub Releases. The site's download button and `electron-updater` both verified live: `releases/latest/download/Sparky-Setup.exe` returns 200, `latest.yml` carries a valid version/sha512/size.
+  - **Bug hit and fixed:** electron-builder's publish step raced itself (two near-simultaneous `publishing`/`creating GitHub release` calls in the job log) and created **two release objects for the same `v1.0.0` tag** — the canonical one held the installer and `latest.yml`, an orphan held only `Sparky-Setup.exe.blockmap`. A stray release sharing a `tag_name` makes GitHub 422 any `gh release edit` on either one (`Release.tag_name already exists`), which is why the workflow's "Write the release notes" step failed even though the build/publish step itself succeeded. Fixed manually for v1.0.0 (moved the blockmap onto the canonical release, deleted the orphan, then set the title/notes) and hardened the workflow with a "Collapse a duplicate release" step before the notes step, so any future tag self-heals instead of leaving a broken release + a stuck edit step.

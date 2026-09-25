@@ -34,6 +34,36 @@ jobs:
         run: npm run package -w @sparky/desktop -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Collapse a duplicate release
+        # electron-builder's publish step can race itself and create two release
+        # objects for the same tag (seen shipping v1.0.0: one held the installer
+        # and latest.yml, an orphan held only the .blockmap). A stray release with
+        # the same tag_name makes every future `gh release edit` on it 422.
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          ids=$(gh api "repos/$GITHUB_REPOSITORY/releases" --jq ".[] | select(.tag_name == \"$GITHUB_REF_NAME\") | .id")
+          count=$(echo "$ids" | grep -c . || true)
+          if [ "$count" -le 1 ]; then
+            echo "No duplicate for $GITHUB_REF_NAME."
+            exit 0
+          fi
+          echo "Found $count release objects for $GITHUB_REF_NAME: $ids"
+          keep=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json databaseId --jq .databaseId)
+          echo "Canonical release (the one the tag resolves to): $keep"
+          for id in $ids; do
+            [ "$id" = "$keep" ] && continue
+            echo "Moving assets off orphan release $id, then deleting it."
+            for asset_id in $(gh api "repos/$GITHUB_REPOSITORY/releases/$id" --jq '.assets[].id'); do
+              name=$(gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" --jq .name)
+              echo "  asset $name ($asset_id) -> release $keep"
+              gh api "repos/$GITHUB_REPOSITORY/releases/assets/$asset_id" -H "Accept: application/octet-stream" > "$name"
+              gh release upload "$GITHUB_REF_NAME" "$name" --repo "$GITHUB_REPOSITORY" --clobber
+            done
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$id"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Write the release notes
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
