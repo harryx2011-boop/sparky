@@ -50,7 +50,7 @@ export function Hero() {
           className="relative mx-auto grid w-full max-w-[1200px] pb-16 pt-[44svh] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:pt-24"
         >
           <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:gap-7 lg:text-left">
-            <h1 className="text-balance text-[44px] font-bold leading-[1.02] tracking-[-0.04em] sm:text-[64px]">
+            <h1 className="text-balance text-[clamp(40px,calc(2.6vw+26px),64px)] font-bold leading-[1.04] tracking-[-0.04em]">
               <SplitText text="Convert anything." delay={0.4} />
               <br />
               <SplitText text="Download everything." delay={0.65} />

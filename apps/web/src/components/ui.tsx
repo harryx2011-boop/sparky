@@ -38,7 +38,7 @@ export function Reveal({ children, className, delay = 0, y = 40 }: { children: R
 /** Section heading. Each line's words rise into place when it scrolls into view. */
 export function Heading({ lines, className }: { lines: string[]; className?: string }) {
   return (
-    <h2 className={cn('text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[52px]', className)}>
+    <h2 className={cn('text-balance text-[clamp(36px,calc(2vw+24px),52px)] font-bold leading-[1.04] tracking-[-0.035em]', className)}>
       {lines.map((l, i) => (
         <span key={l} className="block">
           <SplitText text={l} inView delay={i * 0.18} />

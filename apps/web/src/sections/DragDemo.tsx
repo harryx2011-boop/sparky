@@ -378,7 +378,7 @@ export function DragDemo() {
     <section id="watch" className="relative border-t border-[#161616] py-24 lg:py-32">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12 px-4 sm:px-6">
         <div className="flex flex-col items-center gap-5 text-center">
-          <h2 className="text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[52px]">
+          <h2 className="text-balance text-[clamp(36px,calc(2vw+24px),52px)] font-bold leading-[1.04] tracking-[-0.035em]">
             <SplitText text="Drag it in. Pick a format." inView />
             <br />
             <SplitText text="That’s the whole trick." inView delay={0.25} className="text-muted-foreground" />

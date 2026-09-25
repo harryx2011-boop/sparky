@@ -22,7 +22,7 @@ export function SplitText({ text, delay = 0, inView = false, className, stagger 
   return (
     <span ref={ref} className={cn('inline', className)} aria-label={text}>
       {words.map((w, i) => (
-        <span key={i} aria-hidden className="inline-block overflow-hidden pb-[0.08em] align-bottom">
+        <span key={i} aria-hidden className="-mb-[0.25em] inline-block overflow-hidden pb-[0.25em] align-bottom">
           <motion.span
             className="inline-block"
             initial={reduce ? { opacity: 0 } : { y: '105%', opacity: 0, filter: 'blur(8px)' }}

@@ -25,6 +25,35 @@
   font-style: italic;
   font-display: swap;
 }
+/*
+ * While Satoshi loads, or when it is missing, the local fallback borrows Satoshi's vertical metrics
+ * (ascent 1.01, descent 0.24, gap 0.1 per em) so line boxes, masks and descenders land in the same place.
+ */
+/* One face per weight bucket: a static Regular claiming 100-900 would stop the browser synthesizing bold. */
+@font-face {
+  font-family: "Satoshi Fallback";
+  src: local("Segoe UI Variable"), local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+  font-weight: 100 500;
+  ascent-override: 101%;
+  descent-override: 24%;
+  line-gap-override: 10%;
+}
+@font-face {
+  font-family: "Satoshi Fallback";
+  src: local("Segoe UI Variable"), local("Segoe UI Semibold"), local("Helvetica Neue Medium"), local("Arial Bold");
+  font-weight: 600;
+  ascent-override: 101%;
+  descent-override: 24%;
+  line-gap-override: 10%;
+}
+@font-face {
+  font-family: "Satoshi Fallback";
+  src: local("Segoe UI Variable"), local("Segoe UI Bold"), local("Helvetica Neue Bold"), local("Arial Bold");
+  font-weight: 700 900;
+  ascent-override: 101%;
+  descent-override: 24%;
+  line-gap-override: 10%;
+}
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -88,7 +117,7 @@
 }
 
 @theme inline {
-  --font-sans: "Satoshi", "General Sans", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-sans: "Satoshi", "Satoshi Fallback", "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", "Cascadia Mono", ui-monospace, Consolas, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);

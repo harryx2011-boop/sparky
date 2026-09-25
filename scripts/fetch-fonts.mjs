@@ -27,7 +27,10 @@ try {
   const zip = path.join(work, 'satoshi.zip')
   fs.writeFileSync(zip, Buffer.from(await res.arrayBuffer()))
   const require = createRequire(path.join(root, 'package.json'))
-  execFileSync(require('7zip-bin').path7za, ['x', '-y', `-o${path.join(work, 'x')}`, zip], { stdio: 'ignore' })
+  const sevenZip = require('7zip-bin').path7za
+  // npm drops the execute bit on Linux (Vercel's build container), so 7za fails with EACCES without this.
+  if (process.platform !== 'win32') fs.chmodSync(sevenZip, 0o755)
+  execFileSync(sevenZip, ['x', '-y', `-o${path.join(work, 'x')}`, zip], { stdio: 'ignore' })
 
   const found = new Map()
   const stack = [path.join(work, 'x')]
