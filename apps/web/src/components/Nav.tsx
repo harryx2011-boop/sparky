@@ -1,11 +1,13 @@
 import { CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
 import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useState } from 'react'
+import { DOWNLOAD_PAGE } from '../links'
 import { Magnetic } from './motion'
 import { SECTION_LINKS } from './sections'
 import { ButtonLink } from './ui'
 
-export function Nav() {
+/** `home` prefixes the section links when the header sits on another page; `cta` is where the download button goes. */
+export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: string }) {
   const { scrollY } = useScroll()
   const [hidden, setHidden] = useState(false)
   const [solid, setSolid] = useState(false)
@@ -22,13 +24,13 @@ export function Nav() {
       className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${solid ? 'border-[#1a1a1a] bg-background/75 backdrop-blur-md' : 'border-transparent bg-transparent'}`}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[72px]">
-        <a href="#top" className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
+        <a href={`${home}#top`} className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
           <LogoMark size={28} />
           Sparky
         </a>
         <nav aria-label="Sections" className="hidden gap-7 text-sm text-muted-foreground lg:flex">
           {SECTION_LINKS.map(([label, href]) => (
-            <a key={href} href={href} className="transition-colors hover:text-foreground">
+            <a key={href} href={`${home}${href}`} className="transition-colors hover:text-foreground">
               {label}
             </a>
           ))}
@@ -42,7 +44,7 @@ export function Nav() {
             <GithubIcon size={17} />
           </a>
           <Magnetic strength={0.2}>
-            <ButtonLink href="#get" variant="primary" size="sm">
+            <ButtonLink href={cta} variant="primary" size="sm">
               <span className="sm:hidden">Download</span>
               <span className="hidden sm:inline">Download for Windows</span>
             </ButtonLink>

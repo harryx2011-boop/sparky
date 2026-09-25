@@ -5,7 +5,7 @@ import { SECTION_LINKS } from './sections'
 const pill =
   'inline-flex h-10 items-center gap-2 rounded-lg border border-input bg-[#141414] px-3.5 text-[13px] text-foreground transition-colors hover:bg-[#1c1c1c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
-export function Footer() {
+export function Footer({ home = '' }: { home?: string }) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
     try {
@@ -26,7 +26,7 @@ export function Footer() {
           <span>Free and open source (MIT license). Built with FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
           <nav aria-label="Page sections" className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
             {SECTION_LINKS.map(([label, href]) => (
-              <a key={href} href={href} className="text-muted-foreground transition-colors hover:text-foreground">
+              <a key={href} href={`${home}${href}`} className="text-muted-foreground transition-colors hover:text-foreground">
                 {label}
               </a>
             ))}
