@@ -318,4 +318,14 @@ export const mockApi: SparkyApi = {
   copyText: async (t) => navigator.clipboard?.writeText(t),
   onNavigate: () => () => undefined,
   api: { info: async () => ({ running: true, port: 8600, tokenPath: 'C:\\Users\\you\\AppData\\Roaming\\Sparky\\api-token' }), revealToken: noop },
+  icons: { forExt: async () => null },
+  agents: {
+    detect: async () => [
+      { id: 'claude-code', label: 'Claude Code', found: true, installed: false, configPath: 'C:\\Users\\you\\.claude.json' },
+      { id: 'cursor', label: 'Cursor', found: true, installed: true, configPath: 'C:\\Users\\you\\.cursor\\mcp.json' },
+      { id: 'codex', label: 'Codex', found: false, installed: false, configPath: 'C:\\Users\\you\\.codex\\config.toml' },
+      { id: 'windsurf', label: 'Windsurf', found: false, installed: false, configPath: 'C:\\Users\\you\\.codeium\\windsurf\\mcp_config.json' },
+    ],
+    install: async () => ({ ok: true, message: 'Added Sparky to Claude Code.' }),
+  },
 }

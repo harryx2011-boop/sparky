@@ -70,6 +70,8 @@ const api: SparkyApi = {
   copyText: (text) => invoke('clipboard:write', text),
   onNavigate: (l) => listen('navigate', l),
   api: { info: () => invoke('api:info'), revealToken: () => invoke('api:revealToken') },
+  icons: { forExt: (ext) => invoke('icons:forExt', ext) },
+  agents: { detect: () => invoke('agents:detect'), install: (id) => invoke('agents:install', id) },
 }
 
 contextBridge.exposeInMainWorld('sparky', api)

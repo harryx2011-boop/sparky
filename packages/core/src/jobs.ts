@@ -393,6 +393,14 @@ export interface SparkyApi {
     /** Shows the token file in Explorer; the token itself never reaches the UI or the clipboard. */
     revealToken(): Promise<void>
   }
+  icons: {
+    /** A data URL for the icon Windows shows for this extension, or null when Windows has no specific one. */
+    forExt(ext: string): Promise<string | null>
+  }
+  agents: {
+    detect(): Promise<AgentClient[]>
+    install(id: string): Promise<AgentInstallResult>
+  }
 }
 
 export type Section = 'convert' | 'download' | 'tools' | 'queue' | 'history' | 'settings'
@@ -404,4 +412,21 @@ export interface ApiInfo {
   port: number
   /** The token file clients read. */
   tokenPath: string
+}
+
+/** An agent client that can run Sparky's MCP server. */
+export interface AgentClient {
+  id: string
+  label: string
+  /** The client is installed on this PC. */
+  found: boolean
+  /** Its config already lists Sparky. */
+  installed: boolean
+  configPath: string
+}
+
+export interface AgentInstallResult {
+  ok: boolean
+  message: string
+  path?: string
 }
