@@ -158,6 +158,10 @@ function updateTray(jobs: Job[]): void {
 function notifyFinished(job: Job): void {
   send('queue:finished', job)
   const s = engine.getSettings()
+  // A single finished download opens its folder right away, notifications aside.
+  if (job.op === 'download' && job.status === 'done' && job.outputs.length === 1 && s.openFolderOnDownload) {
+    shell.showItemInFolder(job.outputs[0]!)
+  }
   if (!s.notifications || !Notification.isSupported()) return
   if (job.status === 'canceled') return
   // When the window is in front, the in-app toast is enough.

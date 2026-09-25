@@ -164,6 +164,9 @@ export function SettingsPage() {
         <Row title="Notifications" hint="A Windows notification when a job finishes or fails">
           <Switch checked={settings.notifications} onCheckedChange={(v) => void updateSettings({ notifications: v })} />
         </Row>
+        <Row title="Open folder when a download finishes" hint="Opens File Explorer to the saved file so you can move it">
+          <Switch checked={settings.openFolderOnDownload} onCheckedChange={(v) => void updateSettings({ openFolderOnDownload: v })} />
+        </Row>
         <Row title="Offer links from the clipboard" hint="When you switch to Sparky with a video link copied, it asks if you want it">
           <Switch checked={settings.clipboardDetection} onCheckedChange={(v) => void updateSettings({ clipboardDetection: v })} />
         </Row>

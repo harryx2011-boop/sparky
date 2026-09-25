@@ -165,6 +165,7 @@ export interface Settings {
   theme: Theme
   closeToTray: boolean
   notifications: boolean
+  openFolderOnDownload: boolean
   clipboardDetection: boolean
   sidebarCollapsed: boolean
   dockHeight: number
@@ -190,6 +191,7 @@ export function defaultSettings(outputRoot: string): Settings {
     theme: 'dark',
     closeToTray: true,
     notifications: true,
+    openFolderOnDownload: true,
     clipboardDetection: true,
     sidebarCollapsed: false,
     dockHeight: 168,
