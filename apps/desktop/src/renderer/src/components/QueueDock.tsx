@@ -45,13 +45,14 @@ export function QueueDock() {
         onPointerUp={onPointerUp}
       />
       <div className="flex h-9 shrink-0 items-center justify-between px-5">
-        <button type="button" onClick={() => go('queue')} className="font-mono text-[10px] uppercase tracking-[0.12em] text-subtle-foreground hover:text-foreground">
+        <button type="button" onClick={() => go('queue')} className="flex items-center gap-2 rounded-sm font-mono text-[10px] uppercase tracking-[0.12em] text-subtle-foreground hover:text-foreground">
+          {running > 0 && <span aria-hidden className="size-1.5 rounded-full bg-lime" />}
           Queue · {running ? `${running} running` : jobs.length ? 'idle' : 'empty'}
         </button>
         {(running > 0 || paused > 0) && (
           <button
             type="button"
-            className="flex items-center gap-1.5 text-[11px] text-subtle-foreground hover:text-foreground"
+            className="flex items-center gap-1.5 rounded-sm text-[11px] text-subtle-foreground hover:text-foreground"
             onClick={() => void (running > 0 ? api.queue.pauseAll() : api.queue.resumeAll())}
           >
             {running > 0 ? <Pause size={11} /> : <Play size={11} />}

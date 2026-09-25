@@ -5,6 +5,7 @@ import {
   animate,
   motion,
   useInView,
+  useMotionTemplate,
   useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
@@ -76,7 +77,11 @@ function DropScene({ progress, onRow }: { progress: MotionValue<number>; onRow: 
   const bar = useTransform(morph, (m) => `${m * 100}%`)
   const size = useTransform(morph, (m) => formatBytes(ex.before + (ex.after - ex.before) * m))
   const done = useTransform(local, [0.66, 0.74], [0, 1])
-  const zoneGlow = useTransform(local, [0.2, 0.3, 0.4], [0, 1, 0])
+  // The zone lights up lime as the file arrives, the same drag-over state the app shows.
+  const zonePct = useTransform(local, [0.2, 0.3, 0.4], [0, 100, 0])
+  const zoneFillPct = useTransform(zonePct, (v) => v * 0.08)
+  const zoneBorder = useMotionTemplate`color-mix(in oklab, var(--lime) ${zonePct}%, var(--input))`
+  const zoneFill = useMotionTemplate`color-mix(in oklab, var(--lime) ${zoneFillPct}%, transparent)`
   useEffect(() => onRow(ex.row), [ex.row, onRow])
   const Icon = ex.icon
   const saved = Math.round((1 - ex.after / ex.before) * 100)
@@ -84,14 +89,12 @@ function DropScene({ progress, onRow }: { progress: MotionValue<number>; onRow: 
   return (
     <div className="relative flex h-[420px] items-end justify-center overflow-hidden rounded-2xl border border-border bg-[#0e0e0e] p-6 sm:h-[460px]">
       <motion.div
-        aria-hidden
-        style={{ opacity: zoneGlow }}
-        className="absolute inset-x-6 bottom-6 h-[210px] rounded-xl bg-[radial-gradient(closest-side,rgba(237,237,237,.12),transparent)]"
-      />
-      <div className="relative flex h-[210px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#2e2e2e] text-[13px] text-subtle-foreground">
+        style={{ borderColor: zoneBorder, backgroundColor: zoneFill }}
+        className="relative flex h-[210px] w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed text-[13px] text-subtle-foreground"
+      >
         <Upload size={20} />
         Drop files here
-      </div>
+      </motion.div>
 
       <motion.div style={{ y, rotate, opacity: enter }} className="absolute bottom-[74px] left-1/2 w-[min(340px,80%)] -translate-x-1/2">
         <div className="rounded-xl border border-input bg-card p-4 shadow-[0_20px_60px_rgba(0,0,0,.5)]">

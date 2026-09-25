@@ -2,7 +2,7 @@ import { CONTACT, DiscordIcon, GithubIcon, GmailIcon, LogoMark } from '@sparky/u
 import { useState } from 'react'
 
 const pill =
-  'inline-flex h-10 items-center gap-2 rounded-[10px] border border-input bg-[#141414] px-3.5 text-[13px] text-foreground transition-colors hover:bg-[#1c1c1c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+  'inline-flex h-10 items-center gap-2 rounded-lg border border-input bg-[#141414] px-3.5 text-[13px] text-foreground transition-colors hover:bg-[#1c1c1c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
 export function Footer() {
   const [copied, setCopied] = useState(false)

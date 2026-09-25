@@ -98,7 +98,7 @@ export function ScrollProgress() {
   return (
     <motion.div
       aria-hidden
-      className="fixed inset-x-0 top-0 z-50 h-[2px] origin-left bg-[linear-gradient(90deg,#8fb8ff,#8b7cf6,#ff7a45,#ffd166)]"
+      className="fixed inset-x-0 top-0 z-50 h-[2px] origin-left bg-lime"
       style={{ scaleX }}
     />
   )

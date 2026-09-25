@@ -1,7 +1,7 @@
 import { BrandMark, cn, LinkMark } from '@sparky/ui'
 import { Link2, ListVideo, Play } from 'lucide-react'
-import { motion, useInView, useReducedMotion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { motion, useInView } from 'motion/react'
+import { useRef, useState } from 'react'
 import { Heading, Lead } from '../components/ui'
 
 const LINK = 'youtube.com/playlist?list=lofi-for-late-nights'
@@ -22,30 +22,10 @@ const EXTRA_SUMMARY: Record<(typeof EXTRAS)[number], string> = {
   'Skip sponsor segments': 'sponsors skipped',
 }
 
-function useTypewriter(text: string, start: boolean) {
-  const reduce = useReducedMotion()
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    if (!start) return
-    if (reduce) {
-      setN(text.length)
-      return
-    }
-    let i = 0
-    const id = window.setInterval(() => {
-      i += 1
-      setN(i)
-      if (i >= text.length) window.clearInterval(id)
-    }, 32)
-    return () => window.clearInterval(id)
-  }, [start, text, reduce])
-  return { typed: text.slice(0, n), done: n >= text.length }
-}
-
 export function Download() {
   const cardRef = useRef<HTMLDivElement>(null)
-  const inView = useInView(cardRef, { once: true, amount: 0.4 })
-  const { typed, done } = useTypewriter(LINK, inView)
+  // The link is simply there once the card is in view; the preview below follows it in.
+  const done = useInView(cardRef, { once: true, amount: 0.4 })
   const [checks, setChecks] = useState([true, true, false, true, true])
   const [extras, setExtras] = useState<Record<string, boolean>>({ 'Cover art': true, 'Song names and artist': true, 'Skip sponsor segments': true })
   const [mode, setMode] = useState<'Video' | 'Audio'>('Audio')
@@ -61,9 +41,11 @@ export function Download() {
     <section id="download" className="border-t border-[#161616] px-4 py-24 sm:px-6 lg:py-32">
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
         <div ref={cardRef} className="order-2 flex flex-col gap-3.5 rounded-2xl border border-border bg-card p-4 sm:p-5 lg:order-1">
-          <div className="flex h-[42px] items-center gap-2.5 rounded-[10px] border border-input bg-[#0d0d0d] px-3.5 text-[13px] text-muted-foreground">
+          <div className="flex h-[42px] items-center gap-2.5 rounded-lg border border-input bg-[#0d0d0d] px-3.5 text-[13px] text-muted-foreground">
             {done ? <LinkMark url={`https://${LINK}`} size={15} /> : <Link2 size={15} className="shrink-0" />}
-            <span className={cn('truncate font-mono', !done && 'caret')}>{typed}</span>
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: done ? 1 : 0 }} transition={{ duration: 0.3 }} className="truncate font-mono">
+              {LINK}
+            </motion.span>
           </div>
 
           <motion.div {...show(0)} className="flex items-center gap-4">
@@ -80,7 +62,7 @@ export function Download() {
             </div>
           </motion.div>
 
-          <motion.div {...show(0.1)} className="flex flex-col overflow-hidden rounded-[10px] border border-[#1f1f1f]">
+          <motion.div {...show(0.1)} className="flex flex-col overflow-hidden rounded-lg border border-[#1f1f1f]">
             <div className="flex h-9 items-center justify-between border-b border-[#1a1a1a] px-3.5 text-xs text-subtle-foreground">
               <span className="flex items-center gap-2">
                 <ListVideo size={14} /> Pick what to keep
@@ -111,7 +93,7 @@ export function Download() {
             ))}
           </motion.div>
 
-          <motion.div {...show(0.44)} className="grid grid-cols-1 overflow-hidden rounded-[10px] border border-[#1f1f1f] sm:grid-cols-2">
+          <motion.div {...show(0.44)} className="grid grid-cols-1 overflow-hidden rounded-lg border border-[#1f1f1f] sm:grid-cols-2">
             {EXTRAS.map((e) => (
               <label key={e} className="flex h-[42px] cursor-pointer items-center justify-between gap-3 border-b border-[#1a1a1a] px-3.5 text-[13px] hover:bg-[#141414] last:border-b-0 sm:odd:border-r sm:[&:nth-last-child(2)]:border-b-0">
                 <span className="truncate">{e}</span>
@@ -120,7 +102,10 @@ export function Download() {
                   role="switch"
                   aria-checked={Boolean(extras[e])}
                   onClick={() => setExtras((x) => ({ ...x, [e]: !x[e] }))}
-                  className={cn('relative h-5 w-9 shrink-0 rounded-full transition-colors', extras[e] ? 'bg-foreground' : 'bg-[#2a2a2a]')}
+                  className={cn(
+                    'relative h-5 w-9 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card',
+                    extras[e] ? 'bg-lime' : 'bg-input',
+                  )}
                 >
                   <span className={cn('absolute top-0.5 left-0.5 size-4 rounded-full bg-background transition-transform duration-200', extras[e] && 'translate-x-4')} />
                 </button>
@@ -138,7 +123,10 @@ export function Download() {
                     role="radio"
                     aria-checked={mode === m}
                     onClick={() => setMode(m)}
-                    className={cn('h-7 rounded-md px-3 transition-colors', mode === m ? 'bg-secondary text-foreground' : 'text-subtle-foreground hover:text-foreground')}
+                    className={cn(
+                      'h-7 rounded-md px-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
+                      mode === m ? 'bg-secondary text-foreground' : 'text-subtle-foreground hover:text-foreground',
+                    )}
                   >
                     {m}
                   </button>
@@ -146,7 +134,7 @@ export function Download() {
               </div>
               <span className="text-xs text-subtle-foreground">{summary}</span>
             </div>
-            <span className="inline-flex h-[38px] items-center rounded-[10px] bg-primary px-4 text-[13px] font-medium text-primary-foreground">Download {picked} items</span>
+            <span className="inline-flex h-[38px] items-center rounded-lg bg-lime px-4 text-[13px] font-medium text-lime-foreground">Download {picked} items</span>
           </motion.div>
         </div>
 

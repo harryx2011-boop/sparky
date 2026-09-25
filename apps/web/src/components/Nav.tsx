@@ -43,7 +43,7 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <a
             href={CONTACT.github}
-            className="hidden size-9 items-center justify-center rounded-[10px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
+            className="hidden size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"
             aria-label="Sparky on GitHub"
           >
             <GithubIcon size={17} />

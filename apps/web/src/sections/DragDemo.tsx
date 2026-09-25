@@ -43,17 +43,6 @@ const CONVERT = { x: 1010, y: 494 }
 
 type Phase = 'idle' | 'drag' | 'over' | 'dropped' | 'menu' | 'picked' | 'converting' | 'done'
 
-const CAPTIONS: Record<Phase, (ex: Example) => string> = {
-  idle: (ex) => `Grabbing ${ex.name}.${ex.from.toLowerCase()}`,
-  drag: () => 'Dragging it into Sparky',
-  over: () => 'Let go anywhere in the window',
-  dropped: () => 'Sparky reads the file',
-  menu: () => 'Picking a format',
-  picked: (ex) => `${ex.to} it is`,
-  converting: () => 'Converting right on your PC',
-  done: (ex) => `Done: ${Math.round((1 - ex.after / ex.before) * 100)}% smaller`,
-}
-
 class Stop extends Error {}
 
 function Cursor({ x, y, pressed }: { x: MotionValue<number>; y: MotionValue<number>; pressed: boolean }) {
@@ -91,12 +80,11 @@ function Burst({ play, x, y }: { play: boolean; x: number; y: number }) {
         Array.from({ length: 18 }, (_, i) => {
           const a = (i / 18) * Math.PI * 2
           const d = 38 + (i % 3) * 18
-          const colors = ['#ededed', '#ffd166', '#ff7a45', '#8fb8ff', '#8b7cf6']
           return (
             <motion.span
               key={i}
               className="absolute size-[4px] rounded-full"
-              style={{ background: colors[i % colors.length] }}
+              style={{ background: i % 3 === 0 ? 'var(--lime)' : 'var(--foreground)' }}
               initial={{ x: 0, y: 0, opacity: 1, scale: 1.2 }}
               animate={{ x: Math.cos(a) * d, y: Math.sin(a) * d, opacity: 0, scale: 0.3 }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
@@ -219,7 +207,7 @@ function Stage() {
   return (
     <div ref={ref} className="relative select-none" style={{ width: W, height: H }}>
       {/* Desktop with files */}
-      <div className="absolute left-0 top-0 h-full w-[340px] overflow-hidden rounded-2xl border border-border bg-[radial-gradient(120%_80%_at_20%_0%,#1b1b2a,#0d0d0d_60%)]">
+      <div className="absolute left-0 top-0 h-full w-[340px] overflow-hidden rounded-2xl border border-border bg-secondary">
         <div className="flex h-10 items-center gap-2 border-b border-white/5 px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-subtle-foreground">Desktop</div>
         {EXAMPLES.map((e, i) => {
           const T = TILES[i]!
@@ -249,12 +237,11 @@ function Stage() {
         </div>
         <div className="relative flex grow flex-col gap-4 p-7">
           <motion.div
-            animate={{
-              borderColor: phase === 'over' ? 'rgba(237,237,237,.8)' : 'rgba(46,46,46,1)',
-              backgroundColor: phase === 'over' ? 'rgba(237,237,237,.06)' : 'rgba(0,0,0,0)',
-              scale: phase === 'over' ? 1.015 : 1,
-            }}
-            className="flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground"
+            animate={{ scale: phase === 'over' ? 1.015 : 1 }}
+            className={cn(
+              'flex h-[120px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] transition-colors duration-200',
+              phase === 'over' ? 'border-lime bg-lime/8 text-foreground' : 'border-input text-subtle-foreground',
+            )}
           >
             <motion.span animate={phase === 'over' ? { y: [0, -4, 0] } : { y: 0 }} transition={{ duration: 0.6, repeat: phase === 'over' ? Infinity : 0 }}>
               <Upload size={20} />
@@ -271,7 +258,7 @@ function Stage() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 40 }}
                   transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-                  className="relative flex h-[56px] items-center gap-3 overflow-hidden rounded-[10px] border border-[#1f1f1f] bg-[#121212] px-3.5 text-[13px]"
+                  className="relative flex h-[56px] items-center gap-3 overflow-hidden rounded-lg border border-[#1f1f1f] bg-[#121212] px-3.5 text-[13px]"
                 >
                   <span className="flex size-8 items-center justify-center rounded-lg bg-secondary">
                     <Icon size={15} />
@@ -294,7 +281,7 @@ function Stage() {
                     )}
                   </AnimatePresence>
                   <div className="absolute inset-x-0 bottom-0 h-[2px] bg-transparent">
-                    <motion.div className={cn('h-full', phase === 'converting' ? 'sp-shimmer' : 'bg-foreground')} style={{ width }} />
+                    <motion.div className={cn('h-full', phase === 'converting' ? 'sp-running' : 'bg-foreground')} style={{ width }} />
                   </div>
                 </motion.div>
               )}
@@ -347,16 +334,11 @@ function Stage() {
             )}
           </AnimatePresence>
 
-          <div className="mt-auto flex items-center justify-between">
-            <AnimatePresence mode="wait">
-              <motion.span key={phase + ex.name} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 6 }} className={cn('font-mono text-xs', phase === 'done' ? 'text-success' : 'text-subtle-foreground')}>
-                {CAPTIONS[phase](ex)}
-              </motion.span>
-            </AnimatePresence>
+          <div className="mt-auto flex items-center justify-end">
             <motion.span
-              animate={{ scale: phase === 'picked' ? [1, 1.06, 1] : 1, opacity: format ? 1 : 0.45 }}
+              animate={{ scale: phase === 'picked' ? [1, 1.04, 1] : 1, opacity: format ? 1 : 0.4 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex h-9 w-[120px] items-center justify-center rounded-[10px] bg-primary text-[13px] font-medium text-primary-foreground"
+              className="inline-flex h-9 w-[120px] items-center justify-center rounded-lg bg-lime text-[13px] font-medium text-lime-foreground"
             >
               {phase === 'converting' ? 'Converting…' : 'Convert'}
             </motion.span>
@@ -396,7 +378,7 @@ export function DragDemo() {
     <section id="watch" className="relative border-t border-[#161616] py-24 lg:py-32">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12 px-4 sm:px-6">
         <div className="flex flex-col items-center gap-5 text-center">
-          <h2 className="text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[56px]">
+          <h2 className="text-balance text-[40px] font-bold leading-[1.02] tracking-[-0.035em] sm:text-[52px]">
             <SplitText text="Drag it in. Pick a format." inView />
             <br />
             <SplitText text="That’s the whole trick." inView delay={0.25} className="text-muted-foreground" />

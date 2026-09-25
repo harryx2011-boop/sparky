@@ -9,7 +9,7 @@ export function Progress({ value, running, className, tone }: { value: number; r
       <div
         className={cn(
           'h-full rounded-full transition-[width] duration-300',
-          running ? 'sp-shimmer' : tone === 'success' ? 'bg-success' : tone === 'error' ? 'bg-destructive' : tone === 'muted' ? 'bg-subtle-foreground' : 'bg-foreground',
+          running ? 'sp-running' : tone === 'success' ? 'bg-success' : tone === 'error' ? 'bg-destructive' : tone === 'muted' ? 'bg-subtle-foreground' : 'bg-foreground',
           indeterminate && running && 'opacity-60',
         )}
         style={{ width: `${pct}%` }}

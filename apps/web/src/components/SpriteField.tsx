@@ -18,13 +18,17 @@ const BOLT: [number, number][] = [
   [13, 2],
 ]
 
+/** White dots with a lime sprinkle. The lime is read from the theme so it stays the one accent. */
 const PALETTE = [
-  { rgb: '237,237,237', weight: 0.62 },
-  { rgb: '143,184,255', weight: 0.16 },
-  { rgb: '139,124,246', weight: 0.11 },
-  { rgb: '255,209,102', weight: 0.07 },
-  { rgb: '255,122,69', weight: 0.04 },
+  { token: '--foreground', weight: 0.8 },
+  { token: '--lime', weight: 0.2 },
 ]
+
+function tokenRgb(token: string): string {
+  const hex = getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+  const n = parseInt(hex.slice(1), 16)
+  return Number.isFinite(n) && hex.length === 7 ? `${n >> 16},${(n >> 8) & 255},${n & 255}` : '237,237,237'
+}
 
 interface Particle {
   /** Home on the bolt, in bolt units (0–24). */
@@ -99,7 +103,8 @@ function sampleBolt(count: number): [number, number][] {
 }
 
 function makeSprites(): HTMLCanvasElement[] {
-  return PALETTE.map(({ rgb }) => {
+  return PALETTE.map(({ token }) => {
+    const rgb = tokenRgb(token)
     const c = document.createElement('canvas')
     c.width = c.height = 32
     const g = c.getContext('2d')!

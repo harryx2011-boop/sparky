@@ -19,7 +19,7 @@ import {
   type VideoCodec,
 } from '@sparky/core'
 import { cn, CompressionSlider, ResolutionPicker } from '@sparky/ui'
-import { Archive, FileText, Image, Music, Upload, Video, X, type LucideIcon } from 'lucide-react'
+import { Archive, FileText, Image, Loader2, Music, Upload, Video, X, type LucideIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -81,9 +81,10 @@ function DropZone({ onFiles, compact }: { onFiles: (paths: string[]) => void; co
         onFiles([...e.dataTransfer.files].map((f) => api.files.pathFor(f)))
       }}
       className={cn(
-        'group flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground transition-colors hover:border-ring hover:bg-accent/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'group flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         compact ? 'h-[72px] shrink-0' : 'min-h-[220px] grow',
-        over ? 'border-foreground bg-accent/60 text-foreground' : 'border-input',
+        // Drag-over is the lime state; hover only applies when nothing is being dragged, so it can never outrank it.
+        over ? 'border-lime bg-lime/8 text-foreground' : 'border-input hover:border-muted-foreground hover:bg-accent/40 hover:text-foreground',
       )}
     >
       <Upload size={compact ? 18 : 24} />
@@ -121,7 +122,12 @@ function FileList({ files, onRemove }: { files: ProbeResult[]; onRemove: (p: str
               </span>
               {!f.category && <span className="text-xs text-destructive">Can’t convert this type</span>}
               <span className="shrink-0 font-mono text-xs text-subtle-foreground">{meta.join(' · ')}</span>
-              <button type="button" aria-label={`Remove ${f.name}`} className="rounded p-1 text-subtle-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100" onClick={() => onRemove(f.path)}>
+              <button
+                type="button"
+                aria-label={`Remove ${f.name}`}
+                className="rounded-sm p-1 text-subtle-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring group-hover:opacity-100"
+                onClick={() => onRemove(f.path)}
+              >
                 <X size={13} />
               </button>
             </motion.div>
@@ -144,6 +150,7 @@ export function ConvertPage() {
   const [resolution, setResolution] = useState<Resolution | null>(null)
   const [originals, setOriginals] = useState<OriginalsMode>('keep')
   const [confirm, setConfirm] = useState(false)
+  const [starting, setStarting] = useState(false)
   const [adv, setAdv] = useState<{ codec?: VideoCodec; videoKbps: string; audioKbps: string; trimStart: string; trimEnd: string; width: string; height: string; quality: string }>({
     videoKbps: '',
     audioKbps: '',
@@ -192,6 +199,7 @@ export function ConvertPage() {
   }
 
   const start = async () => {
+    setStarting(true)
     try {
       let count = 0
       for (const { group, output } of outputs) {
@@ -206,6 +214,8 @@ export function ConvertPage() {
       clearFiles()
     } catch (e) {
       toast.error((e as Error).message)
+    } finally {
+      setStarting(false)
     }
   }
 
@@ -345,7 +355,8 @@ export function ConvertPage() {
 
           <div className="flex items-center justify-end gap-3">
             {originals !== 'keep' && <span className="text-xs text-warning">Originals go to the Recycle Bin</span>}
-            <Button size="lg" disabled={convertible === 0} onClick={() => (originals === 'keep' ? void start() : setConfirm(true))}>
+            <Button size="lg" disabled={convertible === 0 || starting} onClick={() => (originals === 'keep' ? void start() : setConfirm(true))}>
+              {starting && <Loader2 size={14} className="animate-spin" />}
               Convert {convertible} {convertible === 1 ? 'file' : 'files'}
             </Button>
           </div>

@@ -18,7 +18,7 @@ export function Get() {
         <SpriteField getProgress={getProgress} assembleOnMount={false} boltScale={0.7} boltY={0.48} className="size-full opacity-80" />
       </div>
       <div className="relative mx-auto flex max-w-[720px] flex-col items-center gap-7 text-center">
-        <h2 className="text-balance text-[44px] font-bold leading-[1.02] tracking-[-0.04em] sm:text-[72px]">
+        <h2 className="text-balance text-[44px] font-bold leading-[1.02] tracking-[-0.04em] sm:text-[64px]">
           <SplitText text="Give your files a spark." inView />
         </h2>
         <p className="text-lg text-muted-foreground">Free for Windows 10 and 11. Open source, so anyone can see how it works.</p>

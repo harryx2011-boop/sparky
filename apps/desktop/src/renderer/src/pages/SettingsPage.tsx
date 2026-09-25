@@ -16,7 +16,7 @@ function Row({ title, hint, children }: { title: string; hint?: ReactNode; child
     <div className="flex items-center justify-between gap-6 border-b px-4 py-3 last:border-b-0">
       <div className="flex min-w-0 flex-col gap-0.5">
         <span className="text-[13px]">{title}</span>
-        {hint && <span className="text-xs text-subtle-foreground">{hint}</span>}
+        {hint && <span className="break-words text-xs text-subtle-foreground">{hint}</span>}
       </div>
       <div className="flex shrink-0 items-center gap-2">{children}</div>
     </div>

@@ -4,6 +4,8 @@
  *   @import "@sparky/ui/styles.css";
  *   @source "<path to>/packages/ui/src";
  * Monochrome on purpose: colour only shows up for states and the Performance bars.
+ * Lime is the one accent, shared with the ElixirLabs suite: the primary action, live/on states,
+ * the focus ring, text selection and the drag-over state. Never body text, borders or backgrounds.
  */
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/500.css";
@@ -44,7 +46,10 @@
   --accent-foreground: #111111;
   --border: #e4e4e4;
   --input: #dcdcdc;
-  --ring: #a1a1a1;
+  /* Deeper lime on light: 3.3:1 on #fafafa for rings and fills, 5.5:1 for dark text on it. */
+  --lime: #62990f;
+  --lime-foreground: #111111;
+  --ring: var(--lime);
   --track: #e6e6e6;
   --bar-off: #d9d9d9;
   --success: #16a34a;
@@ -71,7 +76,10 @@
   --accent-foreground: #ededed;
   --border: #232323;
   --input: #2a2a2a;
-  --ring: #5a5a5a;
+  /* The suite lime (ElixirLabs SUITE.lime): 14.7:1 on #0a0a0a. */
+  --lime: #b6f04a;
+  --lime-foreground: #0a0a0a;
+  --ring: var(--lime);
   --track: #222222;
   --bar-off: #2a2a2a;
   --success: #4ade80;
@@ -100,6 +108,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-lime: var(--lime);
+  --color-lime-foreground: var(--lime-foreground);
   --color-track: var(--track);
   --color-success: var(--success);
   --color-destructive: var(--destructive);
@@ -119,6 +129,15 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--lime);
+    color: var(--lime-foreground);
+  }
+  /* Keyboard focus is always visible; components that draw their own ring opt out with outline-none. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 
@@ -155,12 +174,11 @@
 .sp-bar:nth-child(4) { animation-delay: 0.36s !important; }
 .sp-bar:nth-child(5) { animation-delay: 0.48s !important; }
 
-/* ---------- Progress shimmer ---------- */
+/* ---------- Running progress ---------- */
 
-.sp-shimmer {
-  background: linear-gradient(90deg, var(--subtle-foreground), var(--foreground), var(--subtle-foreground));
-  background-size: 200% 100%;
-  animation: sp-shimmer 2.4s linear infinite;
+.sp-running {
+  background: var(--lime);
+  animation: sp-pulse 1.6s ease-in-out infinite;
 }
 
 /* ---------- Sparks ---------- */
@@ -185,9 +203,9 @@
   40% { transform: scaleY(0.86); }
   70% { transform: scaleY(0.95); }
 }
-@keyframes sp-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+@keyframes sp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
 }
 @keyframes sp-twinkle {
   0%, 100% { opacity: 0.15; transform: scale(0.6); }
@@ -197,8 +215,16 @@
 @media (prefers-reduced-motion: reduce) {
   .sp-bar[data-on],
   .sp-bars[data-running] .sp-bar[data-on],
-  .sp-shimmer,
+  .sp-running,
   .sp-spark {
     animation: none !important;
+  }
+  /* Everything else settles instantly: accordion, dialog, spinners, colour transitions. */
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

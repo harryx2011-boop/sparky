@@ -18,10 +18,8 @@ function Tile({ className, icon, title, children, visual, delay = 0 }: { classNa
       <TiltCard className="h-full rounded-2xl">
         <article className="group flex h-full flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card p-6 transition-colors hover:border-[#3a3a3a]">
           <div className="flex flex-col gap-2.5">
-            <motion.span className="text-foreground" whileHover={reduce ? undefined : { rotate: [0, -12, 10, 0], scale: 1.05 }} transition={{ duration: 0.5 }}>
-              {icon}
-            </motion.span>
-            <h3 className="text-base font-bold">{title}</h3>
+            <span className="text-foreground">{icon}</span>
+            <h3 className="text-base font-semibold">{title}</h3>
             <p className="text-sm leading-relaxed text-muted-foreground">{children}</p>
           </div>
           {visual && <div className="mt-auto">{visual}</div>}
@@ -86,7 +84,7 @@ function ClipboardVisual() {
         <span className="truncate">
           Download this? <span className="font-mono text-subtle-foreground">youtu.be/night-bus</span>
         </span>
-        <span className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">Download</span>
+        <span className="shrink-0 rounded-full bg-lime px-3 py-1 text-xs font-medium text-lime-foreground">Download</span>
       </motion.span>
     </div>
   )

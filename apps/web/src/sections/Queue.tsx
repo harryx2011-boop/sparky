@@ -113,7 +113,7 @@ export function Queue() {
                     <span className="truncate">{r.name}</span>
                     <span className="order-last col-span-full h-1 overflow-hidden rounded bg-track sm:order-none sm:col-span-1">
                       <span
-                        className={cn('block h-full rounded transition-[width] duration-150', r.running ? 'sp-shimmer' : 'bg-foreground')}
+                        className={cn('block h-full rounded transition-[width] duration-150', r.running ? 'sp-running' : 'bg-foreground')}
                         style={{ width: `${r.progress}%` }}
                       />
                     </span>

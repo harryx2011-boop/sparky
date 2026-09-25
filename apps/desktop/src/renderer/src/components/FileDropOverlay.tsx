@@ -63,7 +63,7 @@ export function FileDropOverlay() {
           className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-background/85 p-6"
           role="status"
         >
-          <div className="flex size-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-foreground text-foreground">
+          <div className="flex size-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-lime bg-lime/8 text-foreground">
             <Upload size={26} />
             <span className="text-[15px] font-medium">Let go to add the files</span>
             <span className="text-xs text-subtle-foreground">They go straight to the Convert page.</span>

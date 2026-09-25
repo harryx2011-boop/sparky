@@ -1,5 +1,5 @@
 import { describeSaving, formatDuration, type HistoryEntry, type HistoryQuery } from '@sparky/core'
-import { AlertCircle, ArrowLeftRight, Download, FolderOpen, RotateCcw, Search, Trash2, X } from 'lucide-react'
+import { AlertCircle, ArrowLeftRight, Download, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader } from '@/components/Controls'
@@ -27,6 +27,7 @@ export function HistoryPage() {
   const [query, setQuery] = useState<HistoryQuery>({ text: '', kind: 'all', status: 'all' })
   const [entries, setEntries] = useState<HistoryEntry[]>([])
   const [confirmClear, setConfirmClear] = useState(false)
+  const [rerunning, setRerunning] = useState<string | null>(null)
   const finishedCount = jobs.filter((j) => j.status === 'done' || j.status === 'failed' || j.status === 'canceled').length
 
   const load = useCallback(async () => setEntries(await api.history.search(query)), [query])
@@ -98,12 +99,18 @@ export function HistoryPage() {
                   <Button
                     size="sm"
                     variant="secondary"
+                    disabled={rerunning === h.id}
                     onClick={async () => {
-                      const created = await api.history.rerun(h.id)
-                      toast.success(created.length ? 'Added to the queue' : 'Nothing to run again')
+                      setRerunning(h.id)
+                      try {
+                        const created = await api.history.rerun(h.id)
+                        toast.success(created.length ? 'Added to the queue' : 'Nothing to run again')
+                      } finally {
+                        setRerunning(null)
+                      }
                     }}
                   >
-                    <RotateCcw size={12} /> Run again
+                    {rerunning === h.id ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />} Run again
                   </Button>
                 </Tip>
                 {h.outputs[0] && (

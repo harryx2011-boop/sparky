@@ -60,8 +60,10 @@ export function Performance() {
                     aria-checked={selected}
                     onClick={() => setLevel(l.id)}
                     className={cn(
-                      'flex items-center gap-4 border-b border-border px-5 py-4 text-left transition-colors last:border-b-0',
-                      selected ? 'bg-[#161616] text-foreground' : 'bg-[#0f0f0f] text-muted-foreground hover:bg-[#131313]',
+                      'relative flex items-center gap-4 border-b border-border px-5 py-4 text-left transition-colors last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
+                      selected
+                        ? 'bg-[#161616] text-foreground before:absolute before:left-0 before:top-1/2 before:h-6 before:w-[3px] before:-translate-y-1/2 before:rounded-full before:bg-lime'
+                        : 'bg-[#0f0f0f] text-muted-foreground hover:bg-[#131313]',
                     )}
                   >
                     <PerformanceBars level={l.id} size="md" running={selected} className={selected ? '' : 'opacity-60'} />

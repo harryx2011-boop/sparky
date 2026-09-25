@@ -27,7 +27,7 @@ export function FitToWidth({ children, width = W, height = H }: { children: Reac
 
 function NavItem({ icon, label, active }: { icon: ReactNode; label: string; active?: boolean }) {
   return (
-    <span className={`flex h-[34px] items-center gap-2.5 rounded-lg px-2.5 text-[13px] ${active ? 'bg-[#1a1a1a] text-foreground' : 'text-muted-foreground'}`}>
+    <span className={`relative flex h-[34px] items-center gap-2.5 rounded-lg px-2.5 text-[13px] ${active ? 'bg-[#1a1a1a] text-foreground before:absolute before:left-0 before:top-1/2 before:h-4 before:w-[3px] before:-translate-y-1/2 before:rounded-full before:bg-lime' : 'text-muted-foreground'}`}>
       {icon}
       {label}
     </span>
@@ -79,7 +79,7 @@ export function AppWindow() {
               <Upload size={20} />
               Drop files here, or click to browse
             </div>
-            <div className="flex flex-col rounded-[10px] border border-[#1f1f1f]">
+            <div className="flex flex-col rounded-lg border border-[#1f1f1f]">
               {FILES.map(([name, meta], i) => (
                 <div key={name} className={`flex h-11 items-center justify-between px-3.5 text-[13px] ${i < FILES.length - 1 ? 'border-b border-[#1f1f1f]' : ''}`}>
                   <span>{name}</span>
@@ -116,7 +116,7 @@ export function AppWindow() {
               <span className="flex items-center gap-1 text-xs text-subtle-foreground">
                 <ChevronRight size={13} /> More options: trim, size, sound quality
               </span>
-              <span className="inline-flex h-[38px] items-center rounded-[10px] bg-primary px-4 text-[13px] font-medium text-primary-foreground">Convert 3 files</span>
+              <span className="inline-flex h-[38px] items-center rounded-lg bg-lime px-4 text-[13px] font-medium text-lime-foreground">Convert 3 files</span>
             </div>
           </main>
         </div>
@@ -159,7 +159,7 @@ function QueueRow({ name, width, meta }: { name: string; width: number; meta: st
     <div className="grid grid-cols-[220px_minmax(0,1fr)_160px] items-center gap-4 text-xs">
       <span className="truncate">{name}</span>
       <div className="h-1 overflow-hidden rounded bg-track">
-        <div className="sp-shimmer h-full rounded" style={{ width: `${width}%` }} />
+        <div className="sp-running h-full rounded" style={{ width: `${width}%` }} />
       </div>
       <span className="text-right font-mono text-subtle-foreground">{meta}</span>
     </div>

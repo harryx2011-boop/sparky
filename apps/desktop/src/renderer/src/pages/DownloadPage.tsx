@@ -46,6 +46,7 @@ export function DownloadPage() {
   const [convertTo, setConvertTo] = useState<string>(NONE)
   const [audioFormat, setAudioFormat] = useState('mp3')
   const [updating, setUpdating] = useState(false)
+  const [starting, setStarting] = useState(false)
 
   const inspect = async (raw: string) => {
     const link = asLink(raw)
@@ -103,6 +104,7 @@ export function DownloadPage() {
 
   const start = async () => {
     if (!info) return
+    setStarting(true)
     try {
       await api.download.start({
         url: info.url,
@@ -119,6 +121,8 @@ export function DownloadPage() {
       toast.success(count > 1 ? `${count} items added to the queue` : 'Added to the queue')
     } catch (e) {
       toast.error((e as Error).message)
+    } finally {
+      setStarting(false)
     }
   }
 
@@ -151,7 +155,8 @@ export function DownloadPage() {
         >
           <ClipboardPaste size={14} /> Paste
         </Button>
-        <Button type="submit" size="lg" className="h-10" disabled={!url.trim() || state.kind === 'loading'}>
+        {/* Preview is the main action until a preview is up; then Download takes the accent. */}
+        <Button type="submit" size="lg" variant={info ? 'secondary' : 'default'} className="h-10" disabled={!url.trim() || state.kind === 'loading'}>
           {state.kind === 'loading' ? <Loader2 size={14} className="animate-spin" /> : null}
           Preview
         </Button>
@@ -239,7 +244,7 @@ export function DownloadPage() {
                 </div>
                 <button
                   type="button"
-                  className="hover:text-foreground"
+                  className="rounded-sm hover:text-foreground"
                   onClick={() => setSelected(selected.size === info.entries.length ? new Set() : new Set(info.entries.map((e) => e.index)))}
                 >
                   {selected.size === info.entries.length ? 'Clear all' : 'Select all'}
@@ -346,7 +351,8 @@ export function DownloadPage() {
               {mode === 'video' ? ` · ${activeQuality ? (activeQuality === 2160 ? '4K' : `${activeQuality}p`) : 'best quality'}` : ''}
               {extras.sponsorBlock ? ' · sponsor segments skipped' : ''}
             </span>
-            <Button size="lg" disabled={count === 0} onClick={() => void start()}>
+            <Button size="lg" disabled={count === 0 || starting} onClick={() => void start()}>
+              {starting && <Loader2 size={14} className="animate-spin" />}
               {count > 1 ? `Download ${count} items` : 'Download'}
             </Button>
           </div>

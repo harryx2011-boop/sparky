@@ -31,7 +31,7 @@ export function ClipboardChip() {
           </span>
           <button
             type="button"
-            className="shrink-0 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground"
+            className="shrink-0 rounded-full bg-lime px-3 py-1 text-xs font-medium text-lime-foreground transition-colors hover:bg-lime/90"
             onClick={() => {
               setPendingLink(url)
               go('download')

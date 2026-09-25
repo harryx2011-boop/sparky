@@ -1,5 +1,5 @@
 import type { Section } from '@sparky/core'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, MotionConfig } from 'motion/react'
 import { useEffect, type ReactNode } from 'react'
 import { Toaster, toast } from 'sonner'
 import { ClipboardChip } from './components/ClipboardChip'
@@ -98,10 +98,12 @@ function Shell() {
 
 export function App() {
   return (
-    <AppProvider>
-      <TooltipProvider delayDuration={250}>
-        <Shell />
-      </TooltipProvider>
-    </AppProvider>
+    <MotionConfig reducedMotion="user">
+      <AppProvider>
+        <TooltipProvider delayDuration={250}>
+          <Shell />
+        </TooltipProvider>
+      </AppProvider>
+    </MotionConfig>
   )
 }

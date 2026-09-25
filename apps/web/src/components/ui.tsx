@@ -7,11 +7,11 @@ export function ButtonLink({ variant = 'secondary', size = 'md', className, ...p
   return (
     <a
       className={cn(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] border font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         size === 'sm' && 'h-9 px-3.5 text-[13px]',
         size === 'md' && 'h-11 px-[18px] text-sm',
         size === 'lg' && 'h-[50px] px-6 text-[15px]',
-        variant === 'primary' ? 'border-primary bg-primary text-primary-foreground hover:bg-white' : 'border-input bg-[#141414] text-foreground hover:bg-[#1c1c1c]',
+        variant === 'primary' ? 'border-lime bg-lime text-lime-foreground hover:bg-lime/90' : 'border-input bg-[#141414] text-foreground hover:bg-[#1c1c1c]',
         className,
       )}
       {...props}
@@ -49,7 +49,7 @@ export function Heading({ lines, className }: { lines: string[]; className?: str
 }
 
 export function Lead({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn('text-pretty text-[17px] leading-relaxed text-muted-foreground sm:text-lg', className)}>{children}</p>
+  return <p className={cn('text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg', className)}>{children}</p>
 }
 
 const SPARK_POSITIONS = [
