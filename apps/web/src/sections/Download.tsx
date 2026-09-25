@@ -1,15 +1,11 @@
 import { BrandMark, cn, LinkMark } from '@sparky/ui'
-import { siteInfo, type SiteId } from '@sparky/core'
 import { Link2, ListVideo, Play } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import { SiteStrip } from '../components/SiteStrip'
 import { Heading, Lead } from '../components/ui'
 
 const LINK = 'youtube.com/playlist?list=lofi-for-late-nights'
-
-/** The sites named on the page, each with its real mark. */
-const SITE_IDS: SiteId[] = ['youtube', 'tiktok', 'instagram', 'x', 'vimeo', 'soundcloud', 'twitch', 'reddit', 'facebook']
-const SITES = SITE_IDS.map(siteInfo)
 
 const ITEMS = [
   { title: 'Rainy window, warm tea', len: '3:42' },
@@ -161,21 +157,9 @@ export function Download() {
             Grab one video, a whole playlist or a channel, in sharp 4K or as music for your phone. Tick the ones you want and
             Sparky can turn them into MP3 in the same go.
           </Lead>
-          <p className="text-[15px] leading-relaxed text-muted-foreground">
-            Works with{' '}
-            {SITES.map((s, i) => (
-              <span key={s.id}>
-                <span className="whitespace-nowrap">
-                  <BrandMark site={s.id} size={15} className="mr-1 inline-block align-[-2px]" />
-                  <span className="text-foreground">{s.name}</span>
-                  {i < SITES.length - 1 ? ',' : ''}
-                </span>{' '}
-              </span>
-            ))}
-            and well over a thousand other sites.
-          </p>
         </div>
       </div>
+      <SiteStrip />
     </section>
   )
 }

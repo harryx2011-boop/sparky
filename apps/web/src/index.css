@@ -40,6 +40,12 @@ body {
   background: currentColor;
   animation: caret 1s steps(1) infinite;
 }
+/* Two identical rows side by side; sliding one row's width loops seamlessly. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 @keyframes caret {
   50% { opacity: 0; }
 }
