@@ -1,5 +1,5 @@
 import { formatBytes } from '@sparky/core'
-import { Bolt, cn, PerformanceBars } from '@sparky/ui'
+import { Bolt, cn, LogoMark, PerformanceBars } from '@sparky/ui'
 import { Check, ChevronDown, FileText, Image, Music, Search, Upload, Video, type LucideIcon } from 'lucide-react'
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type MotionValue } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
@@ -245,7 +245,7 @@ function Stage() {
       {/* Sparky window */}
       <div className="absolute left-[400px] top-0 flex h-full w-[700px] flex-col overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0e0e0e] shadow-[0_30px_90px_rgba(0,0,0,.55)]">
         <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#1c1c1c] px-4 text-xs text-subtle-foreground">
-          <Bolt size={12} className="text-foreground" /> Sparky
+          <LogoMark size={16} /> Sparky
         </div>
         <div className="relative flex grow flex-col gap-4 p-7">
           <motion.div
@@ -259,7 +259,7 @@ function Stage() {
             <motion.span animate={phase === 'over' ? { y: [0, -4, 0] } : { y: 0 }} transition={{ duration: 0.6, repeat: phase === 'over' ? Infinity : 0 }}>
               <Upload size={20} />
             </motion.span>
-            {phase === 'over' ? 'Let go to add it' : 'Drop files here, or browse'}
+            {phase === 'over' ? 'Let go to add it' : 'Drop files here, or click to browse'}
           </motion.div>
 
           <div className="h-[56px]">

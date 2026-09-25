@@ -18,7 +18,7 @@ export const GmailIcon = brand(siGmail)
 export const DiscordIcon = brand(siDiscord)
 export const GithubIcon = brand(siGithub)
 
-/** The Sparky bolt. */
+/** The Sparky bolt on its own, as an icon. */
 export function Bolt({ size = 16, strokeWidth = 2.4, ...props }: IconProps & { strokeWidth?: number }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
@@ -27,14 +27,12 @@ export function Bolt({ size = 16, strokeWidth = 2.4, ...props }: IconProps & { s
   )
 }
 
-/** The bolt in a rounded tile, used as the logo. */
+/** The Sparky logo: a white bolt on a dark tile. Same drawing as the app icon and the favicon. */
 export function LogoMark({ size = 28, className }: { size?: number; className?: string }) {
   return (
-    <span
-      className={className}
-      style={{ width: size, height: size, borderRadius: size * 0.28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--foreground)', color: 'var(--background)', flexShrink: 0 }}
-    >
-      <Bolt size={Math.round(size * 0.57)} strokeWidth={2.3} />
-    </span>
+    <svg viewBox="0 0 64 64" width={size} height={size} className={className} style={{ flexShrink: 0 }} aria-hidden="true">
+      <rect x="2" y="2" width="60" height="60" rx="16" fill="#0A0A0A" stroke="#2A2A2A" strokeWidth="1.5" />
+      <path d="M34.7 12 16 35.6h18.5L31.8 52 50.5 28.4H32L34.7 12z" fill="none" stroke="#EDEDED" strokeWidth="4.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }

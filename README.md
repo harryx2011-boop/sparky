@@ -18,10 +18,10 @@ A free, open-source file converter and link downloader for Windows. Everything h
 ## What it does
 
 - **Converts files** between common formats: video (MP4, WEBM, MKV, MOV, GIF), audio (MP3, WAV, FLAC, M4A, OGG), images (PNG, JPG, WEBP, AVIF, ICO, and HEIC or BMP in), documents (PDF, DOCX, MD, HTML, TXT) and archives (ZIP, 7Z, and RAR in).
-- **Shrinks files** without changing their format. Pick the same format and slide **Compression** from *Near original* to *Tiny*.
-- **Downloads from links**: YouTube and the other sites yt-dlp supports, including whole playlists and channels, up to 4K. You can turn a download into MP3 (or anything else) in the same step.
-- **Lets you choose how hard it works**: *Low* stays quiet, *Normal* is everyday speed, and *Max* uses your graphics card and every core. 1440p and 4K unlock on Max when your video and graphics card allow it.
-- **Handles the small things**: one queue for everything, history you can re-run, clipboard link detection, tray mode, Windows notifications, cover art and tags, subtitles, and skipping sponsor segments.
+- **Shrinks files** without changing their format. Pick the same format and slide **Compression** from *Lossless* (an original quality export) to *Tiny*.
+- **Downloads from links**: YouTube, TikTok, Instagram, X, Vimeo, SoundCloud, Twitch, Reddit, Facebook and well over a thousand other sites, including whole playlists and channels, up to 4K. You can turn a download into MP3 (or anything else) in the same step.
+- **Lets you choose how hard it works**: *Low* stays quiet, *Normal* is everyday speed, and *Max* uses your graphics card and all of your processor. 1440p and 4K unlock on Max when your video and graphics card allow it.
+- **Handles the small things**: batch conversion (drop a whole folder and several files run at the same time), one queue for everything, history you can re-run, clipboard link detection, tray mode, Windows notifications, cover art and tags, subtitles, and skipping sponsor segments.
 
 No uploads, no account, nothing to set up. Your originals are kept unless you ask otherwise, and even then they go to the Recycle Bin.
 

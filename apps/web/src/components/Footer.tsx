@@ -1,4 +1,4 @@
-import { Bolt, CONTACT, DiscordIcon, GithubIcon, GmailIcon } from '@sparky/ui'
+import { CONTACT, DiscordIcon, GithubIcon, GmailIcon, LogoMark } from '@sparky/ui'
 import { useState } from 'react'
 
 const pill =
@@ -20,7 +20,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1.5 text-[13px] text-subtle-foreground">
           <span className="flex items-center gap-2 text-foreground">
-            <Bolt size={14} /> Sparky
+            <LogoMark size={18} /> Sparky
           </span>
           <span>Free and open source (MIT license). Built with FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
         </div>

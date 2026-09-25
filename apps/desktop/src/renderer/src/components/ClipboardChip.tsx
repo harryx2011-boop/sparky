@@ -1,3 +1,4 @@
+import { hasMark, LinkMark } from '@sparky/ui'
 import { Clipboard, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
@@ -24,7 +25,7 @@ export function ClipboardChip() {
           className="sticky bottom-4 left-1/2 z-30 mx-auto -mb-9 mt-auto flex h-9 max-w-[min(560px,90%)] w-fit items-center gap-2 rounded-full border bg-popover pl-3 pr-1 text-[13px] shadow-lg"
           role="status"
         >
-          <Clipboard size={14} className="shrink-0 text-muted-foreground" />
+          {hasMark(url) ? <LinkMark url={url} size={14} /> : <Clipboard size={14} className="shrink-0 text-muted-foreground" />}
           <span className="truncate">
             Download this? <span className="font-mono text-xs text-subtle-foreground">{url.replace(/^https?:\/\/(www\.)?/, '')}</span>
           </span>

@@ -1,4 +1,4 @@
-import { CONCURRENCY_MAX, CONCURRENCY_MIN, type Job } from '@sparky/core'
+import type { Job } from '@sparky/core'
 import { cn } from '@sparky/ui'
 import { Loader2, Pause, Play, RefreshCw, Trash2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -11,7 +11,7 @@ import { api } from '@/lib/api'
 import { useApp } from '@/lib/state'
 
 export function QueuePage() {
-  const { jobs, settings, updateSettings } = useApp()
+  const { jobs, settings } = useApp()
   const [dragId, setDragId] = useState<string | null>(null)
   const [updating, setUpdating] = useState(false)
   const active = jobs.filter((j) => j.status === 'running' || j.status === 'queued' || j.status === 'paused')
@@ -61,23 +61,7 @@ export function QueuePage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader title="Queue" meta={`${running} running · ${settings?.concurrency ?? 2} at once`}>
-        <div className="flex items-center gap-1.5 text-xs text-subtle-foreground">
-          At once
-          <div className="flex rounded-lg border border-input p-0.5">
-            {Array.from({ length: CONCURRENCY_MAX - CONCURRENCY_MIN + 1 }, (_, i) => i + CONCURRENCY_MIN).map((n) => (
-              <button
-                key={n}
-                type="button"
-                aria-pressed={settings?.concurrency === n}
-                onClick={() => void updateSettings({ concurrency: n })}
-                className={cn('size-6 rounded-md font-mono text-[11px]', settings?.concurrency === n ? 'bg-secondary text-foreground' : 'hover:text-foreground')}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
+      <PageHeader title="Queue" meta={`${running} running${settings?.batch === false ? ' · one at a time' : ''}`}>
         {active.length > 0 && (
           <Button size="sm" variant="secondary" onClick={() => void (running ? api.queue.pauseAll() : api.queue.resumeAll())}>
             {running ? <Pause size={13} /> : <Play size={13} />}

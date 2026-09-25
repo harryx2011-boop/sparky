@@ -73,7 +73,7 @@ The control is a row of bars that fill left to right and animate with a shifting
 
 **Originals.** Originals are kept by default. A per-job toggle offers "Replace original" or "Delete original after success", with a confirm dialog and a move to the Recycle Bin rather than a hard delete.
 
-**Batch.** Multiple files can be dropped at once; each becomes its own job in the queue.
+**Batch.** Multiple files (or a whole folder) can be dropped at once; each becomes its own job in the queue, and with Batch conversion on several run side by side.
 
 **Resolution: 1440p and 4K.** Downloads and video conversions offer 720p, 1080p, 1440p and 4K (2160p). The two higher options unlock only when all three conditions hold; otherwise they show greyed out with the reason as a tooltip.
 
@@ -87,7 +87,7 @@ The control is a row of bars that fill left to right and animate with a shifting
 
 | Level | Video (CRF / CQ) | Audio | Images (quality) |
 | --- | --- | --- | --- |
-| Near original | CRF 16 | 320 kbps / FLAC | 95 |
+| Lossless ("Original quality export") | CRF 16 | 320 kbps / FLAC | 95 |
 | High | CRF 20 | 256 kbps | 88 |
 | Balanced (default) | CRF 23 | 192 kbps | 80 |
 | Small | CRF 28 | 128 kbps | 70 |
@@ -120,11 +120,11 @@ The downloader accepts any yt-dlp supported link, previews it, and downloads vid
 
 ## Jobs, history & system
 
-Every conversion and download is a job in one shared queue, with a user-set concurrency limit and a searchable history.
+Every conversion and download is a job in one shared queue, with a Batch conversion switch and a searchable history.
 
 | Feature | Behavior |
 | --- | --- |
-| Concurrency | User-configurable in Settings, from 1 to 8 jobs at once (default 2) |
+| Batch conversion | One on/off switch in Settings, on by default. On, Sparky picks how many jobs run together from the Performance level and the PC: Low 1, Normal 2, Max half the processor threads clamped to 2–4 (`batchConcurrency` in core). Off, one at a time. An old stored `concurrency` number migrates to on when it was above 1 |
 | Job controls | Pause, resume, cancel, retry; drag to reorder pending jobs |
 | Progress | Bar per job with percent, speed (MB/s or x realtime) and ETA |
 | History | Saved in SQLite: source, output path, settings, duration, status; search, filter, "Re-run" and "Show in folder" |

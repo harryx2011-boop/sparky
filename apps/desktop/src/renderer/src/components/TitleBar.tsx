@@ -1,4 +1,4 @@
-import { Bolt } from '@sparky/ui'
+import { LogoMark } from '@sparky/ui'
 import { Copy, Minus, Square, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
@@ -14,7 +14,7 @@ export function TitleBar() {
   return (
     <header className="flex h-9 shrink-0 items-center justify-between border-b pl-3.5 text-xs text-subtle-foreground [-webkit-app-region:drag]" onDoubleClick={() => api.window.toggleMaximize()}>
       <span className="flex items-center gap-2">
-        <Bolt size={13} className="text-foreground" />
+        <LogoMark size={16} />
         Sparky
       </span>
       <div className="flex h-full">

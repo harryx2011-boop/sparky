@@ -1,5 +1,6 @@
 // The engine as one object: queue, tools, history and settings. Knows nothing about Electron.
 import {
+  batchConcurrency,
   categoryOf,
   normalizeExt,
   type ConvertSettings,
@@ -53,7 +54,8 @@ export async function createEngine(opts: EngineOptions) {
     tempDir: opts.tempDir,
   }
 
-  const queue = new JobQueue((job, ctx) => (job.kind === 'download' ? runDownloadJob(env, job, ctx) : runConvertJob(env, job, ctx)), settings.concurrency)
+  const atOnce = (s: Settings) => batchConcurrency(s.performance, env.cores, s.batch)
+  const queue = new JobQueue((job, ctx) => (job.kind === 'download' ? runDownloadJob(env, job, ctx) : runConvertJob(env, job, ctx)), atOnce(settings))
   let closed = false
   queue.on('finished', (job) => {
     if (!closed) store.record(job)
@@ -83,7 +85,7 @@ export async function createEngine(opts: EngineOptions) {
     setSettings(patch: Partial<Settings>): Settings {
       store.saveSettings(patch)
       settings = store.loadSettings(opts.defaultRoot)
-      queue.setConcurrency(settings.concurrency)
+      queue.setConcurrency(atOnce(settings))
       return settings
     },
 

@@ -62,10 +62,13 @@ function useGroups(files: ProbeResult[]): Group[] {
   }, [files])
 }
 
+/** The whole zone is one button: click, Enter or Space opens the file picker; dropping files adds them. */
 function DropZone({ onFiles, compact }: { onFiles: (paths: string[]) => void; compact: boolean }) {
   const [over, setOver] = useState(false)
   return (
-    <div
+    <button
+      type="button"
+      onClick={() => void api.files.pick().then(onFiles)}
       onDragOver={(e) => {
         e.preventDefault()
         setOver(true)
@@ -73,24 +76,22 @@ function DropZone({ onFiles, compact }: { onFiles: (paths: string[]) => void; co
       onDragLeave={() => setOver(false)}
       onDrop={(e) => {
         e.preventDefault()
+        e.stopPropagation()
         setOver(false)
         onFiles([...e.dataTransfer.files].map((f) => api.files.pathFor(f)))
       }}
       className={cn(
-        'flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground transition-colors',
-        compact ? 'h-[72px]' : 'h-[220px]',
+        'group flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground transition-colors hover:border-ring hover:bg-accent/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        compact ? 'h-[72px] shrink-0' : 'min-h-[220px] grow',
         over ? 'border-foreground bg-accent/60 text-foreground' : 'border-input',
       )}
     >
       <Upload size={compact ? 18 : 24} />
       <span>
-        Drop files here, or{' '}
-        <button type="button" className="text-foreground underline-offset-4 hover:underline" onClick={() => void api.files.pick().then(onFiles)}>
-          browse
-        </button>
+        Drop files here, or <span className="text-foreground underline-offset-4 group-hover:underline">click to browse</span>
       </span>
       {!compact && <span className="text-xs text-subtle-foreground/80">Videos, music, photos, documents and archives. Everything stays on this PC.</span>}
-    </div>
+    </button>
   )
 }
 
@@ -137,7 +138,7 @@ function num(v: string): number | undefined {
 }
 
 export function ConvertPage() {
-  const { files, addFiles, removeFile, clearFiles, settings, updateSettings, system, jobs, go } = useApp()
+  const { files, addFiles, removeFile, clearFiles, settings, updateSettings, system, jobs } = useApp()
   const groups = useGroups(files)
   const [picked, setPicked] = useState<Partial<Record<Category, string>>>({})
   const [resolution, setResolution] = useState<Resolution | null>(null)
@@ -209,7 +210,7 @@ export function ConvertPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex grow flex-col gap-4">
       <PageHeader title="Convert" meta={files.length ? `${files.length} ${files.length === 1 ? 'file' : 'files'} · ${formatBytes(totalSize)}` : undefined}>
         {files.length > 0 && (
           <Button size="sm" variant="ghost" onClick={clearFiles}>
@@ -293,12 +294,12 @@ export function ConvertPage() {
                 </Field>
               )}
               {showResolution && (
-                <Field label="Video data rate" hint="kbps">
+                <Field label="Video data rate" hint="higher is sharper and bigger">
                   <Input inputMode="numeric" placeholder="auto, from Compression" value={adv.videoKbps} onChange={(e) => setAdv((a) => ({ ...a, videoKbps: e.target.value }))} />
                 </Field>
               )}
               {hasTimed && (
-                <Field label="Sound data rate" hint="kbps">
+                <Field label="Sound data rate" hint="higher is richer and bigger">
                   <Input inputMode="numeric" placeholder={String(compressionInfo(compression).audioKbps)} value={adv.audioKbps} onChange={(e) => setAdv((a) => ({ ...a, audioKbps: e.target.value }))} />
                 </Field>
               )}
@@ -351,8 +352,6 @@ export function ConvertPage() {
         </>
       )}
 
-      {files.length === 0 && <EmptyHints onQueue={() => go('queue')} />}
-
       <ConfirmDialog
         open={confirm}
         onOpenChange={setConfirm}
@@ -378,32 +377,4 @@ function groupOptions(options: string[]) {
     byCat.set(heading, [...(byCat.get(heading) ?? []), { value: ext, label: f.label, hint: f.note }])
   }
   return [...byCat.entries()].map(([heading, items]) => ({ heading, items }))
-}
-
-function EmptyHints({ onQueue }: { onQueue: () => void }) {
-  const tips = [
-    ['Shrink a file', 'Pick the same format it already has and slide Compression.'],
-    ['Mix and match', 'Drop videos, photos and documents together. Each type gets its own format.'],
-    ['Keep working', 'Everything waits in the queue below, and keeps going if you close the window.'],
-  ] as const
-  return (
-    <div className="grid grid-cols-3 gap-3">
-      {tips.map(([t, d], i) => (
-        <Card key={t} className="flex flex-col gap-1 p-4">
-          <span className="text-[13px] font-medium">{t}</span>
-          <span className="text-xs leading-relaxed text-subtle-foreground">
-            {d}
-            {i === 2 && (
-              <>
-                {' '}
-                <button type="button" className="text-foreground underline-offset-4 hover:underline" onClick={onQueue}>
-                  Open the queue
-                </button>
-              </>
-            )}
-          </span>
-        </Card>
-      ))}
-    </div>
-  )
 }

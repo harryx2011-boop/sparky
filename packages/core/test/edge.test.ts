@@ -29,6 +29,16 @@ describe('links people actually paste', () => {
     expect(asLink('notalink')).toBeUndefined()
   })
 
+  it('does not mistake a file name for a bare link', () => {
+    for (const name of ['file.tar.gz', 'readme.md', '3.14.mp4', 'clip.mp4', 'song.mp3', 'photos.zip', 'report.pdf', 'IMG_2041.png', 'shot.jpg', 'notes.txt', 'letter.docx', 'Sparky-Setup.exe', 'v1.2.3', '192.168.1.1']) {
+      expect(asLink(name), name).toBeUndefined()
+    }
+    expect(asLink('youtu.be/abc')).toBe('https://youtu.be/abc')
+    expect(asLink('www.youtube.com/watch?v=x')).toBe('https://www.youtube.com/watch?v=x')
+    expect(asLink('vimeo.com/12345')).toBe('https://vimeo.com/12345')
+    expect(asLink('https://cdn.example.com/clip.mp4')).toBe('https://cdn.example.com/clip.mp4')
+  })
+
   it('strips the angle brackets chat apps wrap links in', () => {
     expect(asLink('<https://youtu.be/abc>')).toBe('https://youtu.be/abc')
   })

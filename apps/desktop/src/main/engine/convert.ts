@@ -77,9 +77,25 @@ export async function probe(env: EngineEnv, file: string): Promise<FfprobeInfo |
   }
 }
 
+/** A dropped folder means the files inside it (one level, hidden files skipped). An empty folder stays as one row. */
+async function expandFolders(paths: string[]): Promise<string[]> {
+  const out: string[] = []
+  for (const p of paths) {
+    const stat = await fs.stat(p).catch(() => undefined)
+    if (!stat?.isDirectory()) {
+      out.push(p)
+      continue
+    }
+    const entries = await fs.readdir(p, { withFileTypes: true }).catch(() => [])
+    const files = entries.filter((e) => e.isFile() && !e.name.startsWith('.')).map((e) => path.join(p, e.name))
+    out.push(...(files.length ? files : [p]))
+  }
+  return out
+}
+
 export async function probeFiles(env: EngineEnv, paths: string[]): Promise<ProbeResult[]> {
   return Promise.all(
-    paths.map(async (p) => {
+    (await expandFolders(paths)).map(async (p) => {
       const stat = await fs.stat(p).catch(() => undefined)
       const category = categoryOf(p)
       const base: ProbeResult = { path: p, name: path.basename(p), ext: normalizeExt(p), size: stat?.size ?? 0, category }

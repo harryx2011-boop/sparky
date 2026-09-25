@@ -1,4 +1,4 @@
-import type { Job } from '@sparky/core'
+import { batchConcurrency, type Job } from '@sparky/core'
 import { describe, expect, it } from 'vitest'
 import { CanceledError } from '../src/main/engine/process'
 import { JobQueue, type RunContext } from '../src/main/engine/queue'
@@ -85,6 +85,35 @@ describe('JobQueue', () => {
     expect(q.activeCount()).toBe(8)
   })
 
+  it('turning batch off lets running jobs finish and holds the rest', async () => {
+    const { runner, pending } = controllable()
+    const q = new JobQueue(runner, batchConcurrency('normal', 8, true))
+    ;['a', 'b', 'c'].forEach((id) => add(q, id))
+    await tick()
+    expect(q.activeCount()).toBe(2)
+    q.setConcurrency(batchConcurrency('normal', 8, false))
+    await tick()
+    expect(q.list().map((j) => j.status)).toEqual(['running', 'running', 'queued'])
+    pending.get('a')!.resolve()
+    await tick()
+    expect(q.list().map((j) => j.status)).toEqual(['done', 'running', 'queued'])
+    pending.get('b')!.resolve()
+    await tick()
+    expect(q.list().map((j) => j.status)).toEqual(['done', 'done', 'running'])
+  })
+
+  it('turning batch on starts waiting jobs right away, up to the level’s limit', async () => {
+    const { runner } = controllable()
+    const q = new JobQueue(runner, batchConcurrency('max', 8, false))
+    ;['a', 'b', 'c', 'd', 'e'].forEach((id) => add(q, id))
+    await tick()
+    expect(q.activeCount()).toBe(1)
+    q.setConcurrency(batchConcurrency('max', 8, true))
+    await tick()
+    expect(q.activeCount()).toBe(4)
+    expect(q.get('e')!.status).toBe('queued')
+  })
+
   it('cancels a job that was still stopping after Pause', async () => {
     // A runner that takes a moment to stop, like a real process.
     const q = new JobQueue(
@@ -100,6 +129,43 @@ describe('JobQueue', () => {
     q.cancel('a')
     await tick(40)
     expect(q.get('a')!.status).toBe('canceled')
+  })
+
+  it('keeps the last press when Pause, Resume and Pause land while a job is still stopping', async () => {
+    const slow = () =>
+      new JobQueue(
+        (_job, ctx) =>
+          new Promise((_resolve, reject) => {
+            ctx.signal.addEventListener('abort', () => setTimeout(() => reject(new CanceledError(ctx.signal.reason)), 20))
+          }),
+        1,
+      )
+    const q = slow()
+    add(q, 'a')
+    await tick()
+    q.pause('a')
+    q.resume('a')
+    q.pause('a')
+    await tick(40)
+    expect(q.get('a')!.status).toBe('paused')
+
+    const all = slow()
+    add(all, 'b')
+    await tick()
+    all.pauseAll()
+    all.resumeAll()
+    all.pauseAll()
+    await tick(40)
+    expect(all.get('b')!.status).toBe('paused')
+
+    // And the other way round: Resume last means it goes back in line.
+    const back = slow()
+    add(back, 'c')
+    await tick()
+    back.pause('c')
+    back.resume('c')
+    await tick(40)
+    expect(back.get('c')!.status).toBe('running')
   })
 })
 

@@ -70,7 +70,8 @@ function createWindow(): void {
     minHeight: 600,
     show: false,
     frame: false,
-    backgroundColor: nativeTheme.shouldUseDarkColors ? '#0a0a0a' : '#fafafa',
+    // Matches the saved theme (dark by default) so the first frame is never a white flash.
+    backgroundColor: engine.getSettings().theme === 'light' || (engine.getSettings().theme === 'system' && !nativeTheme.shouldUseDarkColors) ? '#fafafa' : '#0a0a0a',
     icon: path.join(resources, 'icon.png'),
     title: 'Sparky',
     webPreferences: {

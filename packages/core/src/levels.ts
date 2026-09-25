@@ -44,6 +44,22 @@ export function performanceProfile(level: PerformanceLevel, cores: number): Perf
   }
 }
 
+/** Most jobs Sparky runs side by side, whatever the PC. */
+export const BATCH_MAX = 4
+
+/**
+ * How many jobs run at the same time. Off means one at a time.
+ * Low keeps the PC quiet, so one. Normal already gives each job half the processor, so two fill it.
+ * Max takes everything, so about half the processor's threads, between two and four: extra jobs mostly
+ * help when the graphics card does the heavy part or when downloads and documents sit beside a video.
+ */
+export function batchConcurrency(level: PerformanceLevel, cores: number, batch: boolean): number {
+  if (!batch || level === 'low') return 1
+  if (level === 'normal') return 2
+  const half = Math.round((Number.isFinite(cores) ? cores : 0) / 2)
+  return Math.max(2, Math.min(BATCH_MAX, half))
+}
+
 export type CompressionLevel = 0 | 1 | 2 | 3 | 4
 
 export const DEFAULT_COMPRESSION: CompressionLevel = 2
@@ -67,7 +83,7 @@ export interface CompressionInfo {
 }
 
 export const COMPRESSION_LEVELS: readonly CompressionInfo[] = [
-  { level: 0, label: 'Near original', hint: 'Looks the same as the original', crf: 16, audioKbps: 320, imageQuality: 95, archiveLevel: 1, pdfPreset: '/prepress' },
+  { level: 0, label: 'Lossless', hint: 'Original quality export', crf: 16, audioKbps: 320, imageQuality: 95, archiveLevel: 1, pdfPreset: '/prepress' },
   { level: 1, label: 'High', hint: 'Hard to tell apart, a bit smaller', crf: 20, audioKbps: 256, imageQuality: 88, archiveLevel: 3, pdfPreset: '/printer' },
   { level: 2, label: 'Balanced', hint: 'Good quality at a sensible size', crf: 23, audioKbps: 192, imageQuality: 80, archiveLevel: 5, pdfPreset: '/ebook' },
   { level: 3, label: 'Small', hint: 'Easy to share, some detail lost', crf: 28, audioKbps: 128, imageQuality: 70, archiveLevel: 7, pdfPreset: '/ebook' },

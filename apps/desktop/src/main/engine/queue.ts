@@ -66,8 +66,11 @@ export class JobQueue extends EventEmitter<QueueEvents> {
   pause(id: string): void {
     const job = this.get(id)
     if (!job) return
-    if (job.status === 'running') this.running.get(id)?.abort('pause')
-    else if (job.status === 'queued') this.patch(job, { status: 'paused' })
+    if (job.status === 'running') {
+      // The last press wins: a Pause after a Resume-while-stopping keeps it paused.
+      this.resumeAfterStop.delete(id)
+      this.running.get(id)?.abort('pause')
+    } else if (job.status === 'queued') this.patch(job, { status: 'paused' })
   }
 
   resume(id: string): void {

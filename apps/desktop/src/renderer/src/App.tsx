@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, type ReactNode } from 'react'
 import { Toaster, toast } from 'sonner'
 import { ClipboardChip } from './components/ClipboardChip'
+import { FileDropOverlay } from './components/FileDropOverlay'
 import { Footer } from './components/Footer'
 import { QueueDock } from './components/QueueDock'
 import { SECTIONS, Sidebar } from './components/Sidebar'
@@ -78,7 +79,7 @@ function Shell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.16 }}
-              className="mx-auto w-full max-w-[980px] px-7 py-6"
+              className="mx-auto flex min-h-full w-full max-w-[980px] flex-col px-7 py-6"
             >
               <Page />
             </motion.div>
@@ -89,7 +90,8 @@ function Shell() {
       <QueueDock />
       <Footer />
       <SparkBurst />
-      <Toaster position="top-right" offset={{ top: 48, right: 20 }} theme={settings?.theme ?? 'system'} toastOptions={{ className: '!rounded-lg !border !border-border !bg-popover !text-popover-foreground !text-[13px]' }} />
+      <FileDropOverlay />
+      <Toaster position="top-right" offset={{ top: 48, right: 20 }} theme={settings?.theme ?? 'dark'} toastOptions={{ className: '!rounded-lg !border !border-border !bg-popover !text-popover-foreground !text-[13px]' }} />
     </div>
   )
 }

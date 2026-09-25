@@ -1,5 +1,5 @@
 import { compressionInfo, performanceInfo, resolutionLabel } from '@sparky/core'
-import { Bolt, CompressionSlider, DiscordIcon, GmailIcon, PerformanceBars, CONTACT } from '@sparky/ui'
+import { Bolt, CompressionSlider, DiscordIcon, GmailIcon, LogoMark, PerformanceBars, CONTACT } from '@sparky/ui'
 import { ArrowLeftRight, ChevronDown, ChevronRight, Download, History, List, Search, SlidersHorizontal, Upload } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDemo } from '../state'
@@ -49,7 +49,7 @@ export function AppWindow() {
       <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0e0e0e] text-left shadow-[0_40px_120px_rgba(0,0,0,.6)]">
         <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#1c1c1c] pl-4 text-xs text-subtle-foreground">
           <span className="flex items-center gap-2">
-            <Bolt size={13} className="text-foreground" />
+            <LogoMark size={16} />
             Sparky
           </span>
           <span className="flex h-10" aria-hidden>
@@ -77,7 +77,7 @@ export function AppWindow() {
             </div>
             <div className="flex h-[84px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#2e2e2e] text-[13px] text-subtle-foreground">
               <Upload size={20} />
-              Drop files here, or browse
+              Drop files here, or click to browse
             </div>
             <div className="flex flex-col rounded-[10px] border border-[#1f1f1f]">
               {FILES.map(([name, meta], i) => (

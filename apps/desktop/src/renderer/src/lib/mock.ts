@@ -1,6 +1,7 @@
 // A stand-in for window.sparky so the UI can run in a normal browser (npm run dev:ui).
 // It fakes a small queue and a few history entries; nothing touches real files.
 import {
+  batchConcurrency,
   categoryOf,
   defaultSettings,
   normalizeExt,
@@ -37,7 +38,7 @@ function addJob(j: Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'created
 setInterval(() => {
   let running = jobs.filter((j) => j.status === 'running').length
   for (const j of jobs) {
-    if (j.status === 'queued' && running < settings.concurrency) {
+    if (j.status === 'queued' && running < batchConcurrency(settings.performance, 12, settings.batch)) {
       j.status = 'running'
       j.startedAt = Date.now()
       running++

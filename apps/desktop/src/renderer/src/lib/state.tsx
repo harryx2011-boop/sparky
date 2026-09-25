@@ -89,12 +89,13 @@ export function useApp(): AppState {
   return v
 }
 
-/** Follows the Windows light/dark theme unless the user picked one. */
+/** Dark until the saved choice arrives (index.html starts dark); "Match Windows" follows the system from then on. */
 export function useTheme(theme: Settings['theme'] | undefined): void {
   useEffect(() => {
+    if (!theme) return
     const mql = window.matchMedia('(prefers-color-scheme: dark)')
     const apply = () => {
-      const dark = theme === 'dark' || ((theme ?? 'system') === 'system' && mql.matches)
+      const dark = theme === 'dark' || (theme === 'system' && mql.matches)
       document.documentElement.classList.toggle('dark', dark)
     }
     apply()

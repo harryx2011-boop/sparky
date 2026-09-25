@@ -58,7 +58,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
         },
       },
     })
-    engine.setSettings({ concurrency: 3 })
+    engine.setSettings({ batch: true, performance: 'max' })
     const ffmpeg = path.join(BIN!, 'ffmpeg')
     // A 3-second 720p test clip with a tone.
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=30:duration=3', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', path.join(dir, 'clip.mov')])

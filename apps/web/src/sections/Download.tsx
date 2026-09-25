@@ -1,10 +1,15 @@
-import { cn } from '@sparky/ui'
-import { Check, Link2, ListVideo, Play } from 'lucide-react'
+import { BrandMark, cn, LinkMark } from '@sparky/ui'
+import { siteInfo, type SiteId } from '@sparky/core'
+import { Link2, ListVideo, Play } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { Heading, Lead } from '../components/ui'
 
 const LINK = 'youtube.com/playlist?list=lofi-for-late-nights'
+
+/** The sites named on the page, each with its real mark. */
+const SITE_IDS: SiteId[] = ['youtube', 'tiktok', 'instagram', 'x', 'vimeo', 'soundcloud', 'twitch', 'reddit', 'facebook']
+const SITES = SITE_IDS.map(siteInfo)
 
 const ITEMS = [
   { title: 'Rainy window, warm tea', len: '3:42' },
@@ -62,7 +67,7 @@ export function Download() {
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
         <div ref={cardRef} className="order-2 flex flex-col gap-3.5 rounded-2xl border border-border bg-card p-4 sm:p-5 lg:order-1">
           <div className="flex h-[42px] items-center gap-2.5 rounded-[10px] border border-input bg-[#0d0d0d] px-3.5 text-[13px] text-muted-foreground">
-            <Link2 size={15} className="shrink-0" />
+            {done ? <LinkMark url={`https://${LINK}`} size={15} /> : <Link2 size={15} className="shrink-0" />}
             <span className={cn('truncate font-mono', !done && 'caret')}>{typed}</span>
           </div>
 
@@ -73,7 +78,9 @@ export function Download() {
             </div>
             <div className="flex min-w-0 flex-col gap-1">
               <span className="truncate text-[15px] font-semibold">Lo-fi for late nights</span>
-              <span className="truncate text-[13px] text-subtle-foreground">Quiet Hours · 12 videos · 48:10</span>
+              <span className="flex items-center gap-1.5 truncate text-[13px] text-subtle-foreground">
+                <BrandMark site="youtube" size={13} /> YouTube · Quiet Hours · 12 videos · 48:10
+              </span>
               <span className="font-mono text-xs text-subtle-foreground">about 64 MB as MP3</span>
             </div>
           </motion.div>
@@ -109,6 +116,23 @@ export function Download() {
             ))}
           </motion.div>
 
+          <motion.div {...show(0.44)} className="grid grid-cols-1 overflow-hidden rounded-[10px] border border-[#1f1f1f] sm:grid-cols-2">
+            {EXTRAS.map((e) => (
+              <label key={e} className="flex h-[42px] cursor-pointer items-center justify-between gap-3 border-b border-[#1a1a1a] px-3.5 text-[13px] hover:bg-[#141414] last:border-b-0 sm:odd:border-r sm:[&:nth-last-child(2)]:border-b-0">
+                <span className="truncate">{e}</span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={Boolean(extras[e])}
+                  onClick={() => setExtras((x) => ({ ...x, [e]: !x[e] }))}
+                  className={cn('relative h-5 w-9 shrink-0 rounded-full transition-colors', extras[e] ? 'bg-foreground' : 'bg-[#2a2a2a]')}
+                >
+                  <span className={cn('absolute top-0.5 left-0.5 size-4 rounded-full bg-background transition-transform duration-200', extras[e] && 'translate-x-4')} />
+                </button>
+              </label>
+            ))}
+          </motion.div>
+
           <motion.div {...show(0.5)} className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div role="radiogroup" aria-label="Keep" className="flex rounded-lg border border-input p-0.5 text-xs">
@@ -134,27 +158,22 @@ export function Download() {
         <div className="order-1 flex flex-col gap-5 lg:order-2">
           <Heading lines={['Paste a link.', 'Keep what you like.']} />
           <Lead>
-            YouTube and well over a thousand other sites. Grab one video, a whole playlist or a channel, in sharp 4K or as music
-            for your phone. Tick the ones you want and Sparky can turn them into MP3 in the same go.
+            Grab one video, a whole playlist or a channel, in sharp 4K or as music for your phone. Tick the ones you want and
+            Sparky can turn them into MP3 in the same go.
           </Lead>
-          <p className="text-sm text-subtle-foreground">Extras you can switch on. Try them: the card updates.</p>
-          <div className="flex flex-wrap gap-2">
-            {EXTRAS.map((e) => (
-              <button
-                key={e}
-                type="button"
-                aria-pressed={Boolean(extras[e])}
-                onClick={() => setExtras((x) => ({ ...x, [e]: !x[e] }))}
-                className={cn(
-                  'inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[13px] transition-colors',
-                  extras[e] ? 'border-foreground/60 bg-secondary text-foreground' : 'border-input text-subtle-foreground hover:text-foreground',
-                )}
-              >
-                {extras[e] && <Check size={13} />}
-                {e}
-              </button>
+          <p className="text-[15px] leading-relaxed text-muted-foreground">
+            Works with{' '}
+            {SITES.map((s, i) => (
+              <span key={s.id}>
+                <span className="whitespace-nowrap">
+                  <BrandMark site={s.id} size={15} className="mr-1 inline-block align-[-2px]" />
+                  <span className="text-foreground">{s.name}</span>
+                  {i < SITES.length - 1 ? ',' : ''}
+                </span>{' '}
+              </span>
             ))}
-          </div>
+            and well over a thousand other sites.
+          </p>
         </div>
       </div>
     </section>

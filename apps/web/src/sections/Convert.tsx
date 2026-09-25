@@ -160,8 +160,8 @@ function SettingsStrip() {
       <div className="flex min-w-0 flex-col gap-3 bg-card p-6 sm:p-7">
         <span className="text-[15px] font-semibold">Make it smaller, your way</span>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Five steps from “looks identical” to “fits in an email”. Pick the same format you started with to shrink a file without
-          changing it.
+          Five steps from “lossless”, an original quality export, to “fits in an email”. Pick the same format you started with to
+          shrink a file without changing it.
         </p>
         <CompressionSlider value={compression} onChange={setCompression} className="mt-2" />
       </div>

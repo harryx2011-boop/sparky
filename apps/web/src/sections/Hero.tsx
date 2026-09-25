@@ -30,6 +30,11 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <div ref={introRef} className="relative flex min-h-[100svh] items-center px-4 sm:px-6">
+        {/* Calm ground under the headline: the page grid fades out of the text column. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_34%,var(--background)_46%)] lg:bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_44%,transparent_64%)]"
+        />
         {/* The field is masked out of the text column, so no dot ever sits behind a letter. */}
         <SpriteField
           getProgress={getProgress}

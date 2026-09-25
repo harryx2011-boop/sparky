@@ -4,12 +4,13 @@ import {
   formatDuration,
   FORMATS,
   resolutionOptions,
+  siteFor,
   type DownloadExtras,
   type LinkInfo,
   type Resolution,
   type SubtitleMode,
 } from '@sparky/core'
-import { cn, CompressionSlider, ResolutionPicker } from '@sparky/ui'
+import { BrandMark, cn, CompressionSlider, hasMark, LinkMark, ResolutionPicker } from '@sparky/ui'
 import { AlertCircle, ClipboardPaste, Link2, ListVideo, Loader2, Play, RefreshCw, Search } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
@@ -87,6 +88,10 @@ export function DownloadPage() {
   const target = mode === 'audio' ? audioFormat : convertTo === NONE ? null : convertTo
   const showCompression = mode === 'audio' ? !['wav', 'flac'].includes(audioFormat) : target !== null
   const count = info?.kind === 'playlist' ? selected.size : 1
+  // The site behind whatever is typed so far, so its mark shows before Preview is pressed.
+  const typedLink = asLink(url)
+  const typedSite = typedLink ? siteFor(typedLink) : undefined
+  const previewSite = info ? siteFor(info.url) : undefined
 
   const updateDownloader = async () => {
     setUpdating(true)
@@ -129,7 +134,9 @@ export function DownloadPage() {
         }}
       >
         <div className="relative grow">
-          <Link2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-subtle-foreground" />
+          <span className="absolute left-3 top-1/2 flex -translate-y-1/2 items-center text-subtle-foreground">
+            {typedLink && hasMark(typedLink) ? <LinkMark url={typedLink} size={15} /> : <Link2 size={15} />}
+          </span>
           <Input className="h-10 pl-9 font-mono text-[13px]" placeholder="Paste a link from YouTube or another site" value={url} onChange={(e) => setUrl(e.target.value)} aria-label="Link" autoFocus />
         </div>
         <Button
@@ -152,8 +159,8 @@ export function DownloadPage() {
 
       {state.kind === 'idle' && (
         <Card className="flex flex-col items-center gap-2 px-6 py-10 text-center">
-          <Play size={20} className="text-subtle-foreground" />
-          <span className="text-[13px] font-medium">Paste a link to see what’s there</span>
+          {typedSite && typedLink && hasMark(typedLink) ? <BrandMark site={typedSite.id} size={22} labelled /> : <Play size={20} className="text-subtle-foreground" />}
+          <span className="text-[13px] font-medium">{typedSite ? `A ${typedSite.name} link. Press Preview to see what’s there.` : 'Paste a link to see what’s there'}</span>
           <span className="max-w-md text-xs leading-relaxed text-subtle-foreground">
             A single video, a playlist or a whole channel. You’ll get a preview first, and for playlists you can tick just the ones you want.
           </span>
@@ -200,11 +207,14 @@ export function DownloadPage() {
               <span className="truncate text-[15px] font-semibold" title={info.title}>
                 {info.title}
               </span>
-              <span className="truncate text-[13px] text-subtle-foreground">
-                {[info.uploader, info.kind === 'playlist' ? `${info.entries.length} items` : undefined, info.duration ? formatDuration(info.duration) : undefined].filter(Boolean).join(' · ')}
+              <span className="flex min-w-0 items-center gap-1.5 text-[13px] text-subtle-foreground">
+                {previewSite && <LinkMark url={info.url} size={13} />}
+                <span className="truncate">
+                  {[previewSite?.name, info.uploader, info.kind === 'playlist' ? `${info.entries.length} items` : undefined, info.duration ? formatDuration(info.duration) : undefined].filter(Boolean).join(' · ')}
+                </span>
               </span>
               <span className="font-mono text-xs text-subtle-foreground">
-                {[info.maxHeight ? `up to ${info.maxHeight >= 2160 ? '4K' : `${info.maxHeight}p`}` : undefined, info.sizeEstimate ? `about ${formatBytes(info.sizeEstimate)}` : undefined, info.extractor].filter(Boolean).join(' · ')}
+                {[info.maxHeight ? `up to ${info.maxHeight >= 2160 ? '4K' : `${info.maxHeight}p`}` : undefined, info.sizeEstimate ? `about ${formatBytes(info.sizeEstimate)}` : undefined].filter(Boolean).join(' · ')}
               </span>
             </div>
           </Card>

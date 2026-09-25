@@ -1,5 +1,5 @@
 // History and settings, kept in one SQLite file.
-import { CONCURRENCY_MAX, CONCURRENCY_MIN, defaultSettings, type HistoryEntry, type HistoryQuery, type Job, type Settings } from '@sparky/core'
+import { defaultSettings, type HistoryEntry, type HistoryQuery, type Job, type Settings } from '@sparky/core'
 import Database from 'better-sqlite3'
 
 interface HistoryRow {
@@ -120,6 +120,8 @@ export class Store {
         /* ignore a corrupt value and fall back to the default */
       }
     }
+    // Older versions stored a "jobs at once" number; one meant "one at a time", anything more meant batch.
+    if (typeof saved.batch !== 'boolean' && typeof saved.concurrency === 'number') saved.batch = saved.concurrency > 1
     return sanitize({ ...base, ...saved, downloadExtras: { ...base.downloadExtras, ...(saved.downloadExtras as object | undefined) } }, base)
   }
 
@@ -156,7 +158,7 @@ export function sanitize(s: Settings, base: Settings): Settings {
   return {
     ...s,
     outputRoot: typeof s.outputRoot === 'string' && s.outputRoot ? s.outputRoot : base.outputRoot,
-    concurrency: Math.max(CONCURRENCY_MIN, Math.min(CONCURRENCY_MAX, Math.round(Number(s.concurrency) || base.concurrency))),
+    batch: typeof s.batch === 'boolean' ? s.batch : base.batch,
     performance: oneOf(s.performance, ['low', 'normal', 'max'] as const, base.performance),
     compression: oneOf(s.compression, [0, 1, 2, 3, 4] as const, base.compression),
     codec: oneOf(s.codec, ['h264', 'hevc', 'av1'] as const, base.codec),

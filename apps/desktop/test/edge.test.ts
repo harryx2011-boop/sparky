@@ -47,7 +47,7 @@ describe.skipIf(!BIN)('engine edge cases', () => {
         printToPdf: async (_html, pdf) => fs.writeFileSync(pdf, '%PDF-1.4 test'),
       },
     })
-    engine.setSettings({ concurrency: 2 })
+    engine.setSettings({ batch: true })
     const ffmpeg = path.join(BIN!, 'ffmpeg')
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=320x240:rate=30:duration=1', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=1', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', path.join(dir, 'clip.mov')])
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'sine=frequency=330:duration=1', path.join(dir, 'tone.wav')])
@@ -142,7 +142,7 @@ describe.skipIf(!BIN)('engine edge cases', () => {
   })
 
   it('reports a file that vanished before its turn', async () => {
-    engine.setSettings({ concurrency: 1 })
+    engine.setSettings({ batch: false })
     try {
       const gone = path.join(dir, 'gone.wav')
       fs.copyFileSync(path.join(dir, 'tone.wav'), gone)
@@ -153,7 +153,7 @@ describe.skipIf(!BIN)('engine edge cases', () => {
       expect(job.status).toBe('failed')
       expect(job.error).toMatch(/gone|moved|deleted/i)
     } finally {
-      engine.setSettings({ concurrency: 2 })
+      engine.setSettings({ batch: true })
     }
   })
 

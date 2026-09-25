@@ -1,4 +1,4 @@
-import { CODEC_LABELS, CONCURRENCY_MAX, CONCURRENCY_MIN, OUTPUT_FOLDERS, type Theme, type VideoCodec } from '@sparky/core'
+import { CODEC_LABELS, OUTPUT_FOLDERS, TOOL_NAMES, type Theme, type VideoCodec } from '@sparky/core'
 import { CompressionSlider, CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
 import { Check, FolderOpen, Loader2, Minus, RefreshCw } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
@@ -58,20 +58,8 @@ export function SettingsPage() {
             Change…
           </Button>
         </Row>
-        <Row title="Jobs at once" hint="How many conversions and downloads run side by side">
-          <div className="flex rounded-lg border border-input p-0.5">
-            {Array.from({ length: CONCURRENCY_MAX - CONCURRENCY_MIN + 1 }, (_, i) => i + CONCURRENCY_MIN).map((n) => (
-              <button
-                key={n}
-                type="button"
-                aria-pressed={settings.concurrency === n}
-                onClick={() => void updateSettings({ concurrency: n })}
-                className={`size-7 rounded-md font-mono text-xs ${settings.concurrency === n ? 'bg-secondary text-foreground' : 'text-subtle-foreground hover:text-foreground'}`}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
+        <Row title="Batch conversion" hint="Work on several files at the same time">
+          <Switch checked={settings.batch} onCheckedChange={(v) => void updateSettings({ batch: v })} aria-label="Batch conversion" />
         </Row>
       </Group>
 
@@ -121,8 +109,7 @@ export function SettingsPage() {
 
       <Group title="Built-in tools">
         {system?.tools.map((t) => (
-          <Row key={t.id} title={t.label} hint={t.found ? t.path ?? 'Included' : t.optional ? 'Optional add-on. Install it and restart Sparky to use it.' : 'Missing. Reinstalling Sparky brings it back.'}>
-            <span className="font-mono text-xs text-subtle-foreground">{t.version}</span>
+          <Row key={t.id} title={t.label} hint={t.found ? (t.optional ? 'Found on this PC' : 'Ready') : t.optional ? `Optional add-on. Install ${TOOL_NAMES[t.id]} and restart Sparky to use it.` : 'Missing. Reinstalling Sparky brings it back.'}>
             {t.found ? <Check size={14} className="text-success" /> : <Minus size={14} className={t.optional ? 'text-subtle-foreground' : 'text-destructive'} />}
           </Row>
         ))}

@@ -125,7 +125,8 @@ export type Theme = 'system' | 'light' | 'dark'
 
 export interface Settings {
   outputRoot: string
-  concurrency: number
+  /** Work on several files at the same time. How many is Sparky's call, from the Performance level and the PC. */
+  batch: boolean
   performance: PerformanceLevel
   compression: CompressionLevel
   codec: VideoCodec
@@ -150,11 +151,11 @@ export const DEFAULT_DOWNLOAD_EXTRAS: DownloadExtras = {
 export function defaultSettings(outputRoot: string): Settings {
   return {
     outputRoot,
-    concurrency: 2,
+    batch: true,
     performance: 'normal',
     compression: 2,
     codec: 'h264',
-    theme: 'system',
+    theme: 'dark',
     closeToTray: true,
     notifications: true,
     clipboardDetection: true,
@@ -165,6 +166,7 @@ export function defaultSettings(outputRoot: string): Settings {
   }
 }
 
+/** Hard limits for the queue itself; the batch rule stays well inside them. */
 export const CONCURRENCY_MIN = 1
 export const CONCURRENCY_MAX = 8
 
@@ -177,16 +179,28 @@ export interface ToolStatus {
   optional: boolean
 }
 
-/** What each bundled tool is for, shown in Settings. One place, so the app and its browser preview agree. */
+/** What each bundled tool does, in plain words, shown in Settings. One place, so the app and its browser preview agree. */
 export const TOOL_LABELS: Record<ToolStatus['id'], string> = {
-  ffmpeg: 'FFmpeg (video, audio and images)',
-  ffprobe: 'FFprobe (reads file details)',
-  'yt-dlp': 'yt-dlp (downloads from links)',
-  pandoc: 'Pandoc (documents)',
-  '7zip': '7-Zip (archives)',
-  deno: 'Deno (helps with YouTube)',
-  ghostscript: 'Ghostscript (shrinks PDFs)',
-  libreoffice: 'LibreOffice (better Word to PDF)',
+  ffmpeg: 'Video, audio and images',
+  ffprobe: 'Reads file details',
+  'yt-dlp': 'Downloads from links',
+  pandoc: 'Documents',
+  '7zip': 'Archives',
+  deno: 'Helps with YouTube',
+  ghostscript: 'Shrinks PDFs',
+  libreoffice: 'Better Word to PDF',
+}
+
+/** The tools' own names, for the credits line and the add-on hints where a person has to find them by name. */
+export const TOOL_NAMES: Record<ToolStatus['id'], string> = {
+  ffmpeg: 'FFmpeg',
+  ffprobe: 'FFprobe',
+  'yt-dlp': 'yt-dlp',
+  pandoc: 'Pandoc',
+  '7zip': '7-Zip',
+  deno: 'Deno',
+  ghostscript: 'Ghostscript',
+  libreoffice: 'LibreOffice',
 }
 
 export interface SystemInfo {

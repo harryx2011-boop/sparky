@@ -70,15 +70,15 @@ export function Queue() {
           <div className="flex max-w-[620px] flex-col gap-5">
             <Heading lines={['Everything waits in one line.']} />
             <Lead>
-              Downloads and conversions take turns together. See how fast each one is going and how long is left, then pause,
-              drag to reorder or cancel whenever you like.
+              Drop a whole folder and Sparky works through several files at the same time, with downloads in the same line. See
+              how fast each one is going and how long is left, then pause, drag to reorder or cancel whenever you like.
             </Lead>
           </div>
           <dl className="flex gap-8 font-mono text-sm">
             {[
               ['Running', runningCount],
+              ['Waiting', rows.length - runningCount - doneCount],
               ['Finished', doneCount],
-              ['At once', `${AT_ONCE} of 8`],
             ].map(([k, v]) => (
               <div key={k} className="flex flex-col gap-1">
                 <dt className="text-xs uppercase tracking-wider text-subtle-foreground">{k}</dt>

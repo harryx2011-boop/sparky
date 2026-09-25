@@ -2,22 +2,33 @@
 import { compressionInfo } from './levels'
 import { formatInfo, normalizeExt } from './formats'
 import type { DownloadRequest, LinkEntry, LinkInfo } from './jobs'
+import { siteFor } from './sites'
 
-/** Sites we recognise in the clipboard. Any link can still be pasted by hand. */
-const KNOWN_HOSTS = [
-  'youtube.com', 'youtu.be', 'vimeo.com', 'soundcloud.com', 'twitch.tv', 'tiktok.com', 'x.com',
-  'twitter.com', 'instagram.com', 'reddit.com', 'dailymotion.com', 'bandcamp.com', 'facebook.com',
-  'fb.watch', 'bilibili.com', 'kick.com', 'rumble.com', 'streamable.com', 'archive.org',
-  'nicovideo.jp', 'mixcloud.com', 'bsky.app', 'threads.net', 'pinterest.com', 'vk.com', 'odysee.com',
-  'ted.com', 'nebula.tv', 'bitchute.com', 'imgur.com', 'tumblr.com', 'loom.com',
-]
+/** Endings that make a bare "name.ext" a file, not a site. */
+const FILE_ENDINGS = new Set([
+  'mp4', 'mkv', 'mov', 'webm', 'avi', 'gif', 'mp3', 'wav', 'flac', 'm4a', 'ogg', 'opus', 'aac',
+  'png', 'jpg', 'jpeg', 'webp', 'avif', 'heic', 'bmp', 'ico', 'svg', 'pdf', 'docx', 'doc', 'md', 'html', 'txt', 'rtf',
+  'zip', '7z', 'rar', 'gz', 'tar', 'bz2', 'xz', 'exe', 'msi', 'dll', 'iso', 'json', 'xml', 'csv', 'log', 'ts', 'js',
+])
+
+/** "youtu.be/x" looks like a site; "clip.mp4" and "3.14.mp4" do not. */
+function plausibleHost(text: string): boolean {
+  const host = text.split(/[/?#]/, 1)[0]!.replace(/^www\./, '')
+  const labels = host.split('.')
+  const last = labels[labels.length - 1]!
+  if (!/^[a-z]{2,}$/i.test(last) || FILE_ENDINGS.has(last.toLowerCase())) return false
+  return labels.every((l) => /^[a-z0-9-]+$/i.test(l) && !l.startsWith('-') && !l.endsWith('-'))
+}
 
 /** Returns a clean URL when the text is a single web link, otherwise undefined. "youtu.be/x" counts too. */
 export function asLink(text: string): string | undefined {
   let t = text.trim().replace(/^<|>$/g, '')
   if (!t || /\s/.test(t) || t.length > 2048) return undefined
   // People paste links without the https:// part all the time.
-  if (!/^[a-z][a-z0-9+.-]*:/i.test(t) && /^(www\.)?[\w-]+(\.[\w-]+)+([/?#]|$)/i.test(t)) t = `https://${t}`
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(t) && /^(www\.)?[\w-]+(\.[\w-]+)+([/?#]|$)/i.test(t)) {
+    if (!plausibleHost(t)) return undefined
+    t = `https://${t}`
+  }
   try {
     const u = new URL(t)
     if (u.protocol !== 'http:' && u.protocol !== 'https:') return undefined
@@ -28,12 +39,10 @@ export function asLink(text: string): string | undefined {
   }
 }
 
-/** True for links from sites we know yt-dlp handles well. Used for the clipboard chip. */
+/** True for links from sites we know the downloader handles well. Used for the clipboard chip. */
 export function isKnownMediaLink(text: string): boolean {
   const url = asLink(text)
-  if (!url) return false
-  const host = new URL(url).hostname.replace(/^www\.|^m\.|^music\./, '')
-  return KNOWN_HOSTS.some((h) => host === h || host.endsWith(`.${h}`))
+  return Boolean(url && siteFor(url))
 }
 
 export function inspectArgs(url: string, jsRuntime?: string): string[] {
