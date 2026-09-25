@@ -236,7 +236,7 @@ export function ConvertPage() {
           <FileList files={files} onRemove={removeFile} />
           {unsupported.length > 0 && <p className="text-xs text-destructive">{unsupported.length === 1 ? 'One file isn’t' : `${unsupported.length} files aren’t`} a type Sparky can convert, so they’ll be skipped.</p>}
 
-          <div className="grid grid-cols-[minmax(0,1fr)_260px] gap-3">
+          <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-3">
             <div className="flex min-w-0 flex-col gap-3">
               {outputs.map(({ group, output }) => (
                 <Field
@@ -280,7 +280,7 @@ export function ConvertPage() {
             <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-6">
               {showResolution ? (
                 <Field label="Resolution">
-                  <ResolutionPicker options={resOptions} value={activeRes} onChange={setResolution} />
+                  <ResolutionPicker options={resOptions} value={activeRes} onChange={setResolution} size="md" className="w-full" />
                 </Field>
               ) : (
                 <span />

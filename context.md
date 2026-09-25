@@ -1,7 +1,7 @@
 # Sparky — Project Context
 
 **Current version:** 1.0.0 (root and `apps/desktop/package.json`)
-**Last updated:** 2026-09-24
+**Last updated:** 2026-09-24 (downloads default, layout fill)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -28,6 +28,7 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 - **Compression's first stop is "Lossless" (original quality export).**
 - **Batch conversion is on by default**; the old "Jobs at once" 1–8 picker is gone. The rule is `batchConcurrency(level, cores, batch)` in `packages/core/src/levels.ts`: off or Low 1, Normal 2, Max half the processor threads clamped to 2–4. The engine re-applies it on every settings change; an old stored `concurrency` migrates to `batch` (> 1 means on) in `store.ts`.
 - **Sites and brand marks:** one registry per site in `packages/core/src/sites.ts` (`SITES`, `siteFor(url)`), and its mark table in `packages/ui/src/brands.tsx` (`BRAND_MARKS`, `BrandMark`, `LinkMark`, official Simple Icons paths and hex, inline so they paint offline; near-black brands such as X and TikTok take the text colour). Add a site: one row in each.
+- **Default output root is `Downloads\Sparky`** (`apps/desktop/src/main/index.ts`, `defaultRoot`), used for both downloads and conversions on a fresh install; an existing user's own choice in the settings DB is untouched.
 - **Dropping a folder** adds the files inside it (one level, hidden files skipped): `expandFolders` in `apps/desktop/src/main/engine/convert.ts`. Files dragged anywhere over the window go to Convert via `renderer/src/components/FileDropOverlay.tsx`.
 - **Type:** Satoshi, then a `"Satoshi Fallback"` face (`packages/ui/src/styles.css`) that maps local Segoe UI Variable / Segoe UI / Helvetica Neue / Arial onto Satoshi's vertical metrics (ascent 101%, descent 24%, gap 10%), one face per weight bucket so static Bold files still resolve, so the fallback lays out like the real font. Headlines are fluid: hero and Get `clamp(40px, 2.6vw + 26px, 64px)`, section h2 `clamp(36px, 2vw + 24px, 52px)`, leading 1.04. `SplitText` masks each word with `pb-[0.25em] -mb-[0.25em]` so the rise-in clip never cuts descenders (the old 0.08em cut Segoe's `y` and `g` flat when Satoshi was missing, 2026-09-24).
 - **Fonts on Vercel:** `scripts/fetch-fonts.mjs` chmods 7-Zip on non-Windows; npm drops the execute bit and the Vercel build printed `7za EACCES`, so every deploy before 2026-09-24 shipped without Satoshi. If the Fontshare fetch fails, the build still succeeds (`;` in `vercel.json`) on the fallback face.
@@ -47,6 +48,6 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 
 ## Open
 
-- First release: push tag `v1.0.0` to publish the installer; until then the site's download button 404s.
+- First release: push tag `v1.0.0` to publish the installer; until then the site's download button 404s. Confirmed 2026-09-24: no tags and no releases yet on `harryx2011-boop/sparky`, so `electron-updater` (wired correctly — `publish.provider: github` at the right repo, `autoUpdater.checkForUpdatesAndNotify()` on ready) has nothing to check against until the first tag ships.
 - Code signing certificate (removes the SmartScreen warning).
 - Older commits (before `10de03f`) carry a Claude co-author trailer from the web session that scaffolded the repo; rewriting them needs a force-push.

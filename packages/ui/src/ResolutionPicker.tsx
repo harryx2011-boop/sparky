@@ -18,7 +18,7 @@ export interface ResolutionPickerProps {
 export function ResolutionPicker({ options, value, onChange, allowOriginal = true, originalLabel = 'Original', className, size = 'sm' }: ResolutionPickerProps) {
   const visible = options.filter((o) => !o.hidden)
   const btn = cn(
-    'inline-flex items-center justify-center rounded-md border font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    'inline-flex grow basis-0 items-center justify-center rounded-md border font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
     size === 'sm' ? 'h-8 px-3 text-[13px]' : 'h-9 px-4 text-sm',
   )
   const idle = 'border-input bg-card text-foreground hover:bg-accent'

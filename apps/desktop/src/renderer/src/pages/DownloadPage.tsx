@@ -274,7 +274,7 @@ export function DownloadPage() {
             </Card>
           )}
 
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_260px] items-end gap-3">
+          <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-end gap-3">
             <Field label="Keep">
               <Segmented
                 label="Keep"
@@ -300,10 +300,10 @@ export function DownloadPage() {
             </Field>
           </div>
 
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-end gap-6">
+          <div className={cn('grid items-end gap-6', showCompression ? 'grid-cols-[minmax(0,1fr)_minmax(0,1fr)]' : 'grid-cols-1')}>
             {mode === 'video' ? (
               <Field label="Quality">
-                <ResolutionPicker options={resOptions} value={activeQuality} onChange={setQuality} originalLabel="Best" />
+                <ResolutionPicker options={resOptions} value={activeQuality} onChange={setQuality} originalLabel="Best" size="md" className="w-full" />
               </Field>
             ) : (
               <span />

@@ -275,7 +275,7 @@ if (primary) app.whenReady().then(async () => {
     binDirs: [userBin, bundledBin],
     dataDir: app.getPath('userData'),
     tempDir: path.join(app.getPath('temp'), 'Sparky'),
-    defaultRoot: path.join(app.getPath('documents'), 'Sparky'),
+    defaultRoot: path.join(app.getPath('downloads'), 'Sparky'),
     appVersion: app.getVersion(),
     host: { printToPdf, trash: (p) => shell.trashItem(p) },
   })

@@ -25,7 +25,7 @@ export interface EngineOptions {
   /** Where the SQLite file lives. */
   dataDir: string
   tempDir: string
-  /** Default output root, e.g. Documents\Sparky. */
+  /** Default output root, e.g. Downloads\Sparky. */
   defaultRoot: string
   appVersion: string
   host: EngineHost
