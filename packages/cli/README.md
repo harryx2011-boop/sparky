@@ -1,25 +1,8 @@
-# @sparky-labs/cli
+# Sparky command line
 
 Sparky from the terminal and for agents. Convert files, run the PDF, video, image and OCR tools, and download from links, all on your own PC. The same tools are served to agents over MCP (stdio) and a local HTTP API.
 
-The Windows installer from [sparky-labs.vercel.app](https://sparky-labs.vercel.app) already puts `sparky` on your PATH, with every tool bundled. This package is for machines without the app, or for using Sparky from Node.
-
-## Install
-
-Node 22 or later.
-
-```sh
-npm i -g @sparky-labs/cli
-sparky setup
-```
-
-Or run it once without installing:
-
-```sh
-npx @sparky-labs/cli --help
-```
-
-`sparky setup` downloads FFmpeg, yt-dlp, Pandoc, 7-Zip and Deno into Sparky's data folder (`%APPDATA%\Sparky\bin`). It is Windows only; on macOS and Linux, install `ffmpeg`, `yt-dlp` and `pandoc` with your package manager and Sparky finds them on PATH. Run `sparky ops` to see which tools can run on this machine.
+The Windows installer from [sparky-labs.vercel.app](https://sparky-labs.vercel.app) puts `sparky` on your PATH, with every tool bundled. This package is not published to npm; it is built into the installer. From a checkout, `npm run build -w @sparky-labs/cli` writes `dist/sparky.js`, which runs with Node 22.12 or later, and `sparky setup` fetches the tools into `%APPDATA%\Sparky\bin`.
 
 ## Examples
 
