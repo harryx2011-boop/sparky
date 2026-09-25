@@ -48,7 +48,7 @@ Every tool is also open to AI agents, scripts and other programs. The work runs 
   sparky convert clip.mov --to mp4
   ```
 
-  Add `--json` for output a script can read. Without the app, install the CLI with `npm i -g @sparky-labs/cli` and run `sparky setup`.
+  Add `--json` for output a script can read. The `sparky` command is installed with Sparky.
 - **Any program (HTTP):** while the app is open it takes jobs at `http://127.0.0.1:8600`, reachable only from this PC. Each request carries the token in `%APPDATA%\Sparky\api-token`, which only your Windows account can read.
 
   ```powershell
