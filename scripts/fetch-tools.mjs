@@ -35,7 +35,10 @@ const TOOLS = [
     id: 'ffmpeg',
     repo: 'BtbN/FFmpeg-Builds',
     tag: 'latest',
-    asset: /^ffmpeg-master-latest-win64-gpl\.zip$/,
+    // The oldest release branch, not master: newer FFmpeg needs a newer graphics driver for NVIDIA speed
+    // (master and 9.0 need driver 610+, which most PCs don't have yet).
+    asset: /^ffmpeg-n[\d.]+-latest-win64-gpl-[\d.]+\.zip$/,
+    pick: (assets) => assets.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }))[0],
     keep: ['ffmpeg.exe', 'ffprobe.exe'],
     license: 'GPL-3.0 (https://ffmpeg.org, source: https://github.com/BtbN/FFmpeg-Builds)',
   },
@@ -130,7 +133,8 @@ async function fetchTool(tool, unpack) {
   const rel = await release(tool.repo, tool.tag)
   const attempts = [{ asset: tool.asset, keep: tool.keep }, ...(tool.fallback ? [tool.fallback] : [])]
   for (const attempt of attempts) {
-    const asset = rel.assets.find((a) => attempt.asset.test(a.name))
+    const matches = rel.assets.filter((a) => attempt.asset.test(a.name))
+    const asset = tool.pick ? tool.pick(matches) : matches[0]
     if (!asset) continue
     const work = fs.mkdtempSync(path.join(os.tmpdir(), `sparky-${tool.id}-`))
     try {

@@ -34,6 +34,16 @@ jobs:
         run: npm run package -w @sparky/desktop -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Write the release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          notes=$(gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" -f tag_name="$GITHUB_REF_NAME" --jq .body)
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "Sparky ${GITHUB_REF_NAME#v}" --notes "Download **Sparky-Setup.exe** below and run it. Windows 10 or 11, 64-bit. Installed copies update themselves.
+
+          $notes"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: Sparky-Setup
