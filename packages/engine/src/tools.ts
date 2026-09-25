@@ -15,6 +15,8 @@ export interface Tools {
   deno?: string
   ghostscript?: string
   libreoffice?: string
+  /** The bundled OCR language folder (`tessdata`, holding eng.traineddata.gz). */
+  tessdata?: string
 }
 
 const isWin = process.platform === 'win32'
@@ -81,6 +83,13 @@ export function locateTools(dirs: string[]): Tools {
   for (const id of Object.keys(NAMES) as ToolId[]) {
     tools[id] = findIn(dirs, NAMES[id]) ?? findIn(pathDirs, NAMES[id]) ?? findIn(wellKnownDirs(id), NAMES[id])
   }
+  tools.tessdata = dirs.map((d) => path.join(d, 'tessdata')).find((d) => {
+    try {
+      return fs.statSync(d).isDirectory()
+    } catch {
+      return false
+    }
+  })
   return tools
 }
 

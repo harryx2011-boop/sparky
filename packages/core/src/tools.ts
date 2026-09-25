@@ -50,7 +50,8 @@ export function ghostscriptArgs(input: string, output: string, level: Compressio
     '-dQUIET',
     '-dBATCH',
     '-dSAFER',
-    `-sOutputFile=${output}`,
+    // Ghostscript reads % in an output name as a page-number pattern; %% is a plain %.
+    `-sOutputFile=${output.replace(/%/g, '%%')}`,
     input,
   ]
 }

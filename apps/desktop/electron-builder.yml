@@ -13,6 +13,14 @@ asarUnpack:
   - "**/node_modules/sharp/**"
   - "**/node_modules/@img/**"
   - "**/node_modules/better-sqlite3/**"
+  # tesseract.js runs OCR in a worker thread started from a file path, which can't point inside the archive.
+  # The worker loads the wasm core and these modules itself, so they sit beside it.
+  - "**/node_modules/tesseract.js/**"
+  - "**/node_modules/tesseract.js-core/**"
+  - "**/node_modules/regenerator-runtime/**"
+  - "**/node_modules/is-url/**"
+  - "**/node_modules/bmp-js/**"
+  - "**/node_modules/wasm-feature-detect/**"
 extraResources:
   - from: resources/bin
     to: bin

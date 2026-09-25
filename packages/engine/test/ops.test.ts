@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { convertArgs, createEngine, defaultPaths, downloadArgs, inputSchema, listOps, opById, OpInputError, OPS, RESERVED_INPUTS } from '../src'
+import { allOps, convertArgs, createEngine, defaultPaths, downloadArgs, inputSchema, listOps, opById, OpInputError, RESERVED_INPUTS } from '../src'
 import { progressPatch } from '../src/ops/fields'
 import { parseOpInput, splitInput } from '../src/ops/run'
 import { CanceledError } from '../src/process'
@@ -29,9 +29,9 @@ const inputError = (fn: () => unknown): OpInputError => {
 
 describe('op registry', () => {
   it('gives every op a unique id and a JSON schema with the engine’s out field', () => {
-    const ids = OPS.map((o) => o.id)
+    const ids = allOps().map((o) => o.id)
     expect(new Set(ids).size).toBe(ids.length)
-    for (const op of OPS) {
+    for (const op of allOps()) {
       const js = inputSchema(op)
       expect(js.type).toBe('object')
       expect(js).not.toHaveProperty('$schema')
@@ -42,7 +42,7 @@ describe('op registry', () => {
   })
 
   it('never lets an op declare a name the surfaces keep for themselves', () => {
-    for (const op of OPS) for (const name of RESERVED_INPUTS) expect(Object.keys(op.input.shape), `${op.id}.${name}`).not.toContain(name)
+    for (const op of allOps()) for (const name of RESERVED_INPUTS) expect(Object.keys(op.input.shape), `${op.id}.${name}`).not.toContain(name)
   })
 
   it('lists ops for the surfaces', () => {

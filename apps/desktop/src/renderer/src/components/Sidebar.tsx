@@ -1,15 +1,16 @@
 import type { Section } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { ArrowLeftRight, Download, History, List, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, type LucideIcon } from 'lucide-react'
+import { ArrowLeftRight, Download, History, List, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react'
 import { useApp } from '@/lib/state'
 import { Tip } from './ui/tooltip'
 
 const ITEMS: { id: Section; label: string; icon: LucideIcon; key: string }[] = [
   { id: 'convert', label: 'Convert', icon: ArrowLeftRight, key: '1' },
   { id: 'download', label: 'Download', icon: Download, key: '2' },
-  { id: 'queue', label: 'Queue', icon: List, key: '3' },
-  { id: 'history', label: 'History', icon: History, key: '4' },
-  { id: 'settings', label: 'Settings', icon: SlidersHorizontal, key: '5' },
+  { id: 'tools', label: 'Tools', icon: Wrench, key: '3' },
+  { id: 'queue', label: 'Queue', icon: List, key: '4' },
+  { id: 'history', label: 'History', icon: History, key: '5' },
+  { id: 'settings', label: 'Settings', icon: SlidersHorizontal, key: '6' },
 ]
 
 export { ITEMS as SECTIONS }

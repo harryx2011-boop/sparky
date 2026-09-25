@@ -3,6 +3,7 @@ import {
   batchConcurrency,
   opUnavailableError,
   OUT_NEEDS_FOLDER,
+  secretNotKeptError,
   unknownOpError,
   type ConvertSettings,
   type DownloadRequest,
@@ -14,13 +15,14 @@ import {
   type Settings,
   type SystemInfo,
 } from '@sparky/core'
+import { randomUUID } from 'node:crypto'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { probeFiles, type EngineEnv, type EngineHost } from './convert'
 import { inspectLink, updateYtDlp } from './download'
 import { convertArgs, describeOp, downloadArgs, allOps, opById, OpInputError, type Capability, type OpDescriptor } from './ops'
-import { jobFields, parseOpInput, runOpJob, splitInput } from './ops/run'
+import { jobFields, parseOpInput, runOpJob, SECRET_GIVEN, splitInput, splitSecrets } from './ops/run'
 import { splitOut } from './output'
 import { CanceledError } from './process'
 import { JobQueue } from './queue'
@@ -165,10 +167,18 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
     settings: () => settings,
     host: opts.host,
     tempDir,
+    dataDir: opts.dataDir,
   }
 
   const atOnce = (s: Settings) => batchConcurrency(s.performance, env.cores, s.batch)
-  const queue = new JobQueue((job, ctx) => runOpJob(env, job, ctx), atOnce(settings))
+  // Secret fields (passwords) live only here, keyed by job id: never in the job, its snapshots or History.
+  const secrets = new Map<string, Record<string, unknown>>()
+  const queue = new JobQueue((job, ctx) => runOpJob(env, job, ctx, secrets.get(job.id)), atOnce(settings))
+  queue.on('change', (jobs) => {
+    if (!secrets.size) return
+    const live = new Set(jobs.map((j) => j.id))
+    for (const id of secrets.keys()) if (!live.has(id)) secrets.delete(id)
+  })
   let closed = false
   queue.on('finished', (job) => {
     if (!closed) store.record(job)
@@ -208,15 +218,20 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
       if (gone.length) throw new OpInputError('unavailable', opUnavailableError(op.label, gone))
       const parts = splitInput(op, args)
       if (out && splitOut(out).file && (parts.length > 1 || parts.some((a) => op.many?.(a)))) throw new OpInputError('invalid_input', OUT_NEEDS_FOLDER, 'out')
-      return parts.map((a) =>
-        queue.add({
-          ...jobFields(op, a, settings),
+      return parts.map((a) => {
+        const id = randomUUID()
+        const { kept, hidden } = splitSecrets(op, a)
+        // Set before add: the queue may start the job inside add().
+        if (hidden) secrets.set(id, hidden)
+        return queue.add({
+          ...jobFields(op, kept, settings),
+          id,
           kind: op.kind,
           op: op.id,
-          args: out ? { ...a, out } : a,
+          args: out ? { ...kept, out } : kept,
           restartsOnResume: !op.resumable,
-        }),
-      )
+        })
+      })
     },
 
     async runOp(opId, raw, { signal, timeoutMs } = {}) {
@@ -264,7 +279,10 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
 
     rerun(id) {
       const h = store.get(id)
-      return h?.args === undefined ? [] : engine.startOp(h.op, h.args)
+      if (h?.args === undefined) return []
+      const op = opById(h.op)
+      if (op?.secret?.length && (h.args as Record<string, unknown>)[SECRET_GIVEN] === true) throw new OpInputError('invalid_input', secretNotKeptError(op.label), op.secret[0])
+      return engine.startOp(h.op, h.args)
     },
 
     removeHistory: (id) => store.remove(id),

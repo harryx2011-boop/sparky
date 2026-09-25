@@ -16,12 +16,13 @@ import {
   type OriginalsMode,
   type ProbeResult,
   type Resolution,
+  type TargetSummary,
   type VideoCodec,
 } from '@sparky/core'
 import { cn, CompressionSlider, ResolutionPicker } from '@sparky/ui'
 import { Archive, FileText, Image, Loader2, Music, Upload, Video, X, type LucideIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, Field, PageHeader, PerformancePicker } from '@/components/Controls'
 import { Disclosure } from '@/components/ui/accordion'
@@ -31,6 +32,7 @@ import { ConfirmDialog } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { api } from '@/lib/api'
+import { joinWords, needsList } from '@/lib/ops'
 import { useApp } from '@/lib/state'
 
 const ICONS: Record<Category, LucideIcon> = { video: Video, audio: Music, image: Image, document: FileText, archive: Archive }
@@ -48,18 +50,62 @@ interface Group {
   files: ProbeResult[]
   /** Formats every file in the group can become. */
   options: string[]
+  /** One plain line naming what this PC lacks for the formats hidden from `options`. */
+  hiddenNote?: string
 }
 
-function useGroups(files: ProbeResult[]): Group[] {
+type Targets = Map<string, TargetSummary[]>
+
+/** Targets this PC can't make for any file in the group, keyed by what's missing. */
+function unavailable(exts: string[], fs: ProbeResult[], targets: Targets): Map<string, { exts: string[]; missing: string[] }> {
+  const byMissing = new Map<string, { exts: string[]; missing: string[] }>()
+  for (const ext of exts) {
+    const found = fs.map((f) => targets.get(f.path)?.find((t) => t.op === 'convert' && t.ext === ext))
+    if (!found.every((t) => t && !t.available)) continue
+    const missing = [...new Set(found.flatMap((t) => t!.missing))].sort()
+    const key = missing.join(',')
+    const entry = byMissing.get(key) ?? { exts: [], missing }
+    entry.exts.push(ext)
+    byMissing.set(key, entry)
+  }
+  return byMissing
+}
+
+function useGroups(files: ProbeResult[], targets: Targets): Group[] {
   return useMemo(() => {
     const map = new Map<Category, ProbeResult[]>()
     for (const f of files) if (f.category) map.set(f.category, [...(map.get(f.category) ?? []), f])
     return [...map.entries()].map(([category, fs]) => {
       const sets = fs.map((f) => new Set(outputsFor(f.path).map((o) => o.ext)))
-      const options = [...sets[0]!].filter((e) => sets.every((s) => s.has(e)))
-      return { category, files: fs, options }
+      const all = [...sets[0]!].filter((e) => sets.every((s) => s.has(e)))
+      const hidden = unavailable(all, fs, targets)
+      const gone = new Set([...hidden.values()].flatMap((h) => h.exts))
+      const sources = joinWords([...new Set(fs.map((f) => f.ext.toUpperCase()))])
+      const hiddenNote = [...hidden.values()]
+        .map((h) => `${joinWords(h.exts.map((e) => formatInfo(e)?.label ?? e.toUpperCase()))} from ${sources} files ${h.exts.length === 1 ? 'needs' : 'need'} ${needsList(h.missing)}.`)
+        .join(' ')
+      return { category, files: fs, options: all.filter((e) => !gone.has(e)), hiddenNote: hiddenNote || undefined }
     })
-  }, [files])
+  }, [files, targets])
+}
+
+/** What each chosen file can become on this PC, asked once per new set of files. */
+function useTargets(files: ProbeResult[]): Targets {
+  const [targets, setTargets] = useState<Targets>(new Map())
+  const key = files.map((f) => f.path).join('\n')
+  useEffect(() => {
+    const paths = key ? key.split('\n') : []
+    if (!paths.length) return setTargets(new Map())
+    let live = true
+    api.ops
+      .targets(paths)
+      .then((res) => live && setTargets(new Map(res.map((r) => [r.path, r.targets]))))
+      .catch(() => undefined)
+    return () => {
+      live = false
+    }
+  }, [key])
+  return targets
 }
 
 /** The whole zone is one button: click, Enter or Space opens the file picker; dropping files adds them. */
@@ -145,7 +191,7 @@ function num(v: string): number | undefined {
 
 export function ConvertPage() {
   const { files, addFiles, removeFile, clearFiles, settings, updateSettings, system, jobs } = useApp()
-  const groups = useGroups(files)
+  const groups = useGroups(files, useTargets(files))
   const [picked, setPicked] = useState<Partial<Record<Category, string>>>({})
   const [resolution, setResolution] = useState<Resolution | null>(null)
   const [originals, setOriginals] = useState<OriginalsMode>('keep')
@@ -262,6 +308,7 @@ export function ConvertPage() {
                     }
                     groups={groupOptions(group.options)}
                   />
+                  {group.hiddenNote && <p className="text-xs text-subtle-foreground">{group.hiddenNote}</p>}
                 </Field>
               ))}
               {groups.length === 0 && <p className="text-[13px] text-subtle-foreground">Add a file Sparky can convert to pick a format.</p>}

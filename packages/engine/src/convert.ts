@@ -37,6 +37,7 @@ import { pathToFileURL } from 'node:url'
 import type { RunContext } from './queue'
 import { convertDocument } from './document'
 import { freeName, planOutput, samePath, splitOut } from './output'
+import { runGhostscript } from './pdf/ghostscript'
 import { run, runOk, throwIfAborted } from './process'
 import type { Tools } from './tools'
 
@@ -55,6 +56,8 @@ export interface EngineEnv {
   settings: () => Settings
   host: EngineHost
   tempDir: string
+  /** The app's data folder, for files kept between runs such as downloaded OCR languages. */
+  dataDir?: string
 }
 
 function need<T>(value: T | undefined, what: string): T {
@@ -168,14 +171,14 @@ export async function convertFile(
         break
       case 'libreoffice':
         ctx.update({ progress: -1 })
-        await runLibreOffice(env, input, out.tmpPath, ctx.signal)
+        await runLibreOffice(env, input, out.tmpPath, out.ext, ctx.signal)
         break
       case 'ghostscript':
         ctx.update({ progress: -1 })
         if (!tools.ghostscript) {
           throw new Error('Shrinking PDFs needs Ghostscript. Install it from ghostscript.com and restart Sparky.')
         }
-        await runOk(tools.ghostscript, ghostscriptArgs(input, out.tmpPath, settings.compression), { signal: ctx.signal, lowPriority: settings.performance === 'low' })
+        await runGhostscript(tools.ghostscript, { args: ghostscriptArgs(input, out.tmpPath, settings.compression), secret: [] }, { signal: ctx.signal, lowPriority: settings.performance === 'low', tempDir: env.tempDir, intent: 'compress' })
         break
       case 'pdf-text':
         ctx.update({ progress: -1 })
@@ -310,6 +313,9 @@ async function runSharp(input: string, output: string, settings: ConvertSettings
     case 'png':
       img = img.png({ compressionLevel: 9, palette: settings.compression >= 3, quality })
       break
+    case 'tiff':
+      img = img.tiff({ compression: 'lzw' })
+      break
   }
   await img.toFile(output).catch((e) => {
     throw new Error(explainFfmpegError((e as Error).message))
@@ -338,14 +344,17 @@ async function printToPdf(env: EngineEnv, input: string, output: string, signal:
   }
 }
 
-async function runLibreOffice(env: EngineEnv, input: string, output: string, signal: AbortSignal): Promise<void> {
+async function runLibreOffice(env: EngineEnv, input: string, output: string, ext: string, signal: AbortSignal): Promise<void> {
   const work = path.join(env.tempDir, `soffice-${randomUUID()}`)
   await fs.mkdir(work, { recursive: true })
   try {
     // A private profile avoids clashing with a LibreOffice window that is already open.
     const profile = `-env:UserInstallation=${pathToFileURL(path.join(work, 'profile')).href}`
-    await runOk(need(env.tools.libreoffice, 'LibreOffice'), [profile, ...libreOfficeArgs(input, work)], { signal, timeoutMs: 5 * 60_000 })
-    await moveFile(path.join(work, `${path.parse(input).name}.pdf`), output)
+    const args = libreOfficeArgs(input, work)
+    // The target extension alone is enough: LibreOffice picks the matching export filter (docx, xlsx, pdf).
+    args[args.indexOf('--convert-to') + 1] = ext
+    await runOk(need(env.tools.libreoffice, 'LibreOffice'), [profile, ...args], { signal, timeoutMs: 5 * 60_000 })
+    await moveFile(path.join(work, `${path.parse(input).name}.${ext}`), output)
   } finally {
     await fs.rm(work, { recursive: true, force: true })
   }

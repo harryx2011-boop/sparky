@@ -17,10 +17,12 @@ import { DownloadPage } from './pages/DownloadPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { QueuePage } from './pages/QueuePage'
 import { SettingsPage } from './pages/SettingsPage'
+import { ToolsPage } from './pages/ToolsPage'
 
 const PAGES: Record<Section, () => ReactNode> = {
   convert: ConvertPage,
   download: DownloadPage,
+  tools: ToolsPage,
   queue: QueuePage,
   history: HistoryPage,
   settings: SettingsPage,
@@ -30,7 +32,7 @@ function Shell() {
   const { section, go, settings } = useApp()
   useTheme(settings?.theme)
 
-  // Ctrl+1…5 switches sections.
+  // Ctrl+1…6 switches sections.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!e.ctrlKey || e.altKey || e.shiftKey) return

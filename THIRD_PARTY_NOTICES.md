@@ -21,6 +21,11 @@ Sparky also uses these libraries, which are bundled into the app:
 | sharp and libvips | Apache-2.0, LGPL-3.0 (libvips) |
 | better-sqlite3 and SQLite | MIT, public domain |
 | pdf.js | Apache-2.0 |
+| tesseract.js and tesseract.js-core | Apache-2.0 |
+| tessdata_fast language data (English bundled; others fetched on demand) | Apache-2.0 |
+| @napi-rs/canvas (Skia) | MIT, BSD-3-Clause (Skia) |
+| pdf-lib | MIT |
+| ExcelJS, Papa Parse, marked, Turndown, fast-xml-parser, zod | MIT |
 | Radix UI, cmdk, sonner, lucide-react, Motion, Tailwind CSS | MIT (lucide-react: ISC) |
 | Simple Icons (brand icons) | CC0-1.0; brand marks belong to their owners |
 | IBM Plex Mono | SIL Open Font License 1.1 |

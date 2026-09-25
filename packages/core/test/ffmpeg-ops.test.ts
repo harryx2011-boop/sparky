@@ -80,6 +80,20 @@ describe('gif two-pass', () => {
     for (const a of rendered) expect(typeof a).toBe('string')
   })
 
+  it('reports progress on the palette pass too', () => {
+    expect(b.palette[b.palette.indexOf('-progress') + 1]).toBe('pipe:1')
+    expect(b.palette.at(-1)).toBe('p.png')
+  })
+
+  it('runs an open-ended trim to the end of the file', () => {
+    const { palette } = gifArgs('in.mp4', 'p.png', { fps: 10, width: 320, loop: true, dither: 'none', trim: { start: 3, end: Infinity } })
+    expect(palette[palette.indexOf('-ss') + 1]).toBe('3')
+    expect(palette).not.toContain('-t')
+    const fromZero = gifArgs('in.mp4', 'p.png', { fps: 10, width: 320, loop: true, dither: 'none', trim: { start: 0, end: 2 } }).palette
+    expect(fromZero).not.toContain('-ss')
+    expect(fromZero[fromZero.indexOf('-t') + 1]).toBe('2')
+  })
+
   it('loops forever or plays once', () => {
     const once = gifArgs('in.mp4', 'p.png', { fps: 10, width: 320, loop: false, dither: 'none' }).render('p.png', 'o.gif')
     expect(once[once.indexOf('-loop') + 1]).toBe('-1')

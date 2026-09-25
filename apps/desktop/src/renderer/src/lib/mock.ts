@@ -5,9 +5,15 @@ import {
   categoryOf,
   defaultSettings,
   normalizeExt,
+  OP_TEXT,
+  opUnavailableError,
+  outputsFor,
+  unknownOpError,
   type HistoryEntry,
   type Job,
   type LinkInfo,
+  type OpStartResult,
+  type OpSummary,
   TOOL_LABELS,
   type Settings,
   type SparkyApi,
@@ -63,6 +69,133 @@ setInterval(() => {
 
 const noop = async () => undefined
 
+const FILES = { type: 'array', minItems: 1, items: { type: 'string', minLength: 1 } }
+const OUT = { type: 'string', minLength: 1 }
+const IMAGES = ['png', 'jpg', 'jpeg', 'webp', 'avif', 'heic', 'bmp', 'gif', 'tiff']
+const VIDEOS = ['mp4', 'webm', 'mkv', 'mov', 'avi', 'm4v', 'wmv', 'flv']
+const AUDIO = ['mp3', 'wav', 'flac', 'm4a', 'ogg', 'aac', 'wma']
+
+function mockOp(o: Pick<OpSummary, 'id' | 'label' | 'doneLabel' | 'category' | 'accepts'> & Partial<OpSummary> & { props: Record<string, unknown>; required?: string[] }): OpSummary {
+  const { props, required, ...rest } = o
+  return {
+    kind: 'tool',
+    arity: 'each',
+    positional: ['files'],
+    requires: [],
+    available: true,
+    missing: [],
+    ...rest,
+    inputSchema: { type: 'object', properties: { ...props, out: OUT }, required: required ?? ['files'] },
+  }
+}
+
+const mockOps: OpSummary[] = [
+  mockOp({ id: 'convert', label: OP_TEXT.convert.label, doneLabel: OP_TEXT.convert.done, category: 'convert', kind: 'convert', accepts: [...VIDEOS, ...AUDIO, ...IMAGES, 'pdf', 'docx', 'md'], props: { files: FILES, output: { type: 'string' } }, required: ['files', 'output'] }),
+  mockOp({ id: 'download', label: OP_TEXT.download.label, doneLabel: OP_TEXT.download.done, category: 'download', kind: 'download', accepts: [], positional: ['urls'], props: { urls: FILES }, required: ['urls'] }),
+  mockOp({
+    id: 'pdf.merge',
+    label: 'Combine PDFs',
+    doneLabel: 'Combined',
+    category: 'pdf',
+    arity: 'all',
+    accepts: ['pdf'],
+    props: { files: { ...FILES, minItems: 2 }, bookmarks: { type: 'boolean', default: true, description: 'One per file' } },
+  }),
+  mockOp({
+    id: 'pdf.split',
+    label: 'Split a PDF',
+    doneLabel: 'Split',
+    category: 'pdf',
+    accepts: ['pdf'],
+    props: {
+      files: FILES,
+      mode: { type: 'string', enum: ['ranges', 'every', 'odd-even'], default: 'ranges', labels: { ranges: 'Page ranges', every: 'Every few pages', 'odd-even': 'Odd and even' } },
+      ranges: { type: 'string', description: 'e.g. 1-3, 5' },
+      every: { type: 'integer', minimum: 1, maximum: 500, default: 1 },
+    },
+  }),
+  mockOp({
+    id: 'pdf.protect',
+    label: 'Add a password to a PDF',
+    doneLabel: 'Protected',
+    category: 'pdf',
+    accepts: ['pdf'],
+    secret: ['password'],
+    props: { files: FILES, password: { type: 'string', minLength: 1 }, allowPrint: { type: 'boolean', default: true } },
+    required: ['files', 'password'],
+  }),
+  mockOp({
+    id: 'pdf.office',
+    label: 'Office files to PDF',
+    doneLabel: 'Made PDF',
+    category: 'pdf',
+    accepts: ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'odt', 'rtf'],
+    requires: ['libreoffice'],
+    available: false,
+    missing: ['libreoffice'],
+    props: { files: FILES },
+  }),
+  mockOp({
+    id: 'media.trim',
+    label: 'Trim a video',
+    doneLabel: 'Trimmed',
+    category: 'video',
+    accepts: VIDEOS,
+    props: { files: FILES, start: { type: 'number', minimum: 0, description: 'seconds' }, end: { type: 'number', minimum: 0, description: 'seconds' }, fade: { type: 'boolean' } },
+  }),
+  mockOp({
+    id: 'media.target',
+    label: 'Make a video fit a size',
+    doneLabel: 'Shrunk',
+    category: 'video',
+    accepts: VIDEOS,
+    props: { files: FILES, preset: { type: 'string', enum: ['email', 'discord', 'custom'], default: 'email' }, targetMb: { type: 'number', exclusiveMinimum: 0 } },
+  }),
+  mockOp({
+    id: 'media.volume',
+    label: 'Change the volume',
+    doneLabel: 'Changed',
+    category: 'audio',
+    accepts: [...AUDIO, ...VIDEOS],
+    props: { files: FILES, gain: { type: 'number', minimum: -30, maximum: 30, default: 0, description: 'decibels' }, normalize: { type: 'boolean', default: false } },
+  }),
+  mockOp({
+    id: 'image.resize',
+    label: 'Resize images',
+    doneLabel: 'Resized',
+    category: 'image',
+    accepts: IMAGES,
+    props: {
+      files: FILES,
+      width: { type: 'integer', exclusiveMinimum: 0 },
+      height: { type: 'integer', exclusiveMinimum: 0 },
+      percent: { type: 'number', minimum: 1, maximum: 1000 },
+      fit: { type: 'string', enum: ['contain', 'cover', 'fill', 'inside', 'outside'] },
+      stripMetadata: { type: 'boolean', default: false },
+    },
+  }),
+  mockOp({
+    id: 'image.gif',
+    label: 'Images to GIF',
+    doneLabel: 'Made GIF',
+    category: 'image',
+    arity: 'all',
+    accepts: IMAGES,
+    props: { files: FILES, fps: { type: 'integer', minimum: 1, maximum: 60, default: 10 }, loop: { type: 'boolean', default: true } },
+  }),
+  mockOp({
+    id: 'ocr',
+    label: 'Read text from images',
+    doneLabel: 'Read',
+    category: 'tool',
+    accepts: [...IMAGES, 'pdf'],
+    props: { files: FILES, output: { type: 'string', enum: ['txt', 'pdf'], default: 'txt' }, languages: { type: 'array', items: { type: 'string', minLength: 1 }, default: ['eng'] } },
+  }),
+]
+
+/** Spreadsheets only print through LibreOffice, which the mock PC doesn't have. */
+const NEEDS_OFFICE = new Set(['xls', 'xlsx', 'csv', 'ods'])
+
 export const mockApi: SparkyApi = {
   system: {
     info: async () => ({
@@ -84,7 +217,7 @@ export const mockApi: SparkyApi = {
     }),
   },
   files: {
-    pick: async () => ['C:\\Videos\\trip-recap.mov', 'C:\\Audio\\interview.wav', 'C:\\Notes\\notes.md'],
+    pick: async () => ['C:\\Videos\\trip-recap.mov', 'C:\\Audio\\interview.wav', 'C:\\Notes\\notes.md', 'C:\\Sheets\\budget.xlsx'],
     pickFolder: async () => 'D:\\Sparky output',
     probe: async (paths) =>
       paths.map((p) => {
@@ -117,6 +250,31 @@ export const mockApi: SparkyApi = {
     },
     start: async (req) => addJob({ kind: 'download', op: 'download', title: `${req.title ?? req.url}${req.convertTo ? ` → ${req.convertTo.toUpperCase()}` : ''}`, source: req.url, download: req }),
   },
+  ops: {
+    list: async () => mockOps,
+    targets: async (paths) =>
+      paths.map((p) => {
+        const ext = normalizeExt(p)
+        return {
+          path: p,
+          targets: outputsFor(p).map((f) => {
+            const gone = f.ext === 'pdf' && NEEDS_OFFICE.has(ext) ? ['libreoffice'] : []
+            return { op: 'convert', ext: f.ext, available: gone.length === 0, missing: gone }
+          }),
+        }
+      }),
+    start: async (id, raw): Promise<OpStartResult> => {
+      const op = mockOps.find((o) => o.id === id)
+      if (!op) return { ok: false, error: { code: 'unknown_op', message: unknownOpError(id), field: 'op' } }
+      if (!op.available) return { ok: false, error: { code: 'unavailable', message: opUnavailableError(op.label, op.missing) } }
+      const args = (raw ?? {}) as Record<string, unknown>
+      const files = Array.isArray(args.files) ? (args.files as string[]) : []
+      if (op.id === 'pdf.merge' && files.length < 2) return { ok: false, error: { code: 'invalid_input', message: 'Add at least two PDFs to combine.', field: 'files' } }
+      const items = op.arity === 'each' ? files.map((f) => [f]) : [files]
+      const created = items.map((group) => addJob({ kind: 'tool', op: op.id, restartsOnResume: true, title: `${op.label}: ${group.map((f) => f.split(/[\\/]/).pop()).join(', ')}`, source: group[0] ?? '', sizeBefore: 12 * MB }))
+      return { ok: true, jobs: created }
+    },
+  },
   queue: {
     list: async () => jobs,
     pause: async (id) => void jobs.forEach((j) => j.id === id && (j.status = 'paused')),
@@ -139,7 +297,7 @@ export const mockApi: SparkyApi = {
           (!q.kind || q.kind === 'all' || h.kind === q.kind) &&
           (!q.status || q.status === 'all' || h.status === q.status),
       ),
-    rerun: async () => [],
+    rerun: async () => ({ ok: true, jobs: [] }),
     remove: async (id) => void history.splice(history.findIndex((h) => h.id === id), 1),
     clear: async () => void history.splice(0),
   },

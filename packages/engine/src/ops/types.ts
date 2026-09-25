@@ -34,6 +34,8 @@ export interface OpContext {
   host: EngineHost
   /** This process's own scratch folder. */
   tempDir: string
+  /** The app's data folder, for caches that outlive a job. */
+  dataDir?: string
   /** Aborted on cancel or pause; long steps check it and throw CanceledError. */
   signal: AbortSignal
   progress(p: OpProgress): void
@@ -72,6 +74,8 @@ export interface Op<I extends z.ZodObject = z.ZodObject> {
   resumable: boolean
   /** Flat, transform-free zod/v4 object. The engine adds `out`; never declare it here. */
   input: I
+  /** Input fields that must never be stored or shown: they stay out of the job, the queue snapshot and History, so a rerun asks for them again. */
+  secret?: string[]
   /** Input fields holding local paths; the engine makes them absolute so a rerun, or another process, finds the same files. */
   paths?: string[]
   /** Which sources this op takes. */

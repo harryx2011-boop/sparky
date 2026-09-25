@@ -1,14 +1,18 @@
 // The op registry. Adding an op = one file in this folder + one line in OPS (+ its words in core's OP_TEXT).
-import type { JobKind } from '@sparky/core'
+import { INPUT_EXTS, type JobKind } from '@sparky/core'
 import { z } from 'zod/v4'
 import type { ToolId } from '../tools'
 import { convertOp } from './convert'
 import { downloadOp } from './download'
+import { imageOps } from './image'
+import { mediaOps } from './media'
+import { ocrOps } from './ocr'
+import { pdfOps } from './pdf'
 import type { Op, OpCategory } from './types'
 
 export const OPS = [convertOp, downloadOp] as const
 
-const ALL: readonly Op[] = OPS
+const ALL: readonly Op[] = [...OPS, ...pdfOps, ...mediaOps, ...imageOps, ...ocrOps]
 
 export function opById(id: string): Op | undefined {
   return ALL.find((op) => op.id === id)
@@ -57,6 +61,11 @@ export function inputSchema(op: Op): Record<string, unknown> {
   return js
 }
 
+/** Every extension core knows how to read. */
+function knownInputs(): readonly string[] {
+  return INPUT_EXTS
+}
+
 export interface OpDescriptor {
   id: string
   label: string
@@ -66,6 +75,10 @@ export interface OpDescriptor {
   arity: Op['arity']
   positional: string[]
   requires: ToolId[]
+  /** Fields to render as password inputs and never store. */
+  secret: string[]
+  /** The extensions this op takes, from core's known inputs. */
+  accepts: string[]
   inputSchema: Record<string, unknown>
 }
 
@@ -79,6 +92,8 @@ export function describeOp(op: Op): OpDescriptor {
     arity: op.arity,
     positional: op.positional,
     requires: op.requires ?? [],
+    secret: op.secret ?? [],
+    accepts: knownInputs().filter((e) => op.accepts(e)),
     inputSchema: inputSchema(op),
   }
 }

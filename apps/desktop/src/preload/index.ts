@@ -25,6 +25,11 @@ const api: SparkyApi = {
     inspect: (url) => invoke('download:inspect', url),
     start: (req) => invoke('download:start', req),
   },
+  ops: {
+    list: () => invoke('ops:list'),
+    targets: (paths) => invoke('ops:targets', paths),
+    start: (op, args) => invoke('ops:start', op, args),
+  },
   queue: {
     list: () => invoke('queue:list'),
     pause: (id) => invoke('queue:pause', id),

@@ -8,5 +8,6 @@ export default defineConfig({
   root: resolve(__dirname, 'src/renderer'),
   resolve: { alias: { '@': resolve(__dirname, 'src/renderer/src') } },
   plugins: [react(), tailwindcss()],
+  server: { port: 4601, strictPort: true },
   build: { outDir: resolve(__dirname, 'out/ui-preview'), emptyOutDir: true },
 })

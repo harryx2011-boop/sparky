@@ -288,6 +288,37 @@ export interface ClipboardOffer {
   url: string
 }
 
+/** An engine op as the app sees it. `missing` holds tool ids ("libreoffice") and app capabilities ("print", "trash"). */
+export interface OpSummary {
+  id: string
+  label: string
+  doneLabel: string
+  /** 'pdf', 'video', 'audio', 'image', 'document', 'archive', 'tool', or 'convert'/'download' for the two ops with their own pages. */
+  category: string
+  kind: JobKind
+  arity: 'each' | 'all'
+  positional: string[]
+  requires: string[]
+  /** Fields to render as password inputs; Sparky never stores them. */
+  secret?: string[]
+  /** Extensions the op takes, lower case, without the dot. */
+  accepts: string[]
+  /** JSON Schema of the op's input, `out` included. */
+  inputSchema: Record<string, unknown>
+  available: boolean
+  missing: string[]
+}
+
+/** One thing a file can become, and whether this PC can make it. */
+export interface TargetSummary {
+  op: string
+  ext: string
+  available: boolean
+  missing: string[]
+}
+
+export type OpStartResult = { ok: true; jobs: Job[] } | { ok: false; error: { code: string; message: string; field?: string } }
+
 /** The API the preload script exposes as `window.sparky`. */
 export interface SparkyApi {
   system: {
@@ -309,6 +340,12 @@ export interface SparkyApi {
     inspect(url: string): Promise<LinkInfo>
     start(request: DownloadRequest): Promise<Job>
   }
+  ops: {
+    list(): Promise<OpSummary[]>
+    targets(paths: string[]): Promise<{ path: string; targets: TargetSummary[] }[]>
+    /** Never throws for bad input: a wrong or unavailable request comes back as `ok: false`. */
+    start(op: string, args: unknown): Promise<OpStartResult>
+  }
   queue: {
     list(): Promise<Job[]>
     pause(id: string): Promise<void>
@@ -325,7 +362,8 @@ export interface SparkyApi {
   }
   history: {
     search(query: HistoryQuery): Promise<HistoryEntry[]>
-    rerun(id: string): Promise<Job[]>
+    /** A refused rerun (bad input, or a password Sparky never kept) comes back as `ok: false`. */
+    rerun(id: string): Promise<OpStartResult>
     remove(id: string): Promise<void>
     clear(): Promise<void>
   }
@@ -352,4 +390,4 @@ export interface SparkyApi {
   onNavigate(listener: (to: { section: Section; url?: string }) => void): () => void
 }
 
-export type Section = 'convert' | 'download' | 'queue' | 'history' | 'settings'
+export type Section = 'convert' | 'download' | 'tools' | 'queue' | 'history' | 'settings'

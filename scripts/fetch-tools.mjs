@@ -12,6 +12,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { gzipSync } from 'node:zlib'
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const binDir = path.join(root, 'apps/desktop/resources/bin')
@@ -66,6 +67,39 @@ const TOOLS = [
     license: 'MIT (https://github.com/denoland/deno)',
   },
 ]
+
+/** Data files fetched as they are (no release, no unpacking). `gzip` stores them compressed, the way tesseract.js reads them. */
+const DATA = [
+  {
+    id: 'tessdata-eng',
+    // The fast LSTM English model (about 4 MB) for OCR; other languages download on demand.
+    url: 'https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/4.1.0/eng.traineddata',
+    dest: 'tessdata/eng.traineddata.gz',
+    gzip: true,
+    version: '4.1.0',
+    license: 'Apache-2.0 (https://github.com/tesseract-ocr/tessdata_fast)',
+  },
+]
+
+async function fetchData(item) {
+  const dest = path.join(binDir, item.dest)
+  if (fs.existsSync(dest) && !force) {
+    console.log(`✓ ${item.id} already present`)
+    return undefined
+  }
+  fs.mkdirSync(path.dirname(dest), { recursive: true })
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), `sparky-${item.id}-`))
+  try {
+    const file = path.join(work, path.basename(new URL(item.url).pathname))
+    console.log(`↓ ${item.id} ${item.version} (${path.basename(file)})`)
+    await download(item.url, file)
+    const body = fs.readFileSync(file)
+    fs.writeFileSync(dest, item.gzip ? gzipSync(body, { level: 9 }) : body)
+    return { id: item.id, version: item.version, asset: item.url, license: item.license }
+  } finally {
+    fs.rmSync(work, { recursive: true, force: true })
+  }
+}
 
 async function release(repo, tag) {
   const url = `https://api.github.com/repos/${repo}/releases/${tag ? `tags/${tag}` : 'latest'}`
@@ -179,6 +213,15 @@ for (const tool of TOOLS) {
   } catch (e) {
     failed = true
     console.error(`✗ ${tool.id}: ${e.message}`)
+  }
+}
+for (const item of DATA) {
+  try {
+    const info = await fetchData(item)
+    if (info) manifest[info.id] = info
+  } catch (e) {
+    failed = true
+    console.error(`✗ ${item.id}: ${e.message}`)
   }
 }
 fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`)

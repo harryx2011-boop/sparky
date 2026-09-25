@@ -62,11 +62,28 @@ export function opContext(env: EngineEnv, run: Pick<RunContext, 'signal' | 'upda
   }
 }
 
-/** The queue's runner: look the op up by id and run it. */
-export async function runOpJob(env: EngineEnv, job: Job, run: RunContext): Promise<Partial<Job>> {
+/** Set in stored args when the job was given a secret field. */
+export const SECRET_GIVEN = 'secretGiven'
+
+/** Splits validated args into what may be stored and the op's secret fields, which only live in memory. */
+export function splitSecrets(op: Op, args: Record<string, unknown>): { kept: Record<string, unknown>; hidden?: Record<string, unknown> } {
+  const keys = (op.secret ?? []).filter((k) => args[k] !== undefined)
+  if (!keys.length) return { kept: args }
+  // The marker says a secret was given, so a rerun from History knows to ask for it; op schemas drop unknown keys.
+  const kept: Record<string, unknown> = { ...args, [SECRET_GIVEN]: true }
+  const hidden: Record<string, unknown> = {}
+  for (const k of keys) {
+    hidden[k] = kept[k]
+    delete kept[k]
+  }
+  return { kept, hidden }
+}
+
+/** The queue's runner: look the op up by id and run it. `secrets` are the fields kept out of `job.args`. */
+export async function runOpJob(env: EngineEnv, job: Job, run: RunContext, secrets?: Record<string, unknown>): Promise<Partial<Job>> {
   const op = opById(job.op)
   if (!op) throw new Error(unknownOpError(job.op))
-  const { args, out } = parseOpInput(op, job.args)
+  const { args, out } = parseOpInput(op, secrets ? { ...(job.args as Record<string, unknown>), ...secrets } : job.args)
   const r = await op.run(opContext(env, run, out), args)
   return { outputs: r.outputs, sizeBefore: r.sizeBefore, sizeAfter: r.sizeAfter, note: r.warnings?.length ? r.warnings.join(' ') : undefined }
 }

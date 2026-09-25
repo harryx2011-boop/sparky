@@ -16,6 +16,7 @@
     "pretest": "npm rebuild better-sqlite3 --silent"
   },
   "dependencies": {
+    "@napi-rs/canvas": "^1.0.9",
     "@sparky/core": "*",
     "better-sqlite3": "^13.0.3",
     "exceljs": "^4.4.0",
@@ -25,6 +26,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289",
     "sharp": "^0.35.4",
+    "tesseract.js": "^7.0.0",
     "turndown": "^7.2.4",
     "zod": "^3.25.76"
   },

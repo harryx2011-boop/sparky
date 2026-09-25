@@ -1,11 +1,11 @@
 // Electron main process: window, tray, notifications, clipboard and IPC.
-import { isKnownMediaLink, OP_TEXT, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type Section, type Settings } from '@sparky/core'
+import { isKnownMediaLink, OP_TEXT, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type Section, type Settings } from '@sparky/core'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, shell, Tray } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
 import path from 'node:path'
-import { createEngine, opById, type Engine } from '@sparky/engine'
+import { createEngine, opById, OpInputError, type Engine } from '@sparky/engine'
 
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
@@ -189,6 +189,16 @@ async function printToPdf(htmlPath: string, pdfPath: string): Promise<void> {
   }
 }
 
+/** Input the engine refuses comes back as data, so the UI shows its plain message instead of Electron's "Error invoking remote method". */
+function refusable(start: () => Job[]): OpStartResult {
+  try {
+    return { ok: true, jobs: start() }
+  } catch (e) {
+    if (!(e instanceof OpInputError)) throw e
+    return { ok: false, error: { code: e.code, message: e.message, field: e.field } }
+  }
+}
+
 function registerIpc(): void {
   const handle = <A extends unknown[], R>(channel: string, fn: (...args: A) => R | Promise<R>) =>
     ipcMain.handle(channel, (_e, ...args) => fn(...(args as A)))
@@ -214,6 +224,10 @@ function registerIpc(): void {
   handle('download:inspect', (url: string) => engine.inspect(url))
   handle('download:start', (req: DownloadRequest) => engine.startDownload(req))
 
+  handle('ops:list', (): OpSummary[] => engine.listOps())
+  handle('ops:targets', (paths: string[]) => engine.targetsFor(paths))
+  handle('ops:start', (op: string, args: unknown) => refusable(() => engine.startOp(op, args)))
+
   handle('queue:list', () => engine.listJobs())
   handle('queue:pause', (id: string) => engine.pause(id))
   handle('queue:resume', (id: string) => engine.resume(id))
@@ -226,7 +240,7 @@ function registerIpc(): void {
   handle('queue:clearFinished', () => engine.clearFinished())
 
   handle('history:search', (query: HistoryQuery) => engine.history(query))
-  handle('history:rerun', (id: string) => engine.rerun(id))
+  handle('history:rerun', (id: string) => refusable(() => engine.rerun(id)))
   handle('history:remove', (id: string) => engine.removeHistory(id))
   handle('history:clear', () => engine.clearHistory())
 

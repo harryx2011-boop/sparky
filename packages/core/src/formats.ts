@@ -51,6 +51,7 @@ export const FORMATS: readonly FormatInfo[] = [
   { ext: 'ico', label: 'ICO', category: 'image', note: 'Windows icons' },
   { ext: 'heic', label: 'HEIC', category: 'image', note: 'iPhone photos' },
   { ext: 'bmp', label: 'BMP', category: 'image', note: 'Uncompressed bitmap' },
+  { ext: 'tiff', label: 'TIFF', category: 'image', note: 'Print and scans' },
   { ext: 'pdf', label: 'PDF', category: 'document', note: 'Looks the same everywhere' },
   { ext: 'docx', label: 'DOCX', category: 'document', note: 'Word document' },
   { ext: 'md', label: 'MD', category: 'document', note: 'Markdown text' },
@@ -81,7 +82,6 @@ const ALIASES: Record<string, string> = {
 
 /** Inputs Sparky accepts beyond the output list. */
 const EXTRA_INPUTS: Record<string, Category> = {
-  tiff: 'image',
   aac: 'audio',
   wma: 'audio',
   flv: 'video',
@@ -91,9 +91,28 @@ const EXTRA_INPUTS: Record<string, Category> = {
   mpg: 'video',
   mpeg: 'video',
   xls: 'document',
+  doc: 'document',
+  rtf: 'document',
+  odt: 'document',
+  ods: 'document',
+  ppt: 'document',
+  pptx: 'document',
+  odp: 'document',
 }
 
 const OUTPUT_ONLY = new Set(['folder'])
+
+/** Office files only LibreOffice opens, and what it can make of each. They light up once LibreOffice is found. */
+const OFFICE_TARGETS: Record<string, readonly string[]> = {
+  xls: ['pdf', 'xlsx'],
+  ods: ['pdf', 'xlsx'],
+  doc: ['pdf', 'docx'],
+  rtf: ['pdf', 'docx'],
+  odt: ['pdf', 'docx'],
+  ppt: ['pdf'],
+  pptx: ['pdf'],
+  odp: ['pdf'],
+}
 
 /** Data formats only the engine's document module reads. */
 const DATA_DOCS = new Set(['csv', 'xlsx', 'json', 'xml'])
@@ -128,6 +147,9 @@ export function isSupportedInput(path: string): boolean {
   return categoryOf(path) !== undefined
 }
 
+/** Every extension Sparky reads, lower case without the dot: the formats it writes, the extra inputs (the LibreOffice-gated Office files among them) and their aliases. */
+export const INPUT_EXTS: readonly string[] = [...new Set([...FORMATS.map((f) => f.ext), ...Object.keys(EXTRA_INPUTS), ...Object.keys(ALIASES)])].filter(isSupportedInput)
+
 /**
  * Formats a given input can become. Includes the input's own format, which
  * means "just make it smaller" (compress without converting), when that makes sense.
@@ -144,11 +166,11 @@ export function outputsFor(extOrPath: string): FormatInfo[] {
     case 'audio':
       return pick(['mp3', 'wav', 'flac', 'm4a', 'ogg'])
     case 'image':
-      return pick(['png', 'jpg', 'webp', 'avif', 'ico'])
+      return pick(['png', 'jpg', 'webp', 'avif', 'tiff', 'ico'])
     case 'document':
       if (input === 'pdf') return pick(['pdf', 'txt', 'md', 'html'])
-      // Old Excel files only print, and only through LibreOffice.
-      if (input === 'xls') return pick(['pdf'])
+      // Old Excel and the other Office files go through LibreOffice only.
+      if (OFFICE_TARGETS[input]) return pick([...OFFICE_TARGETS[input]])
       if (DATA_DOCS.has(input)) return pick([...docTargetsFor(input)])
       return pick(['pdf', 'docx', 'md', 'html', 'txt']).filter((f) => f.ext !== input)
     case 'archive':
@@ -169,7 +191,8 @@ export function isCompressOnly(from: string, to: string): boolean {
 export function compressionApplies(output: string, available: { ghostscript: boolean } = { ghostscript: true }): boolean {
   const ext = normalizeExt(output)
   if (ext === 'pdf') return available.ghostscript
-  if (ext === 'folder' || ext === 'wav' || ext === 'flac' || ext === 'bmp') return false
+  // TIFF is written lossless (LZW) for print, so there is nothing to trade.
+  if (ext === 'folder' || ext === 'wav' || ext === 'flac' || ext === 'bmp' || ext === 'tiff') return false
   const cat = formatInfo(ext)?.category
   return cat === 'video' || cat === 'audio' || cat === 'image' || cat === 'archive'
 }
@@ -183,7 +206,7 @@ export function resolutionApplies(output: string): boolean {
 export type Engine = 'ffmpeg' | 'sharp' | 'pandoc' | 'pdf-print' | 'libreoffice' | 'ghostscript' | 'pdf-text' | '7zip' | 'document'
 
 const SHARP_IN = new Set(['png', 'jpg', 'webp', 'avif', 'gif', 'tiff'])
-const SHARP_OUT = new Set(['png', 'jpg', 'webp', 'avif'])
+const SHARP_OUT = new Set(['png', 'jpg', 'webp', 'avif', 'tiff'])
 
 export interface EngineContext {
   libreoffice: boolean
@@ -204,7 +227,7 @@ export function engineFor(from: string, to: string, ctx: EngineContext = { libre
     case 'archive':
       return '7zip'
     case 'document':
-      if (input === 'xls') return ctx.libreoffice ? 'libreoffice' : undefined
+      if (OFFICE_TARGETS[input]) return ctx.libreoffice ? 'libreoffice' : undefined
       if (input === 'pdf') return output === 'pdf' ? 'ghostscript' : output === 'html' ? 'document' : 'pdf-text'
       // Pairs Pandoc and printing already handle keep them; the document module takes the rest of its matrix.
       if (DATA_DOCS.has(input) && (docTargetsFor(input) as readonly string[]).includes(output)) return 'document'

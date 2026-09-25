@@ -109,6 +109,11 @@ export function opUnavailableError(label: string, missing: string[]): string {
   return parts.join(' ')
 }
 
+/** Rerun of a job whose op takes a password: Sparky never keeps those, so the job has to start again from the form. */
+export function secretNotKeptError(label: string): string {
+  return `${label} can’t run again from History, because Sparky never keeps passwords. Start it again and enter the password.`
+}
+
 export const OUT_NEEDS_FOLDER = 'This makes more than one file, so the output has to be a folder, not a file name.'
 
 /** A download given a file name that turned out to hold several items. */

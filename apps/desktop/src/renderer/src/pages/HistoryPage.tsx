@@ -103,8 +103,11 @@ export function HistoryPage() {
                     onClick={async () => {
                       setRerunning(h.id)
                       try {
-                        const created = await api.history.rerun(h.id)
-                        toast.success(created.length ? 'Added to the queue' : 'Nothing to run again')
+                        const res = await api.history.rerun(h.id)
+                        if (!res.ok) toast.error(res.error.message)
+                        else toast.success(res.jobs.length ? 'Added to the queue' : 'Nothing to run again')
+                      } catch (e) {
+                        toast.error((e as Error).message)
                       } finally {
                         setRerunning(null)
                       }

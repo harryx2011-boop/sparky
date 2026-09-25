@@ -88,6 +88,8 @@ Agents: three Opus coders in parallel, one per module, each with tests against r
 
 Exit: every op has a test that runs the real binary when `SPARKY_TEST_BIN` is set; the app's Convert page offers the new targets and a new **Tools** tab lists the non-conversion ops.
 
+**Done 2026-09-25.** 20 ops (12 PDF, 4 media, 3 image, OCR), TIFF output, LibreOffice-gated Office targets, a schema-generated Tools page and Convert-page target filtering. Secrets mechanism added for PDF passwords. Reviewer found 3 critical, 5 major and 8 minor defects (OCR broken in packaged Windows builds by a path regex, an OCR hang on any non-bundled language, boolean defaults making PDF permissions unrestrictable from the form, and more), all fixed with failing-first tests. A portable Ghostscript 10.08 extracted into the scratchpad ran the real PDF tests and exposed one more: Ghostscript exits 0 on a wrong password and writes an empty file; every Ghostscript call now checks stderr. Final check: typecheck 5 workspaces, core 173 + engine 274 + desktop 7 tests (1 skipped: the without-Ghostscript case), both builds. Deferred: OCR of PDF inputs (rasterizer exists, wiring is a Phase 3 follow-up), `image.edit` on animated sources keeps the first frame, the packaged installer was not built so the tesseract asar worker path is untested until Phase 3's installer work.
+
 ### Phase 3: agent surfaces
 
 Agents: `mcp-builder` skill loaded; Opus coder A (HTTP API + token + app hosting on 8600), Opus coder B (`@sparky/cli`: commands, `mcp`, `serve`, `init`, HARNESSES); `reviewer`; `test-runner`. An MCP eval: Claude Code calls `sparky_images_to_pdf` on two PNGs and the PDF exists.

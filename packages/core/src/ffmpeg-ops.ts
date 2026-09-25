@@ -62,10 +62,11 @@ function videoFilters(o: ConvertOptions): string[] {
   return filters
 }
 
-// Before -i, so ffmpeg seeks instead of decoding and discarding.
+// Before -i, so ffmpeg seeks instead of decoding and discarding. An end of Infinity runs to the end of the file.
 function trimArgs(o: { trim?: ConvertOptions['trim'] }): string[] {
   if (!o.trim) return []
-  return ['-ss', String(o.trim.start), '-t', String(o.trim.end - o.trim.start)]
+  const { start, end } = o.trim
+  return [...(start > 0 ? ['-ss', String(start)] : []), ...(Number.isFinite(end) ? ['-t', String(end - start)] : [])]
 }
 
 export function convertArgs(
@@ -120,7 +121,7 @@ export function gifArgs(
   const chain = `fps=${o.fps},scale=${o.width}:-1:flags=lanczos`
 
   return {
-    palette: [...base, '-vf', `${chain},palettegen=stats_mode=diff`, paletteOut],
+    palette: [...base, '-vf', `${chain},palettegen=stats_mode=diff`, '-progress', 'pipe:1', '-nostats', paletteOut],
     render: (palette, output) => [
       ...base,
       '-i',
