@@ -337,7 +337,7 @@ export function ConvertPage() {
             </div>
           )}
 
-          <Disclosure title="More options: trim, size, sound quality, what happens to originals">
+          <Disclosure title="More Options">
             <div className="grid grid-cols-4 gap-3">
               {showResolution && (
                 <Field label="Video type" className="col-span-2">
@@ -412,7 +412,7 @@ export function ConvertPage() {
       <ConfirmDialog
         open={confirm}
         onOpenChange={setConfirm}
-        title={originals === 'replace' ? 'Replace the originals?' : 'Remove the originals afterwards?'}
+        title={originals === 'replace' ? 'Replace the Originals?' : 'Remove the Originals Afterwards?'}
         description={
           originals === 'replace'
             ? 'Each original goes to the Recycle Bin once its new version is ready, and the new file takes its place. You can restore originals from the Recycle Bin.'

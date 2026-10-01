@@ -8,7 +8,7 @@ export function Disclosure({ title, children, className, defaultOpen }: { title:
     <A.Root type="single" collapsible defaultValue={defaultOpen ? 'x' : undefined} className={className}>
       <A.Item value="x">
         <A.Header>
-          <A.Trigger className="group flex items-center gap-1 text-xs text-subtle-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <A.Trigger className="group flex items-center gap-1 whitespace-nowrap text-xs text-subtle-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <ChevronRight size={13} className="transition-transform group-data-[state=open]:rotate-90" />
             {title}
           </A.Trigger>

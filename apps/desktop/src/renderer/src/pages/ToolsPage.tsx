@@ -39,7 +39,7 @@ export function ToolsPage() {
             <div role="listbox" aria-label="Tools" aria-orientation="vertical">
               {groups.map((g) => (
                 <div key={g.id} role="group" aria-labelledby={`tools-group-${g.id}`} className="pb-1">
-                  <div id={`tools-group-${g.id}`} className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-wider text-subtle-foreground">
+                  <div id={`tools-group-${g.id}`} className="truncate px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-wider text-subtle-foreground">
                     {g.label}
                   </div>
                   {g.ops.map((o) => {

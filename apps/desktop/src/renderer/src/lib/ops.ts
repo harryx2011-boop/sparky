@@ -177,7 +177,7 @@ export const OP_GROUPS: { id: string; label: string }[] = [
   { id: 'image', label: CATEGORY_LABELS.image },
   { id: 'document', label: CATEGORY_LABELS.document },
   { id: 'archive', label: CATEGORY_LABELS.archive },
-  { id: 'tool', label: 'More tools' },
+  { id: 'tool', label: 'More Tools' },
 ]
 
 /** Ops with a page of their own. */

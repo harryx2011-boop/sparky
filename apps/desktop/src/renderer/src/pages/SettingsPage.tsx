@@ -26,7 +26,7 @@ function Row({ title, hint, children }: { title: string; hint?: ReactNode; child
 function Group({ title, note, children }: { title: string; note?: ReactNode; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-subtle-foreground">{title}</h2>
+      <h2 className="truncate font-mono text-[10px] uppercase tracking-[0.12em] text-subtle-foreground">{title}</h2>
       <Card>{children}</Card>
       {note && <p className="px-1 text-xs text-subtle-foreground">{note}</p>}
     </section>

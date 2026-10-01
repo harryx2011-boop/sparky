@@ -145,7 +145,7 @@ export function HistoryPage() {
       <ConfirmDialog
         open={confirmClear}
         onOpenChange={setConfirmClear}
-        title="Clear all history?"
+        title="Clear All History?"
         description="This only forgets the list of past jobs. Your files stay where they are."
         confirmLabel="Clear history"
         destructive

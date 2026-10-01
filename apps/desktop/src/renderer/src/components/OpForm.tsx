@@ -286,7 +286,7 @@ export function OpForm({ op }: { op: OpSummary }) {
       {required.length > 0 && <div className="grid grid-cols-2 gap-3">{required.map(control)}</div>}
 
       {optional.length > 0 && (
-        <Disclosure title="More options" defaultOpen={required.length === 0}>
+        <Disclosure title="More Options" defaultOpen={required.length === 0}>
           <div className="grid grid-cols-2 gap-3">{optional.map(control)}</div>
         </Disclosure>
       )}

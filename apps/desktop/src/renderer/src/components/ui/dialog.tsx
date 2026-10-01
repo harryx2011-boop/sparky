@@ -33,7 +33,7 @@ export function ConfirmDialog({
           )}
         >
           <div className="flex flex-col gap-1.5">
-            <D.Title className="text-[15px] font-semibold">{title}</D.Title>
+            <D.Title className="truncate text-[15px] font-semibold">{title}</D.Title>
             <D.Description className="text-[13px] leading-relaxed text-muted-foreground">{description}</D.Description>
           </div>
           {children}
