@@ -1,8 +1,9 @@
 import { cn } from '@sparky/ui'
-import { Pause, Play } from 'lucide-react'
+import { Download, Pause, Play } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useRef } from 'react'
 import { api } from '@/lib/api'
+import { savable, saveFiles } from '@/lib/save'
 import { useApp } from '@/lib/state'
 import { JobRow } from './JobRow'
 
@@ -13,6 +14,7 @@ export function QueueDock() {
   const drag = useRef<{ y: number; h: number } | null>(null)
   const running = jobs.filter((j) => j.status === 'running').length
   const paused = jobs.filter((j) => j.status === 'paused').length
+  const saveable = savable(jobs)
   // Newest active work first, then recently finished.
   const order = { running: 0, queued: 1, paused: 2, failed: 3, done: 4, canceled: 5 } as const
   const shown = [...jobs].sort((a, b) => order[a.status] - order[b.status] || b.createdAt - a.createdAt)
@@ -49,16 +51,24 @@ export function QueueDock() {
           {running > 0 && <span aria-hidden className="size-1.5 rounded-full bg-lime" />}
           Queue · {running ? `${running} running` : jobs.length ? 'idle' : 'empty'}
         </button>
-        {(running > 0 || paused > 0) && (
-          <button
-            type="button"
-            className="flex items-center gap-1.5 rounded-sm text-[11px] text-subtle-foreground hover:text-foreground"
-            onClick={() => void (running > 0 ? api.queue.pauseAll() : api.queue.resumeAll())}
-          >
-            {running > 0 ? <Pause size={11} /> : <Play size={11} />}
-            {running > 0 ? 'Pause all' : 'Resume all'}
-          </button>
-        )}
+        <div className="flex items-center gap-4">
+          {saveable.length > 1 && (
+            <button type="button" className="flex items-center gap-1.5 rounded-sm text-[11px] text-subtle-foreground hover:text-foreground" onClick={() => void saveFiles(saveable)}>
+              <Download size={11} />
+              Save all
+            </button>
+          )}
+          {(running > 0 || paused > 0) && (
+            <button
+              type="button"
+              className="flex items-center gap-1.5 rounded-sm text-[11px] text-subtle-foreground hover:text-foreground"
+              onClick={() => void (running > 0 ? api.queue.pauseAll() : api.queue.resumeAll())}
+            >
+              {running > 0 ? <Pause size={11} /> : <Play size={11} />}
+              {running > 0 ? 'Pause all' : 'Resume all'}
+            </button>
+          )}
+        </div>
       </div>
       <div className={cn('flex min-h-0 grow flex-col gap-2 overflow-y-auto px-5 pb-3', !jobs.length && 'items-center justify-center')}>
         {!jobs.length && <span className="text-xs text-subtle-foreground">Jobs you start show up here with their speed and time left.</span>}

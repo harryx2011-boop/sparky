@@ -19,6 +19,7 @@ const api: SparkyApi = {
     pathFor: (file) => webUtils.getPathForFile(file),
     showInFolder: (p) => invoke('files:showInFolder', p),
     open: (p) => invoke('files:open', p),
+    save: (paths) => invoke('files:save', paths),
   },
   convert: { start: (paths, settings) => invoke('convert:start', paths, settings) },
   download: {

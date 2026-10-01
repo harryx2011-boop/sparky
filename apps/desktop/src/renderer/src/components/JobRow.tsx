@@ -4,6 +4,7 @@ import { AlertCircle, ArrowRight, Check, Download, FolderOpen, GripVertical, Pau
 import type { ReactNode } from 'react'
 import { api } from '@/lib/api'
 import { ExtIcon } from '@/lib/fileIcons'
+import { saveFiles } from '@/lib/save'
 import { Button } from './ui/button'
 import { Progress } from './ui/progress'
 import { Tip } from './ui/tooltip'
@@ -84,6 +85,13 @@ export function JobRow({ job, compact, draggable, onUpdate }: { job: Job; compac
         <Tip content="Try again">
           <Button size="icon-sm" variant="ghost" aria-label="Try again" onClick={act(api.queue.retry)}>
             <RotateCcw size={13} />
+          </Button>
+        </Tip>
+      )}
+      {job.status === 'done' && job.outputs[0] && (
+        <Tip content={job.outputs.length > 1 ? 'Save all files as…' : 'Save as…'}>
+          <Button size="icon-sm" variant="ghost" aria-label="Save as" onClick={() => void saveFiles(job.outputs)}>
+            <Download size={13} />
           </Button>
         </Tip>
       )}

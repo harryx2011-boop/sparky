@@ -321,6 +321,15 @@ export interface TargetSummary {
 
 export type OpStartResult = { ok: true; jobs: Job[] } | { ok: false; error: { code: string; message: string; field?: string } }
 
+/** `canceled` when the user closed the dialog; `missing` counts files that were gone or could not be copied. */
+export interface SaveResult {
+  canceled: boolean
+  saved: number
+  missing: number
+  /** Where the files went: the file for a single save, else the folder. */
+  dest?: string
+}
+
 /** The API the preload script exposes as `window.sparky`. */
 export interface SparkyApi {
   system: {
@@ -334,6 +343,8 @@ export interface SparkyApi {
     pathFor(file: File): string
     showInFolder(path: string): Promise<void>
     open(path: string): Promise<void>
+    /** Copies finished files where the user chooses: a save dialog for one file, a folder picker for several. */
+    save(paths: string[]): Promise<SaveResult>
   }
   convert: {
     start(paths: string[], settings: ConvertSettings): Promise<Job[]>

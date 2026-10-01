@@ -1,6 +1,6 @@
 import type { Job } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { Loader2, Pause, Play, RefreshCw, Trash2 } from 'lucide-react'
+import { Download, Loader2, Pause, Play, RefreshCw, Trash2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -8,6 +8,7 @@ import { Card, PageHeader } from '@/components/Controls'
 import { JobRow } from '@/components/JobRow'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import { savable, saveFiles } from '@/lib/save'
 import { useApp } from '@/lib/state'
 
 export function QueuePage() {
@@ -17,6 +18,7 @@ export function QueuePage() {
   const active = jobs.filter((j) => j.status === 'running' || j.status === 'queued' || j.status === 'paused')
   const finished = jobs.filter((j) => !active.includes(j))
   const running = jobs.filter((j) => j.status === 'running').length
+  const saveable = savable(jobs)
   const needsUpdate = jobs.some((j) => j.status === 'failed' && j.suggestUpdate)
 
   const drop = (targetId: string) => {
@@ -66,6 +68,11 @@ export function QueuePage() {
           <Button size="sm" variant="secondary" onClick={() => void (running ? api.queue.pauseAll() : api.queue.resumeAll())}>
             {running ? <Pause size={13} /> : <Play size={13} />}
             {running ? 'Pause all' : 'Resume all'}
+          </Button>
+        )}
+        {saveable.length > 1 && (
+          <Button size="sm" variant="secondary" onClick={() => void saveFiles(saveable)}>
+            <Download size={13} /> Save all
           </Button>
         )}
         {finished.length > 0 && (

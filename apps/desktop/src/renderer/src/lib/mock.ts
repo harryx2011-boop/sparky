@@ -229,6 +229,7 @@ export const mockApi: SparkyApi = {
     pathFor: (file) => `C:\\Dropped\\${file.name}`,
     showInFolder: noop,
     open: noop,
+    save: async (paths) => ({ canceled: false, saved: paths.length, missing: 0, dest: 'D:\\Saved' }),
   },
   convert: {
     start: async (paths, s) => paths.map((p) => addJob({ kind: 'convert', op: 'convert', restartsOnResume: true, title: `${p.split(/[\\/]/).pop()} → ${s.output.toUpperCase()}`, source: p, convert: s, sizeBefore: 80 * MB })),

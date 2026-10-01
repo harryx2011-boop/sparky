@@ -1,5 +1,5 @@
 import { describeSaving, formatDuration, type HistoryEntry, type HistoryQuery } from '@sparky/core'
-import { AlertCircle, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
+import { AlertCircle, Download, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader } from '@/components/Controls'
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Segmented } from '@/components/ui/segmented'
 import { Tip } from '@/components/ui/tooltip'
 import { api } from '@/lib/api'
+import { saveFiles } from '@/lib/save'
 import { useApp } from '@/lib/state'
 
 function when(ts: number): string {
@@ -116,6 +117,13 @@ export function HistoryPage() {
                     {rerunning === h.id ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />} Run again
                   </Button>
                 </Tip>
+                {h.outputs[0] && (
+                  <Tip content={h.outputs.length > 1 ? 'Save all files as…' : 'Save as…'}>
+                    <Button size="icon-sm" variant="ghost" aria-label="Save as" onClick={() => void saveFiles(h.outputs)}>
+                      <Download size={13} />
+                    </Button>
+                  </Tip>
+                )}
                 {h.outputs[0] && (
                   <Tip content="Show in folder">
                     <Button size="icon-sm" variant="ghost" aria-label="Show in folder" onClick={() => void api.files.showInFolder(h.outputs[0]!)}>

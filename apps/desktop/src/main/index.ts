@@ -1,5 +1,5 @@
 // Electron main process: window, tray, notifications, clipboard and IPC.
-import { isKnownMediaLink, OP_TEXT, type ApiInfo, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type Section, type Settings } from '@sparky/core'
+import { isKnownMediaLink, OP_TEXT, type ApiInfo, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type SaveResult, type Section, type Settings } from '@sparky/core'
 import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, shell, Tray } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
@@ -8,6 +8,7 @@ import path from 'node:path'
 import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
 import { registerAgentsIpc } from './agents'
 import { registerIconIpc } from './icons'
+import { copyInto, copyTo } from './save'
 
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
@@ -223,6 +224,30 @@ function registerIpc(): void {
   })
   handle('files:probe', (paths: string[]) => engine.probe(paths))
   handle('files:showInFolder', (p: string) => shell.showItemInFolder(p))
+  handle('files:save', async (paths: string[]): Promise<SaveResult> => {
+    const present = paths.filter((p) => fs.existsSync(p))
+    const gone = paths.length - present.length
+    if (!present.length) return { canceled: false, saved: 0, missing: gone }
+    if (present.length === 1) {
+      const src = present[0]!
+      const ext = path.extname(src).slice(1)
+      const res = await dialog.showSaveDialog(win!, {
+        title: 'Save As',
+        defaultPath: path.join(app.getPath('downloads'), path.basename(src)),
+        filters: ext ? [{ name: `${ext.toUpperCase()} file`, extensions: [ext] }, { name: 'All files', extensions: ['*'] }] : undefined,
+      })
+      if (res.canceled || !res.filePath) return { canceled: true, saved: 0, missing: 0 }
+      const ok = await copyTo(res.filePath, src)
+      if (ok) shell.showItemInFolder(res.filePath)
+      return { canceled: false, saved: ok ? 1 : 0, missing: gone + (ok ? 0 : 1), dest: res.filePath }
+    }
+    const res = await dialog.showOpenDialog(win!, { title: 'Choose Where to Save', buttonLabel: 'Save Here', defaultPath: app.getPath('downloads'), properties: ['openDirectory', 'createDirectory'] })
+    const dir = res.filePaths[0]
+    if (res.canceled || !dir) return { canceled: true, saved: 0, missing: 0 }
+    const { saved, failed } = await copyInto(dir, present)
+    if (saved[0]) shell.showItemInFolder(saved[0])
+    return { canceled: false, saved: saved.length, missing: gone + failed.length, dest: dir }
+  })
   handle('files:open', async (p: string) => {
     const err = await shell.openPath(p)
     if (err) throw new Error(err)
