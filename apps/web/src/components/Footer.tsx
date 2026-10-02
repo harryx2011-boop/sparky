@@ -1,5 +1,6 @@
 import { CONTACT, DiscordIcon, GithubIcon, GmailIcon, LogoMark } from '@sparky/ui'
 import { useState } from 'react'
+import { DOCS_PAGE } from '../links'
 import { SECTION_LINKS } from './sections'
 
 const pill =
@@ -23,13 +24,19 @@ export function Footer({ home = '' }: { home?: string }) {
           <span className="flex items-center gap-2 text-foreground">
             <LogoMark size={18} /> Sparky
           </span>
-          <span>Free and open source (MIT license). Built with FFmpeg, yt-dlp, Pandoc and 7-Zip.</span>
+          <span>Free and open source (MIT license).</span>
           <nav aria-label="Page sections" className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
             {SECTION_LINKS.map(([label, href]) => (
               <a key={href} href={`${home}${href}`} className="text-muted-foreground transition-colors hover:text-foreground">
                 {label}
               </a>
             ))}
+            <a href={DOCS_PAGE} className="text-muted-foreground transition-colors hover:text-foreground">
+              Docs
+            </a>
+            <a href={`${DOCS_PAGE}/how-it-works#open-source-parts`} className="text-muted-foreground transition-colors hover:text-foreground">
+              Credits
+            </a>
           </nav>
         </div>
         <div className="flex flex-wrap gap-3">

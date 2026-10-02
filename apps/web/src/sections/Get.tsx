@@ -35,7 +35,7 @@ export function Get() {
             </ButtonLink>
           </Magnetic>
         </div>
-        <span className="font-mono text-xs text-subtle-foreground">64-bit installer · no account needed</span>
+        <span className="font-mono text-xs text-subtle-foreground">For Windows 10 and 11 · no account needed</span>
       </div>
     </section>
   )

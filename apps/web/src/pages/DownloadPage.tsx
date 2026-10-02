@@ -7,15 +7,16 @@ import { InstallSequence } from '../components/InstallSequence'
 import { Magnetic } from '../components/motion'
 import { Nav } from '../components/Nav'
 import { ButtonLink, Lead } from '../components/ui'
-import { HOME } from '../links'
+import { DOCS_PAGE, HOME } from '../links'
 
 const REQUIREMENTS = [
   ['Windows', 'Windows 10 or 11, 64-bit.'],
   ['Account', 'None. Nothing to sign up for.'],
   ['Where it goes', 'Installs for your Windows user only, in a folder you choose, with Start menu and desktop shortcuts.'],
-  ['First run', 'The installer is not code-signed, so Windows SmartScreen may warn you. Choose More info, then Run anyway.'],
+  ['First run', 'The installer is not code-signed, so Windows may warn you. Choose More info, then Run anyway.'],
+  ['Internet', 'Needed for this download, for saving videos from links, and for update checks. Converting files you already have needs none.'],
   ['Updates', 'Sparky checks for a new version when it opens and installs it when you quit.'],
-  ['Office files', 'PowerPoint, OpenOffice and older Word and Excel files convert when LibreOffice is installed. Everything else works as soon as Sparky opens.'],
+  ['Extras', 'Older Office files and a few PDF tools need a free program installed first. The docs say which.'],
 ] as const
 
 export function DownloadPage() {
@@ -42,7 +43,7 @@ export function DownloadPage() {
             >
               <h1 className="text-balance text-[clamp(40px,calc(2.6vw+26px),64px)] font-bold leading-[1.04] tracking-[-0.04em]">Download Sparky.</h1>
               <p className="max-w-[520px] text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
-                One installer sets up Sparky and the tools it runs on. Free, open source, and no account.
+                One installer gets you going. Free, open source, and no account.
               </p>
               <div className="flex flex-col items-center gap-4 lg:items-start">
                 <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
@@ -58,7 +59,12 @@ export function DownloadPage() {
                     </ButtonLink>
                   </Magnetic>
                 </div>
-                <span className="text-sm text-subtle-foreground">The newest release, straight from GitHub.</span>
+                <span className="text-sm text-subtle-foreground">
+                  The newest release, straight from GitHub.{' '}
+                  <a href={`${DOCS_PAGE}/quickstart`} className="underline decoration-[#3a3a3a] underline-offset-4 transition-colors hover:text-foreground">
+                    Read the quickstart
+                  </a>
+                </span>
               </div>
             </motion.div>
             <InstallSequence className="min-w-0" />

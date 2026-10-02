@@ -24,7 +24,7 @@ export function SiteStrip() {
   return (
     <section className="border-t border-[#161616] px-4 sm:px-6" aria-label="Sites Sparky downloads from">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-6 py-9 md:flex-row md:items-center md:gap-[35px]">
-        <p className="min-w-[140px] text-sm leading-normal text-subtle-foreground">Downloads from well over a thousand sites.</p>
+        <p className="min-w-[140px] text-sm leading-normal text-subtle-foreground">Works with YouTube and many other video sites.</p>
         <div className="relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] motion-reduce:[mask-image:none]">
           <div
             className="flex w-max animate-[marquee_linear_infinite] hover:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:flex-wrap"

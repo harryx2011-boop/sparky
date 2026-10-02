@@ -51,9 +51,9 @@ export function Hero() {
         >
           <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:gap-7 lg:text-left">
             <h1 className="text-balance text-[clamp(40px,calc(2.6vw+26px),64px)] font-bold leading-[1.04] tracking-[-0.04em]">
-              <SplitText text="Convert anything." delay={0.4} />
+              <SplitText text="Convert files." delay={0.4} />
               <br />
-              <SplitText text="Download everything." delay={0.65} />
+              <SplitText text="Save videos from links." delay={0.65} />
             </h1>
 
             <motion.p
@@ -62,8 +62,8 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
               className="max-w-[560px] text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl"
             >
-              Sparky changes files into the format you need and saves videos and music from links. It all happens on your PC: no
-              uploads, no account, nothing to set up.
+              Sparky changes a file into the format you need, and saves videos and music from a link. Your files are converted on
+              your PC, and nothing is uploaded. No account.
             </motion.p>
 
             <motion.div
@@ -83,7 +83,7 @@ export function Hero() {
                   <ButtonLink href="#watch">See it work</ButtonLink>
                 </Magnetic>
               </div>
-              <span className="text-sm text-subtle-foreground">Free and open source. Works on Windows 10 and 11.</span>
+              <span className="text-sm text-subtle-foreground">Free and open source. For Windows 10 and 11.</span>
             </motion.div>
           </div>
         </motion.div>

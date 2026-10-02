@@ -127,7 +127,7 @@ export function AppWindow() {
             <span>Pause all</span>
           </div>
           <QueueRow name="trip-recap.mov → MP4" width={64} meta="3.1x · 0:42 left" />
-          <QueueRow name="Lo-fi mix (playlist 4/12)" width={28} meta="6.4 MB/s · 1:15" />
+          <QueueRow name="Lo-fi mix (playlist 4/12)" width={28} meta="1:15 left" />
         </div>
 
         <div className="flex h-[34px] shrink-0 items-center justify-end gap-[18px] border-t border-[#1c1c1c] px-5 text-[11px] text-subtle-foreground">

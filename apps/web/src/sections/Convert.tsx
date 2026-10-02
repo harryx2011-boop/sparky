@@ -41,7 +41,7 @@ const ROWS: { icon: LucideIcon; label: string; formats: string }[] = [
   { icon: Music, label: 'Audio', formats: 'MP3 · WAV · FLAC · M4A · OGG' },
   { icon: Image, label: 'Images', formats: 'PNG · JPG · WEBP · HEIC · BMP → AVIF, ICO' },
   { icon: FileText, label: 'Documents', formats: 'DOCX · MD · HTML · PDF · TXT' },
-  { icon: Archive, label: 'Archives', formats: 'ZIP · 7Z · RAR, or unpack to a folder' },
+  { icon: Archive, label: 'Archives', formats: 'Make ZIP or 7Z, or open ZIP, 7Z and RAR into a folder' },
 ]
 
 /**
@@ -163,8 +163,8 @@ function SettingsStrip() {
       <div className="flex min-w-0 flex-col gap-3 bg-card p-6 sm:p-7">
         <span className="text-[15px] font-semibold">Make it smaller, your way</span>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Five steps from “lossless”, an original quality export, to “fits in an email”. Pick the same format you started with to
-          shrink a file without changing it.
+          Five steps, from the original quality to as small as it gets. Pick the same format you started with to shrink a file
+          without changing its type.
         </p>
         <CompressionSlider value={compression} onChange={setCompression} className="mt-2" />
       </div>
@@ -174,8 +174,8 @@ function SettingsStrip() {
           <PerformanceBars level={level} size="sm" running />
         </span>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          1440p and 4K open up when your video is that sharp, your graphics card can help, and Performance is on Max. Sparky
-          never stretches a small video bigger.
+          1440p and 4K are there for videos that sharp, when Performance is on Max and your graphics card can help. Sparky never
+          makes a video bigger than it started.
         </p>
         <ResolutionPicker options={options} value={resolution} onChange={setResolution} className="mt-2" />
       </div>
@@ -193,8 +193,8 @@ export function Convert() {
       <div ref={sceneRef} className="relative mx-auto max-w-[1200px] lg:h-[300vh]">
         <div className="grid grid-cols-1 items-center gap-12 py-24 lg:sticky lg:top-0 lg:h-screen lg:grid-cols-2 lg:gap-20 lg:py-0">
           <div className="flex flex-col gap-5">
-            <Heading lines={['Drop anything.', 'Get what you need.']} />
-            <Lead>Videos, songs, photos, documents and zip files, all changed right on your computer. Drag them in, pick a format, done.</Lead>
+            <Heading lines={['Drop a file.', 'Get the format you need.']} />
+            <Lead>Videos, songs, photos, documents and zip files, changed right on your computer. Drag them in, pick a format, done.</Lead>
             <CategoryList active={row} />
           </div>
           <DropScene progress={progress} onRow={setRow} />

@@ -141,8 +141,8 @@ export function Download() {
         <div className="order-1 flex flex-col gap-5 lg:order-2">
           <Heading lines={['Paste a link.', 'Keep what you like.']} />
           <Lead>
-            Grab one video, a whole playlist or a channel, in sharp 4K or as music for your phone. Tick the ones you want and
-            Sparky can turn them into MP3 in the same go.
+            Save one video or a whole playlist, in up to 4K or as music. Tick the ones you want, and Sparky can turn them into MP3
+            in the same go. Saving from a link needs an internet connection.
           </Lead>
         </div>
       </div>

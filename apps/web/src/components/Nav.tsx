@@ -1,7 +1,7 @@
 import { CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
 import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useState } from 'react'
-import { DOWNLOAD_PAGE } from '../links'
+import { DOCS_PAGE, DOWNLOAD_PAGE } from '../links'
 import { Magnetic } from './motion'
 import { SECTION_LINKS } from './sections'
 import { ButtonLink } from './ui'
@@ -34,6 +34,9 @@ export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: s
               {label}
             </a>
           ))}
+          <a href={DOCS_PAGE} className="transition-colors hover:text-foreground">
+            Docs
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           <a

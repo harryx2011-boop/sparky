@@ -1,5 +1,5 @@
 import { cn, LogoMark } from '@sparky/ui'
-import { Bell, Clipboard, FolderOpen, History, Image, Inbox, RotateCcw, Scissors, Search, ShieldCheck, Subtitles, Tags, Trash2 } from 'lucide-react'
+import { Bell, Clipboard, FolderOpen, Gauge, History, Image, Inbox, List, RotateCcw, Scissors, Search, ShieldCheck, Subtitles, Tags, Trash2 } from 'lucide-react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { TiltCard } from '../components/motion'
@@ -148,7 +148,7 @@ export function Details() {
       <div className="mx-auto flex max-w-[1200px] flex-col gap-12">
         <Heading lines={['The little things, already handled.']} />
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6 lg:grid-rows-[auto_auto_auto_auto]">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6 lg:grid-rows-[auto_auto_auto_auto_auto]">
           <Tile
             className="md:col-span-4 lg:col-span-3 lg:row-span-2"
             icon={<History size={20} />}
@@ -166,8 +166,8 @@ export function Details() {
           <Tile className="md:col-span-2 lg:col-span-1" icon={<Inbox size={20} />} title="Lives in the tray" delay={0.15}>
             Close the window and jobs keep going quietly.
           </Tile>
-          <Tile className="md:col-span-2 lg:col-span-2" icon={<Scissors size={20} />} title="Skips the sponsor bits" visual={<SponsorVisual />} delay={0.05}>
-            Ad reads and intros are cut out before the video reaches you.
+          <Tile className="md:col-span-2 lg:col-span-2" icon={<Scissors size={20} />} title="Can skip the sponsor bits" visual={<SponsorVisual />} delay={0.05}>
+            Optional. Cuts out ad reads, intros and self-promo that viewers have marked in a shared list.
           </Tile>
           <Tile
             className="md:col-span-4 lg:col-span-4"
@@ -186,16 +186,22 @@ export function Details() {
           <Tile
             className="md:col-span-2 lg:col-span-4"
             icon={<ShieldCheck size={20} />}
-            title="Nothing leaves your PC"
+            title="Your files stay on your PC"
             visual={
-              <div className="flex items-baseline gap-3">
-                <span className="font-mono text-4xl font-medium tracking-tight">0 bytes</span>
-                <span className="text-sm text-subtle-foreground">uploaded, ever</span>
+              <div className="grid grid-cols-1 gap-4 text-[13px] sm:grid-cols-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-foreground">Works with no connection</span>
+                  <span className="text-muted-foreground">Converting, PDF tools, image and video tools, reading English text</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-foreground">Needs a connection</span>
+                  <span className="text-muted-foreground">Saving from links, update checks, new text languages</span>
+                </div>
               </div>
             }
             delay={0.05}
           >
-            Conversions run fully offline. No account, no tracking, no waiting on someone else’s server.
+            Converting never uploads your files. No account, no tracking. The docs list every time Sparky goes online.
           </Tile>
           <Tile
             className="md:col-span-2 lg:col-span-2"
@@ -209,6 +215,12 @@ export function Details() {
             delay={0.1}
           >
             Kept by default. If you choose to replace one, it goes to the Recycle Bin so you can always get it back.
+          </Tile>
+          <Tile className="md:col-span-2 lg:col-span-3" icon={<List size={20} />} title="One line for everything" delay={0.05}>
+            Conversions and downloads wait in the same queue, several at a time. Pause everything, drag waiting jobs into a new order, or cancel one.
+          </Tile>
+          <Tile className="md:col-span-2 lg:col-span-3" icon={<Gauge size={20} />} title="You decide how hard it works" delay={0.1}>
+            Pick Low to stay quiet while you game or take a call. Pick Max to use everything your PC has for a big batch.
           </Tile>
         </div>
       </div>

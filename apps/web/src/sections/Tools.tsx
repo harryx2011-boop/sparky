@@ -25,7 +25,7 @@ export function Tools() {
           <Heading lines={['More than converting.']} />
           <Lead>
             Merge and split PDFs, trim and shrink videos, make icons and GIFs, and pull the text out of a scan. Open them from Tools in
-            the app, or run them from the terminal.
+            the app. A few need a free program you install first, and the docs say which.
           </Lead>
         </div>
         <Reveal>
