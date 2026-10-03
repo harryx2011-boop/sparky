@@ -13,7 +13,7 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "package": "npm run app-deps && node ../../scripts/stage-cli.mjs && electron-vite build && electron-builder --win --x64",
-    "typecheck": "tsc -p tsconfig.node.json && tsc -p tsconfig.web.json",
+    "typecheck": "node ../../node_modules/typescript-native/bin/tsc -p tsconfig.node.json && node ../../node_modules/typescript-native/bin/tsc -p tsconfig.web.json",
     "dev:ui": "vite --config vite.ui.config.ts",
     "test": "vitest run",
     "app-deps": "electron-builder install-app-deps"

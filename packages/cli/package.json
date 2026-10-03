@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript-native/bin/tsc -p tsconfig.json",
     "test": "vitest run",
     "pretest": "npm rebuild better-sqlite3 --silent"
   },

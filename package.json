@@ -25,6 +25,7 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "7zip-bin": "^5.2.0"
+    "7zip-bin": "^5.2.0",
+    "typescript-native": "npm:typescript@^7.0.2"
   }
 }
