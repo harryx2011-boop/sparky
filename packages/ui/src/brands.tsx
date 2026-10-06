@@ -1,5 +1,6 @@
 // Real marks for the sites Sparky names, one row per site, drawn inline so they paint offline.
-// Paths and brand colours come from Simple Icons; the ids match SITES in @sparky/core.
+// One-colour brands come from Simple Icons, multicolor ones from the bundled Iconify drawings in
+// brand-marks.generated.ts; the ids match SITES in @sparky/core.
 import { siteFor, siteInfo, type SiteId } from '@sparky/core'
 import {
   siBandcamp,
@@ -31,10 +32,23 @@ import {
   siYoutube,
 } from 'simple-icons'
 import type { SVGProps } from 'react'
+import { MARKS } from './brand-marks.generated'
+import { MarkSvg } from './MarkSvg'
 
 interface SimpleIcon {
   path: string
   hex: string
+}
+
+/** Sites whose real mark has several colours or a white knockout use the bundled drawing, not the one-path Simple Icons shape. */
+const BUNDLED: Partial<Record<SiteId, keyof typeof MARKS>> = {
+  youtube: 'youtube',
+  tiktok: 'tiktok',
+  instagram: 'instagram',
+  vimeo: 'vimeo',
+  reddit: 'reddit',
+  facebook: 'facebook',
+  pinterest: 'pinterest',
 }
 
 /** Sites without a mark in Simple Icons fall back to the generic link glyph. */
@@ -84,9 +98,11 @@ export interface BrandMarkProps extends Omit<SVGProps<SVGSVGElement>, 'id'> {
 
 /** One site's mark in its official colour. Renders nothing for a site without a mark. */
 export function BrandMark({ site, size = 16, labelled = false, ...props }: BrandMarkProps) {
+  const name = siteInfo(site).name
+  const bundled = BUNDLED[site]
+  if (bundled) return <MarkSvg mark={MARKS[bundled]} size={size} label={labelled ? name : undefined} {...props} />
   const icon = BRAND_MARKS[site]
   if (!icon) return null
-  const name = siteInfo(site).name
   return (
     <svg
       role="img"

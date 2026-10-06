@@ -1,4 +1,4 @@
-import { CONTACT } from '@sparky/ui'
+import { CONTACT, WindowsIcon } from '@sparky/ui'
 import { Download } from 'lucide-react'
 import { useScroll } from 'motion/react'
 import { useCallback, useRef } from 'react'
@@ -35,7 +35,10 @@ export function Get() {
             </ButtonLink>
           </Magnetic>
         </div>
-        <span className="font-mono text-xs text-subtle-foreground">For Windows 10 and 11 · no account needed</span>
+        <span className="inline-flex items-center gap-2 font-mono text-xs text-subtle-foreground">
+          <WindowsIcon size={12} />
+          For Windows 10 and 11 · no account needed
+        </span>
       </div>
     </section>
   )

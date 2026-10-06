@@ -1,22 +1,20 @@
-import { siDiscord, siGithub, siGmail } from 'simple-icons'
 import type { SVGProps } from 'react'
+import { MARKS } from './brand-marks.generated'
+import { MarkSvg } from './MarkSvg'
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number }
 
-function brand(icon: { path: string; title: string }) {
+function brand(key: keyof typeof MARKS) {
   return function BrandIcon({ size = 16, ...props }: IconProps) {
-    return (
-      <svg role="img" aria-hidden="true" viewBox="0 0 24 24" width={size} height={size} fill="currentColor" {...props}>
-        <path d={icon.path} />
-      </svg>
-    )
+    return <MarkSvg mark={MARKS[key]} size={size} {...props} />
   }
 }
 
-/** Brand marks from Simple Icons, drawn in the current text colour. */
-export const GmailIcon = brand(siGmail)
-export const DiscordIcon = brand(siDiscord)
-export const GithubIcon = brand(siGithub)
+/** Brand marks in their own colours. GitHub is one ink by design, so it takes the current text colour. */
+export const GmailIcon = brand('gmail')
+export const DiscordIcon = brand('discord')
+export const GithubIcon = brand('github')
+export const WindowsIcon = brand('windows')
 
 /** The Sparky bolt on its own, as an icon. */
 export function Bolt({ size = 16, strokeWidth = 2.4, ...props }: IconProps & { strokeWidth?: number }) {

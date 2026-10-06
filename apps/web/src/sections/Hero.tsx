@@ -1,4 +1,4 @@
-import { CONTACT } from '@sparky/ui'
+import { CONTACT, WindowsIcon } from '@sparky/ui'
 import { ArrowDown, Download } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useCallback, useRef } from 'react'
@@ -83,7 +83,10 @@ export function Hero() {
                   <ButtonLink href="#watch">See it work</ButtonLink>
                 </Magnetic>
               </div>
-              <span className="text-sm text-subtle-foreground">Free and open source. For Windows 10 and 11.</span>
+              <span className="inline-flex items-center gap-2 text-sm text-subtle-foreground">
+                <WindowsIcon size={14} />
+                Free and open source. For Windows 10 and 11.
+              </span>
             </motion.div>
           </div>
         </motion.div>

@@ -1,5 +1,7 @@
 # Sparky — Project Context
 
+> **Brand marks (2026-10-06):** every named site and service shows its real mark in colour, bundled as inline SVG so it paints offline. `packages/ui/scripts/extract-marks.mjs` (`npm run marks -w @sparky/ui`, devDependency `@iconify-json/logos`) writes `packages/ui/src/brand-marks.generated.ts` from Iconify: YouTube, TikTok, Instagram, Vimeo, Reddit, Facebook and Pinterest replace the one-path Simple Icons shapes (`brands.tsx` `BUNDLED`), and Gmail, Discord, GitHub and Windows come from the same file (`icons.tsx`). One-colour brands (X, Twitch, SoundCloud and the rest) keep Simple Icons. Add a mark: one row in the script `MARKS`, one in `BUNDLED` or `icons.tsx`.
+
 **Current version:** 1.2.0 (root manifest; every workspace manifest carries the same number)
 **Last updated:** 2026-09-30 (1.2.0: Save as and Save all for finished files)
 **Owner:** harryx2011@gmail.com
