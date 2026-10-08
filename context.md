@@ -3,7 +3,7 @@
 > **Brand marks (2026-10-06):** every named site and service shows its real mark in colour, bundled as inline SVG so it paints offline. `packages/ui/scripts/extract-marks.mjs` (`npm run marks -w @sparky/ui`, devDependency `@iconify-json/logos`) writes `packages/ui/src/brand-marks.generated.ts` from Iconify: YouTube, TikTok, Instagram, Vimeo, Reddit, Facebook and Pinterest replace the one-path Simple Icons shapes (`brands.tsx` `BUNDLED`), and Gmail, Discord, GitHub and Windows come from the same file (`icons.tsx`). One-colour brands (X, Twitch, SoundCloud and the rest) keep Simple Icons. Add a mark: one row in the script `MARKS`, one in `BUNDLED` or `icons.tsx`.
 
 **Current version:** 1.2.0 (root manifest; every workspace manifest carries the same number)
-**Last updated:** 2026-09-30 (1.2.0: Save as and Save all for finished files)
+**Last updated:** 2026-10-06 (brand marks in colour; 1.2.0: Save as and Save all for finished files)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -17,10 +17,10 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 
 - `apps/desktop` — Electron app. `src/main` hosts the engine from `packages/engine`, `src/preload` the bridge (`window.sparky`), `src/renderer` the React UI. `npm run dev:ui -w @sparky/desktop` runs the UI in a browser against `lib/mock.ts`.
 - `apps/web` — landing site (Vite + React + Motion).
-- `packages/engine` — the job engine (no Electron imports, tested under Node): the op registry in `src/ops/` (`OPS`, one module per op; `convert` and `download` today), queue, tool runners, output planning (`output.ts`), SQLite history and settings. Its explicit `Engine` interface is the one surface the app, and later the HTTP API, MCP server and CLI, call. Details under Decisions.
+- `packages/engine` — the job engine (no Electron imports, tested under Node): the op registry in `src/ops/` (`OPS`, one module per op: `convert` and `download`, plus the twenty tools registered from `src/ops/{pdf,media,image,ocr}.ts`), queue, tool runners, output planning (`output.ts`), SQLite history and settings. Its explicit `Engine` interface is the one surface the app, and later the HTTP API, MCP server and CLI, call. Details under Decisions.
 - `packages/core` — pure logic and every user-facing label/error string (`levels.ts`, `display.ts`, `errors.ts`, `ytdlp.ts`).
 - `packages/ui` — shared visuals (Performance bars, Compression slider, logo mark).
-- `scripts/` — `fetch-tools.mjs` (bundled binaries into `apps/desktop/resources/bin`, gitignored), `fetch-fonts.mjs` (Satoshi, gitignored), `make-icons.mjs` (all icons + NSIS sidebar/header BMPs from one SVG).
+- `scripts/` — `fetch-tools.mjs` (bundled binaries into `apps/desktop/resources/bin`, gitignored), `fetch-fonts.mjs` (Satoshi, gitignored), `make-icons.mjs` (all icons + NSIS sidebar/header BMPs from one SVG), `stage-cli.mjs` (stages the CLI bundle for the installer), `gen-site-ops.mjs` (the site's Tools list, `apps/web/src/data/ops.json`, from the op registry).
 
 ## Decisions (settled 2026-09-24)
 
@@ -60,7 +60,7 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 - **VS Code terminals export `ELECTRON_RUN_AS_NODE=1`**, which makes Electron run as plain Node (`electron.app` undefined). Clear it before `npm run dev:app` or launching the exe.
 - Electron is pinned to an exact version (`apps/desktop/package.json`): electron-builder can't resolve a range when npm hoists Electron to the workspace root.
 
-## Plan in progress: 1.1 (2026-09-25)
+## Plan of record: 1.1 (2026-09-25, shipped as v1.1.0)
 
 Settled over 20 questions, written up in `docs/plans/sparky-1.1-agents-utilities.md` with research in `docs/research/`. Summary: the engine moves to `packages/engine` behind an op registry; Helix's converter code (ffmpeg arg builders, option validators, the csv/xlsx/json/xml/md/html/txt/pdf document pipeline) ports into it and Helix deletes its converter entirely; a PDF toolkit, media and image editing ops, LibreOffice-gated Office targets and tesseract.js OCR are added; agents reach Sparky through an MCP stdio server, a loopback HTTP API on 8600 (token file in app data) and a `sparky` CLI, bundled in the installer and published to npm; file rows and the format picker show the Windows-associated icon with a vendored VS Code icon fallback; the Settings "Built-in tools" group becomes a Diagnostics group and an Agents group is added. Five phases, one per turn: Engine, Utilities, Surfaces, Icons/UI, Helix removal and release. Ports: site dev 4600, renderer dev:ui 4601, API 8600.
 

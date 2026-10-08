@@ -99,7 +99,7 @@ apps/
     src/renderer/     React + Tailwind + shadcn/ui interface
   web/            landing site (React + Tailwind + Motion, canvas sprite field), deployed to Vercel; its Tools list is src/data/ops.json, written by scripts/gen-site-ops.mjs
 packages/
-  cli/            the sparky command, MCP server and init, bundled into the installer and published to npm
+  cli/            the sparky command, MCP server and init, bundled into the installer, not published to npm
   core/           shared logic: formats, levels, 1440p/4K rules, tool command lines, progress parsing
   engine/         op registry, job queue, tool runners, history (no Electron imports, tested on its own)
   ui/             shared look: theme, Performance bars, Compression slider, Resolution picker
