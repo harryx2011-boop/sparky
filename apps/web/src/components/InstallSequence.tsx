@@ -1,5 +1,5 @@
 import { cn, FileIcon, LogoMark } from '@sparky/ui'
-import { ArrowLeftRight, Check, Download, History, List, RotateCcw } from 'lucide-react'
+import { ArrowLeftRight, Check, Download, History, List, RotateCcw } from './icons/lucide';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { BEATS, FILL, FINAL, reached, type Beat } from '../install-timeline'

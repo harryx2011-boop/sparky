@@ -1,6 +1,6 @@
 import { compressionInfo, performanceInfo, resolutionLabel } from '@sparky/core'
 import { Bolt, CompressionSlider, DiscordIcon, GmailIcon, LogoMark, PerformanceBars, CONTACT } from '@sparky/ui'
-import { ArrowLeftRight, ChevronDown, ChevronRight, Download, History, List, Search, SlidersHorizontal, Upload } from 'lucide-react'
+import { ArrowLeftRight, ChevronDown, ChevronRight, Download, History, List, Search, SlidersHorizontal, Upload } from './icons/lucide';
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDemo } from '../state'
 
