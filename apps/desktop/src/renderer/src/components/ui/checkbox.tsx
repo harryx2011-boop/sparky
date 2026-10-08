@@ -1,5 +1,5 @@
 import { cn } from '@sparky/ui'
-import { Check } from 'lucide-react'
+import { Check } from '../../../../components/icons/lucide';
 import { Checkbox as C } from 'radix-ui'
 import type { ComponentProps } from 'react'
 

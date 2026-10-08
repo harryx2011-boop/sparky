@@ -1,5 +1,5 @@
 import { cn } from '@sparky/ui'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight } from '../../../../components/icons/lucide';
 import { Accordion as A } from 'radix-ui'
 import type { ReactNode } from 'react'
 

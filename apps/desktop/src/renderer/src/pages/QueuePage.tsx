@@ -1,6 +1,6 @@
 import type { Job } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { Download, Loader2, Pause, Play, RefreshCw, Trash2 } from 'lucide-react'
+import { Download, Loader2, Pause, Play, RefreshCw, Trash2 } from '../../../components/icons/lucide';
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { toast } from 'sonner'

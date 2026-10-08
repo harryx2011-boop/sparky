@@ -1,5 +1,5 @@
 import { cn, LogoMark } from '@sparky/ui'
-import { Bell, Clipboard, FolderOpen, Gauge, History, Image, Inbox, List, RotateCcw, Scissors, Search, ShieldCheck, Subtitles, Tags, Trash2 } from 'lucide-react'
+import { Bell, Clipboard, FolderOpen, Gauge, History, Image, Inbox, List, RotateCcw, Scissors, Search, ShieldCheck, Subtitles, Tags, Trash2 } from '../components/icons/lucide';
 import { motion, useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { TiltCard } from '../components/motion'

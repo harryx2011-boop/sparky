@@ -1,5 +1,5 @@
 import { CONTACT, WindowsIcon } from '@sparky/ui'
-import { Download } from 'lucide-react'
+import { Download } from '../components/icons/lucide';
 import { useScroll } from 'motion/react'
 import { useCallback, useRef } from 'react'
 import { Magnetic, SplitText } from '../components/motion'

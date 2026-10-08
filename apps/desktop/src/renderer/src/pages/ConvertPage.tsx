@@ -20,7 +20,7 @@ import {
   type VideoCodec,
 } from '@sparky/core'
 import { cn, CompressionSlider, ResolutionPicker } from '@sparky/ui'
-import { Loader2, Upload, X } from 'lucide-react'
+import { Loader2, Upload, X } from '../../../components/icons/lucide';
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'

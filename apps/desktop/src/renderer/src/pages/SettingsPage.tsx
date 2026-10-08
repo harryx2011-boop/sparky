@@ -1,6 +1,6 @@
 import { CODEC_LABELS, OUTPUT_FOLDERS, TOOL_NAMES, type AgentClient, type ApiInfo, type Theme, type VideoCodec } from '@sparky/core'
 import { CompressionSlider, CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
-import { Check, FolderOpen, Loader2, Minus, Plus, RefreshCw } from 'lucide-react'
+import { Check, FolderOpen, Loader2, Minus, Plus, RefreshCw } from '../../../components/icons/lucide';
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader, PerformancePicker } from '@/components/Controls'

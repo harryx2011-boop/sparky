@@ -1,4 +1,4 @@
-import { Upload } from 'lucide-react'
+import { Upload } from '../../../components/icons/lucide';
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'

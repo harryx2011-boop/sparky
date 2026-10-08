@@ -1,5 +1,5 @@
 import { cn } from '@sparky/ui'
-import { Check, ChevronDown } from 'lucide-react'
+import { Check, ChevronDown } from '../../../../components/icons/lucide';
 import { Select as S } from 'radix-ui'
 import type { ReactNode } from 'react'
 

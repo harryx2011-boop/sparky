@@ -1,5 +1,5 @@
 import { CONTACT, WindowsIcon } from '@sparky/ui'
-import { ArrowDown, Download } from 'lucide-react'
+import { ArrowDown, Download } from '../components/icons/lucide';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useCallback, useRef } from 'react'
 import { AppWindow } from '../components/AppWindow'

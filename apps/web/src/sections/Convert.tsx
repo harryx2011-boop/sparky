@@ -1,6 +1,6 @@
 import { formatBytes } from '@sparky/core'
 import { cn, CompressionSlider, PerformanceBars, ResolutionPicker } from '@sparky/ui'
-import { Archive, Check, FileText, Image, Music, Upload, Video, type LucideIcon } from 'lucide-react'
+import { Archive, Check, FileText, Image, Music, Upload, Video, type LucideIcon } from '../components/icons/lucide';
 import {
   animate,
   motion,

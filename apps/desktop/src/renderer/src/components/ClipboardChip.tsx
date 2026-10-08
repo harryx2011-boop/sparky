@@ -1,5 +1,5 @@
 import { hasMark, LinkMark } from '@sparky/ui'
-import { Clipboard, X } from 'lucide-react'
+import { Clipboard, X } from '../../../components/icons/lucide';
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'

@@ -15,7 +15,6 @@
   "dependencies": {
     "@sparky/core": "*",
     "@sparky/ui": "*",
-    "lucide-react": "^1.48.0",
     "motion": "^13.4.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

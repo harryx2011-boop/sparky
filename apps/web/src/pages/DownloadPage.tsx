@@ -1,5 +1,5 @@
 import { CONTACT } from '@sparky/ui'
-import { Download } from 'lucide-react'
+import { Download } from '../components/icons/lucide';
 import { motion, MotionConfig } from 'motion/react'
 import { Footer } from '../components/Footer'
 import { GridCells } from '../components/GridCells'

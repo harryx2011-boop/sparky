@@ -1,4 +1,4 @@
-import { FileText, Image, Video, Wrench, type LucideIcon } from 'lucide-react'
+import { FileText, Image, Video, Wrench, type LucideIcon } from '../components/icons/lucide';
 import { Heading, Lead, Reveal } from '../components/ui'
 import ops from '../data/ops.json'
 

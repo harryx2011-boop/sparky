@@ -11,7 +11,7 @@ import {
   type SubtitleMode,
 } from '@sparky/core'
 import { BrandMark, cn, CompressionSlider, hasMark, LinkMark, ResolutionPicker } from '@sparky/ui'
-import { AlertCircle, ClipboardPaste, Link2, ListVideo, Loader2, Play, RefreshCw, Search } from 'lucide-react'
+import { AlertCircle, ClipboardPaste, Link2, ListVideo, Loader2, Play, RefreshCw, Search } from '../../../components/icons/lucide';
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'

@@ -1,6 +1,6 @@
 import { formatBytes } from '@sparky/core'
 import { Bolt, cn, LogoMark, PerformanceBars } from '@sparky/ui'
-import { Check, ChevronDown, FileText, Image, Music, Search, Upload, Video, type LucideIcon } from 'lucide-react'
+import { Check, ChevronDown, FileText, Image, Music, Search, Upload, Video, type LucideIcon } from '../components/icons/lucide';
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useTransform, type MotionValue } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { FitToWidth } from '../components/AppWindow'

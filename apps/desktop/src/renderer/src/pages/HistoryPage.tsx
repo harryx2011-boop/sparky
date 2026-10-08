@@ -1,5 +1,5 @@
 import { describeSaving, formatDuration, type HistoryEntry, type HistoryQuery } from '@sparky/core'
-import { AlertCircle, Download, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from 'lucide-react'
+import { AlertCircle, Download, FolderOpen, Loader2, RotateCcw, Search, Trash2, X } from '../../../components/icons/lucide';
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Card, PageHeader } from '@/components/Controls'

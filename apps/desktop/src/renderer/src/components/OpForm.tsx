@@ -1,7 +1,7 @@
 // A form generated from an op's input schema. It never names an op, so a new op needs no UI work.
 import { normalizeExt, opUnavailableError, type OpSummary } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { FileText, FolderOpen, Loader2, Upload, X } from 'lucide-react'
+import { FileText, FolderOpen, Loader2, Upload, X } from '../../../components/icons/lucide';
 import { useId, useMemo, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Card } from '@/components/Controls'

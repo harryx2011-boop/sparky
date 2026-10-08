@@ -1,6 +1,6 @@
 import type { Section } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { ArrowLeftRight, Download, History, List, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, Wrench, type LucideIcon } from 'lucide-react'
+import { ArrowLeftRight, Download, History, List, PanelLeftClose, PanelLeftOpen, SlidersHorizontal, Wrench, type LucideIcon } from '../../../components/icons/lucide';
 import { useApp } from '@/lib/state'
 import { Tip } from './ui/tooltip'
 

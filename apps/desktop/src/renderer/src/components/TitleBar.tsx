@@ -1,5 +1,5 @@
 import { LogoMark } from '@sparky/ui'
-import { Copy, Minus, Square, X } from 'lucide-react'
+import { Copy, Minus, Square, X } from '../../../components/icons/lucide';
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 

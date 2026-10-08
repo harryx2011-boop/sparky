@@ -1,6 +1,6 @@
 import { cn } from '@sparky/ui'
 import { Command } from 'cmdk'
-import { Check, ChevronDown, Search } from 'lucide-react'
+import { Check, ChevronDown, Search } from '../../../../components/icons/lucide';
 import { Popover } from 'radix-ui'
 import { useState, type ReactNode } from 'react'
 

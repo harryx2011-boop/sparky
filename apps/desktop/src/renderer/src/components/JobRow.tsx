@@ -1,6 +1,6 @@
 import { describeSaving, formatDuration, type Job } from '@sparky/core'
 import { cn } from '@sparky/ui'
-import { AlertCircle, ArrowRight, Check, Download, FolderOpen, GripVertical, Pause, Play, RotateCcw, Wrench, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, Check, Download, FolderOpen, GripVertical, Pause, Play, RotateCcw, Wrench, X } from '../../../components/icons/lucide';
 import type { ReactNode } from 'react'
 import { api } from '@/lib/api'
 import { ExtIcon } from '@/lib/fileIcons'

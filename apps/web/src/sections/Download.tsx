@@ -1,5 +1,5 @@
 import { BrandMark, cn, LinkMark } from '@sparky/ui'
-import { Link2, ListVideo, Play } from 'lucide-react'
+import { Link2, ListVideo, Play } from '../components/icons/lucide';
 import { motion, useInView } from 'motion/react'
 import { useRef, useState } from 'react'
 import { Heading, Lead } from '../components/ui'

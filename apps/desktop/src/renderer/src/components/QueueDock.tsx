@@ -1,5 +1,5 @@
 import { cn } from '@sparky/ui'
-import { Download, Pause, Play } from 'lucide-react'
+import { Download, Pause, Play } from '../../../components/icons/lucide';
 import { AnimatePresence, motion } from 'motion/react'
 import { useRef } from 'react'
 import { api } from '@/lib/api'
