@@ -1,0 +1,13 @@
+{
+  "name": "Sparky",
+  "short_name": "Sparky",
+  "description": "Sparky is a free, open-source Windows app that converts files and saves videos and music from links. Files are converted on your PC, and nothing is uploaded.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
