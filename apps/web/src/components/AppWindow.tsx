@@ -1,6 +1,6 @@
 import { compressionInfo, performanceInfo, resolutionLabel } from '@sparky/core'
 import { Bolt, CompressionSlider, DiscordIcon, GmailIcon, LogoMark, PerformanceBars, CONTACT } from '@sparky/ui'
-import { ArrowLeftRight, ChevronDown, ChevronRight, Download, History, List, Search, SlidersHorizontal, Upload } from './icons/lucide';
+import { ArrowLeftRight, ChevronDown, ChevronRight, Download, History, List, Search, SlidersHorizontal, Upload, Wrench } from './icons/lucide';
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDemo } from '../state'
 
@@ -40,108 +40,108 @@ const FILES = [
   ['notes.md', 'MD · 8 KB'],
 ] as const
 
-/** A faithful, lightly interactive picture of the Sparky app. */
+/** The Sparky app at its 1200 x 740 design size, mirroring apps/desktop/src/renderer (Sidebar, ConvertPage, QueueDock, Footer).
+ *  The hero puts it on a laptop screen, which scales it. Not claimed: Ctrl-key hints and the collapse button. */
 export function AppWindow() {
   const { level, compression, setCompression, effectiveResolution } = useDemo()
   const comp = compressionInfo(compression)
   return (
-    <FitToWidth>
-      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0e0e0e] text-left shadow-[0_40px_120px_rgba(0,0,0,.6)]">
-        <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#1c1c1c] pl-4 text-xs text-subtle-foreground">
-          <span className="flex items-center gap-2">
-            <LogoMark size={16} />
-            Sparky
-          </span>
-          <span className="flex h-10" aria-hidden>
-            {['—', '▢', '✕'].map((c) => (
-              <span key={c} className="flex w-[46px] items-center justify-center">
-                {c}
-              </span>
-            ))}
-          </span>
-        </div>
-
-        <div className="flex min-h-0 grow">
-          <aside className="flex w-[200px] shrink-0 flex-col gap-0.5 border-r border-[#1c1c1c] px-2.5 py-3.5">
-            <NavItem active icon={<ArrowLeftRight size={15} />} label="Convert" />
-            <NavItem icon={<Download size={15} />} label="Download" />
-            <NavItem icon={<List size={15} />} label="Queue" />
-            <NavItem icon={<History size={15} />} label="History" />
-            <NavItem icon={<SlidersHorizontal size={15} />} label="Settings" />
-          </aside>
-
-          <main className="flex grow flex-col gap-4 px-7 py-6">
-            <div className="flex items-center justify-between">
-              <span className="text-base font-semibold">Convert</span>
-              <span className="font-mono text-xs text-subtle-foreground">3 files · 412 MB</span>
-            </div>
-            <div className="flex h-[84px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#2e2e2e] text-[13px] text-subtle-foreground">
-              <Upload size={20} />
-              Drop files here, or click to browse
-            </div>
-            <div className="flex flex-col rounded-lg border border-[#1f1f1f]">
-              {FILES.map(([name, meta], i) => (
-                <div key={name} className={`flex h-11 items-center justify-between px-3.5 text-[13px] ${i < FILES.length - 1 ? 'border-b border-[#1f1f1f]' : ''}`}>
-                  <span>{name}</span>
-                  <span className="font-mono text-xs text-subtle-foreground">{meta}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-stretch gap-3">
-              <Field label="Output format" className="grow">
-                <span className="flex items-center gap-2">
-                  <Search size={14} className="text-subtle-foreground" />
-                  MP4 · {comp.label}
-                </span>
-                <ChevronDown size={14} className="text-subtle-foreground" />
-              </Field>
-              <Field label="Performance" className="w-[250px]">
-                <span className="flex items-center gap-2">
-                  <Bolt size={14} strokeWidth={2} />
-                  {performanceInfo(level).label}
-                </span>
-                <PerformanceBars level={level} running />
-              </Field>
-            </div>
-            <div className="flex items-end gap-3">
-              <Field label="Resolution" className="w-[250px]">
-                <span>{effectiveResolution ? resolutionLabel(effectiveResolution) : 'Original'}</span>
-                <span className="font-mono text-[11px] text-subtle-foreground">{level === 'max' ? 'Graphics card ✓' : '4K needs Max'}</span>
-              </Field>
-              <div className="grow pb-0.5">
-                <CompressionSlider value={compression} onChange={setCompression} showStops={false} detail={comp.hint} />
-              </div>
-            </div>
-            <div className="mt-auto flex items-center justify-between">
-              <span className="flex items-center gap-1 text-xs text-subtle-foreground">
-                <ChevronRight size={13} /> More options: trim, size, sound quality
-              </span>
-              <span className="inline-flex h-[38px] items-center rounded-lg bg-lime px-4 text-[13px] font-medium text-lime-foreground">Convert 3 files</span>
-            </div>
-          </main>
-        </div>
-
-        <div className="flex h-[118px] shrink-0 flex-col gap-2.5 border-t border-[#1c1c1c] bg-[#0b0b0b] px-5 py-3">
-          <div className="flex justify-between text-[11px] text-subtle-foreground">
-            <span className="eyebrow !text-[10px]">Queue · 2 running</span>
-            <span>Pause all</span>
-          </div>
-          <QueueRow name="trip-recap.mov → MP4" width={64} meta="3.1x · 0:42 left" />
-          <QueueRow name="Lo-fi mix (playlist 4/12)" width={28} meta="1:15 left" />
-        </div>
-
-        <div className="flex h-[34px] shrink-0 items-center justify-end gap-[18px] border-t border-[#1c1c1c] px-5 text-[11px] text-subtle-foreground">
-          <span className="flex items-center gap-1.5">
-            <GmailIcon size={12} className="text-foreground" />
-            {CONTACT.email}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <DiscordIcon size={12} className="text-foreground" />
-            {CONTACT.discord}
-          </span>
-        </div>
+    <div className="flex size-full flex-col overflow-hidden bg-[#0e0e0e] text-left">
+      <div className="flex h-10 shrink-0 items-center justify-between border-b border-[#1c1c1c] pl-4 text-xs text-subtle-foreground">
+        <span className="flex items-center gap-2">
+          <LogoMark size={16} />
+          Sparky
+        </span>
+        <span className="flex h-10" aria-hidden>
+          {['—', '▢', '✕'].map((c) => (
+            <span key={c} className="flex w-[46px] items-center justify-center">
+              {c}
+            </span>
+          ))}
+        </span>
       </div>
-    </FitToWidth>
+
+      <div className="flex min-h-0 grow">
+        <aside className="flex w-[200px] shrink-0 flex-col gap-0.5 border-r border-[#1c1c1c] px-2.5 py-3.5">
+          <NavItem active icon={<ArrowLeftRight size={15} />} label="Convert" />
+          <NavItem icon={<Download size={15} />} label="Download" />
+          <NavItem icon={<Wrench size={15} />} label="Tools" />
+          <NavItem icon={<List size={15} />} label="Queue" />
+          <NavItem icon={<History size={15} />} label="History" />
+          <NavItem icon={<SlidersHorizontal size={15} />} label="Settings" />
+        </aside>
+
+        <main className="flex grow flex-col gap-4 px-7 py-6">
+          <div className="flex items-center justify-between">
+            <span className="text-base font-semibold">Convert</span>
+            <span className="font-mono text-xs text-subtle-foreground">3 files · 412 MB</span>
+          </div>
+          <div className="flex h-[84px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#2e2e2e] text-[13px] text-subtle-foreground">
+            <Upload size={20} />
+            Drop files here, or click to browse
+          </div>
+          <div className="flex flex-col rounded-lg border border-[#1f1f1f]">
+            {FILES.map(([name, meta], i) => (
+              <div key={name} className={`flex h-11 items-center justify-between px-3.5 text-[13px] ${i < FILES.length - 1 ? 'border-b border-[#1f1f1f]' : ''}`}>
+                <span>{name}</span>
+                <span className="font-mono text-xs text-subtle-foreground">{meta}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-stretch gap-3">
+            <Field label="Output format" className="grow">
+              <span className="flex items-center gap-2">
+                <Search size={14} className="text-subtle-foreground" />
+                MP4 · {comp.label}
+              </span>
+              <ChevronDown size={14} className="text-subtle-foreground" />
+            </Field>
+            <Field label="Performance" className="w-[250px]">
+              <span className="flex items-center gap-2">
+                <Bolt size={14} strokeWidth={2} />
+                {performanceInfo(level).label}
+              </span>
+              <PerformanceBars level={level} running />
+            </Field>
+          </div>
+          <div className="flex items-end gap-3">
+            <Field label="Resolution" className="w-[250px]">
+              <span>{effectiveResolution ? resolutionLabel(effectiveResolution) : 'Original'}</span>
+              <span className="font-mono text-[11px] text-subtle-foreground">{level === 'max' ? 'Graphics card ✓' : '4K needs Max'}</span>
+            </Field>
+            <div className="grow pb-0.5">
+              <CompressionSlider value={compression} onChange={setCompression} showStops={false} detail={comp.hint} />
+            </div>
+          </div>
+          <div className="mt-auto flex items-center justify-between">
+            <span className="flex items-center gap-1 text-xs text-subtle-foreground">
+              <ChevronRight size={13} /> More Options
+            </span>
+            <span className="inline-flex h-[38px] items-center rounded-lg bg-lime px-4 text-[13px] font-medium text-lime-foreground">Convert 3 files</span>
+          </div>
+        </main>
+      </div>
+
+      <div className="flex h-[118px] shrink-0 flex-col gap-2.5 border-t border-[#1c1c1c] bg-[#0b0b0b] px-5 py-3">
+        <div className="flex justify-between text-[11px] text-subtle-foreground">
+          <span className="eyebrow !text-[10px]">Queue · 2 running</span>
+          <span>Pause all</span>
+        </div>
+        <QueueRow name="trip-recap.mov → MP4" width={64} meta="3.1x · 0:42 left" />
+        <QueueRow name="Lo-fi mix (playlist 4/12)" width={28} meta="1:15 left" />
+      </div>
+
+      <div className="flex h-[34px] shrink-0 items-center justify-end gap-[18px] border-t border-[#1c1c1c] px-5 text-[11px] text-subtle-foreground">
+        <span className="flex items-center gap-1.5">
+          <GmailIcon size={12} className="text-foreground" />
+          {CONTACT.email}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <DiscordIcon size={12} className="text-foreground" />
+          {CONTACT.discord}
+        </span>
+      </div>
+    </div>
   )
 }
 

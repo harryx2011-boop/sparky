@@ -3,6 +3,7 @@ import { ArrowDown, Download } from '../components/icons/lucide';
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useCallback, useRef } from 'react'
 import { AppWindow } from '../components/AppWindow'
+import { DeviceLaptop } from '../components/DeviceLaptop'
 import { Magnetic, SplitText } from '../components/motion'
 import { SpriteField } from '../components/SpriteField'
 import { ButtonLink } from '../components/ui'
@@ -111,7 +112,14 @@ export function Hero() {
       <div className="relative px-4 pb-24 sm:px-6">
         <div ref={windowRef} className="mx-auto w-full max-w-[1200px] [perspective:1600px]">
           <motion.div style={reduce ? undefined : { rotateX, scale, opacity, transformOrigin: 'center top' }}>
-            <AppWindow />
+            <div role="img" aria-label="The Sparky app on a laptop, ready to convert three files: a video, a sound recording and a note, to MP4, with two jobs already running in the queue.">
+              <DeviceLaptop viewport={[1200, 740]}>
+                {/* inert: nothing inside a mock takes focus or clicks. The real controls are in the Convert section below. */}
+                <div inert className="size-full">
+                  <AppWindow />
+                </div>
+              </DeviceLaptop>
+            </div>
           </motion.div>
         </div>
       </div>

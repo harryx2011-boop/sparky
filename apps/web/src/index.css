@@ -2,6 +2,14 @@
 @import "@sparky/ui/styles.css";
 @source "../../../packages/ui/src";
 
+/* Laptop hardware stays dark in a dark-only site and in any future light one. */
+@theme {
+  --color-device: #0b0c0e;
+  --color-device-edge: #2e3034;
+  --color-device-deck: #1f2124;
+  --shadow-device: 0 0 0 1px var(--color-device-edge), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
