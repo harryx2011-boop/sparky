@@ -2,6 +2,8 @@
 
 > **Brand marks (2026-10-06):** every named site and service shows its real mark in colour, bundled as inline SVG so it paints offline. `packages/ui/scripts/extract-marks.mjs` (`npm run marks -w @sparky/ui`, devDependency `@iconify-json/logos`) writes `packages/ui/src/brand-marks.generated.ts` from Iconify: YouTube, TikTok, Instagram, Vimeo, Reddit, Facebook and Pinterest replace the one-path Simple Icons shapes (`brands.tsx` `BUNDLED`), and Gmail, Discord, GitHub and Windows come from the same file (`icons.tsx`). One-colour brands (X, Twitch, SoundCloud and the rest) keep Simple Icons. Add a mark: one row in the script `MARKS`, one in `BUNDLED` or `icons.tsx`.
 
+> **Plain-language site rewrite (2026-10-01), branch `plain-copy/sparky` @ `04f56c2`, merged to main 2026-10-01, unpushed.** `apps/web` plus two docs rewrites in the root `vercel.json` (28 files): about 26 jargon lines removed, sections Agents, Queue simulation and Performance cut, new `/docs` (`apps/web/src/lib/docs.ts`; third page is "Settings and Tools", Sparky has no models). Claims fixed: "fully offline / 0 bytes uploaded" became a works-offline vs needs-a-connection list (downloads, update checks at start, non-English text-reading languages need one), RAR is open-only, "over a thousand sites", channel downloads and "fits in an email" cut. The site shows no version number: manifest is 1.2.0 but the latest published release is 1.1.1. **Unverified:** SponsorBlock source, downloader update source, link-preview image origin, CLI examples carried over from the old site, Deno bundled vs optional. In-app strings ("Everything stays on this PC") untouched.
+
 **Current version:** 1.2.0 (root manifest; every workspace manifest carries the same number)
 **Last updated:** 2026-10-06 (brand marks in colour; 1.2.0: Save as and Save all for finished files)
 **Owner:** harryx2011@gmail.com
@@ -21,6 +23,8 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 - `packages/core` — pure logic and every user-facing label/error string (`levels.ts`, `display.ts`, `errors.ts`, `ytdlp.ts`).
 - `packages/ui` — shared visuals (Performance bars, Compression slider, logo mark).
 - `scripts/` — `fetch-tools.mjs` (bundled binaries into `apps/desktop/resources/bin`, gitignored), `fetch-fonts.mjs` (Satoshi, gitignored), `make-icons.mjs` (all icons + NSIS sidebar/header BMPs from one SVG), `stage-cli.mjs` (stages the CLI bundle for the installer), `gen-site-ops.mjs` (the site's Tools list, `apps/web/src/data/ops.json`, from the op registry).
+
+**Typecheck (2026-10-03):** `npm run typecheck` runs each workspace's script, now `node ../../node_modules/typescript-native/bin/tsc` (root devDependency `typescript-native`, an npm alias of `typescript@^7.0.2`, the Go port). `typescript` stays 5.9 for vite, vitest and the editor: TS 7 has no stable programmatic API until 7.1, so revisit then. Median of 7 runs of the whole command: 20879 ms before, 3592 ms after (npm workspace start-up included), both green. TS 7 removed `baseUrl`, so `apps/desktop/tsconfig.web.json` has `./`-relative `paths`. If `npx tsc -v` prints 7 after an `npm i`, run `npm rebuild typescript`.
 
 ## Decisions (settled 2026-09-24)
 
