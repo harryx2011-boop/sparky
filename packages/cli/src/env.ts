@@ -16,6 +16,9 @@ export const ENV_VARS: readonly [name: string, meaning: string][] = [
   ['SPARKY_BIN_DIR', 'Folder searched first for ffmpeg, yt-dlp and the other tools. The installer sets it.'],
   ['SPARKY_TEST_BIN', 'Folder with the tools for tests, searched after SPARKY_BIN_DIR.'],
   ['SPARKY_DATA_DIR', "Data folder for history, settings and the API token (default: the app's own)."],
+  ['SPARKY_MCP_TOOLS', '`sparky mcp` tool set: core (default) or all (same as --tools).'],
+  ['SPARKY_MCP_ROOTS', '`sparky mcp` may only use files under these folders, `;`-separated (default: the Sparky output folder and the working folder).'],
+  ['SPARKY_MCP_ALLOW_REPLACE=1', 'Let `sparky mcp` replace or trash originals and save over an input.'],
 ]
 
 const set = (v: string | undefined) => (v && v.trim() ? v.trim() : undefined)

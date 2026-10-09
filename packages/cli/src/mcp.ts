@@ -10,6 +10,8 @@ import { connectRemote, LocalBackend, type Backend } from './backend'
 import { cliPaths, localForced, VERSION } from './env'
 import { BackendError, messageOf } from './errors'
 import { acceptsText, choiceText, fieldsOf, OUT_TEXT, toolLabel, toolName } from './fields'
+import { checkPaths, guardOptions } from './guard'
+import { profileFrom, selectOps } from './profiles'
 import { headline, summarize } from './report'
 
 const JOB_SHAPE = '{ jobs: [{ id, status, outputs, error, note, sizeBefore, sizeAfter }] }'
@@ -172,7 +174,7 @@ export async function callTool(router: McpRouter, ops: readonly OpDescriptor[], 
     switch (name) {
       case 'sparky_list_ops': {
         const b = await router.pick()
-        const list = (await b.listOps()).map((o) => ({ tool: toolName(o.id), id: o.id, label: o.label, available: o.available, missing: o.missing }))
+        const list = (await b.listOps()).filter((o) => ops.some((x) => x.id === o.id)).map((o) => ({ tool: toolName(o.id), id: o.id, label: o.label, available: o.available, missing: o.missing }))
         const down = list.filter((o) => !o.available)
         return textResult(`${list.length} tools; ${down.length ? `${down.length} can't run here: ${down.map((o) => `${o.tool} (needs ${o.missing.map(toolLabel).join(', ')})`).join(', ')}` : 'all can run here'}.`, { ops: list })
       }
@@ -201,6 +203,8 @@ export async function callTool(router: McpRouter, ops: readonly OpDescriptor[], 
     const { wait, ...args } = input
     const secrets = op.secret.map((k) => args[k]).filter((v): v is string => typeof v === 'string' && v.length > 0)
     try {
+      const { roots, allowReplace } = guardOptions()
+      checkPaths(op, args, roots, allowReplace)
       const b = await router.pick()
       if (wait === false) {
         const jobs = await b.startOp(op.id, args)
@@ -238,17 +242,18 @@ export const INSTRUCTIONS = [
   'When the Sparky app is open the jobs show in its Queue.',
 ].join(' ')
 
-/** Runs until stdin closes. */
-export async function runMcpServer(): Promise<void> {
+/** Runs until stdin closes. `tools` is a profile name (profiles.ts); left out, SPARKY_MCP_TOOLS or core. */
+export async function runMcpServer(tools?: string): Promise<void> {
   // A stray console.log would corrupt the protocol stream.
   console.log = console.error
   console.info = console.error
   console.debug = console.error
-  const ops = listOps()
-  const tools = mcpTools(ops)
+  const ops = selectOps(profileFrom(tools), listOps())
+  const list = mcpTools(ops)
   const router = new McpRouter()
-  const server = new Server({ name: 'sparky', title: 'Sparky', version: VERSION }, { capabilities: { tools: {} }, instructions: INSTRUCTIONS })
-  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }))
+  const instructions = `${INSTRUCTIONS} Files must be under: ${guardOptions().roots.join('; ')}.`
+  const server = new Server({ name: 'sparky', title: 'Sparky', version: VERSION }, { capabilities: { tools: {} }, instructions })
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: list }))
   server.setRequestHandler(CallToolRequestSchema, async (req, extra) =>
     callTool(router, ops, req.params.name, (req.params.arguments ?? {}) as Record<string, unknown>, {
       signal: extra.signal,

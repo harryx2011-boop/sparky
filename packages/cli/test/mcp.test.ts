@@ -20,7 +20,7 @@ let stderr = ''
 
 beforeAll(async () => {
   dir = tempDir('sparky-mcp-')
-  const env = childEnv(path.join(dir, 'data'), { SPARKY_LOCAL: '1' }) as Record<string, string>
+  const env = childEnv(path.join(dir, 'data'), { SPARKY_LOCAL: '1', SPARKY_MCP_TOOLS: 'all', SPARKY_MCP_ROOTS: [dir, FIXTURES].join(';') }) as Record<string, string>
   const transport = new StdioClientTransport({ command: process.execPath, args: [BUNDLE, 'mcp'], env, stderr: 'pipe' })
   transport.stderr?.on('data', (d) => (stderr += d))
   client = new Client({ name: 'sparky-test', version: '0.0.0' })
@@ -90,5 +90,55 @@ describe('sparky mcp', () => {
   it('writes nothing but protocol to stdout', () => {
     // Any stray stdout line would have broken the client above; stderr may hold logs.
     expect(stderr).not.toMatch(/SyntaxError|Unexpected token/)
+  })
+})
+
+describe('sparky mcp, default profile and folders', () => {
+  let core: Client
+  let coreDir: string
+  const inRoot = () => path.join(coreDir, 'in.pdf')
+
+  beforeAll(async () => {
+    coreDir = tempDir('sparky-mcp-core-')
+    fs.copyFileSync(PDF, inRoot())
+    const env = childEnv(path.join(coreDir, 'data'), { SPARKY_LOCAL: '1', SPARKY_MCP_ROOTS: coreDir }) as Record<string, string>
+    delete env.SPARKY_MCP_TOOLS
+    core = new Client({ name: 'sparky-test', version: '0.0.0' })
+    await core.connect(new StdioClientTransport({ command: process.execPath, args: [BUNDLE, 'mcp'], env, stderr: 'pipe' }))
+  })
+  afterAll(async () => {
+    await core?.close()
+    fs.rmSync(coreDir, { recursive: true, force: true })
+  })
+
+  it('offers the core tools and the four helpers only', async () => {
+    const names = (await core.listTools()).tools.map((t) => t.name).sort()
+    expect(names).toEqual(
+      ['sparky_convert', 'sparky_download', 'sparky_image_edit', 'sparky_media_compress', 'sparky_media_edit', 'sparky_ocr', 'sparky_pdf_compress', 'sparky_pdf_merge', 'sparky_pdf_split',
+        'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_cancel_job'].sort(),
+    )
+    expect(core.getInstructions()).toContain(coreDir)
+    const listed = textOf(await core.callTool({ name: 'sparky_list_ops', arguments: {} }))
+    expect(listed).toContain('sparky_pdf_merge')
+    expect(listed).not.toContain('sparky_pdf_unlock')
+  })
+
+  it('refuses a tool outside the profile', async () => {
+    const r = await core.callTool({ name: 'sparky_pdf_unlock', arguments: { files: [inRoot()] } })
+    expect(r.isError).toBe(true)
+    expect(textOf(r)).toMatch(/Unknown tool/)
+  })
+
+  it('works inside the folder and refuses outside it', async () => {
+    const out = path.join(coreDir, 'merged.pdf')
+    const ok = await core.callTool({ name: 'sparky_pdf_merge', arguments: { files: [inRoot(), inRoot()], out } })
+    expect(ok.isError).toBeFalsy()
+    expect(fs.existsSync(out)).toBe(true)
+    const outsideIn = await core.callTool({ name: 'sparky_pdf_merge', arguments: { files: [PDF, PDF], out } })
+    expect(outsideIn.isError).toBe(true)
+    expect(textOf(outsideIn)).toMatch(/outside/)
+    const outsideOut = await core.callTool({ name: 'sparky_pdf_merge', arguments: { files: [inRoot(), inRoot()], out: path.join(path.dirname(coreDir), 'escaped.pdf') } })
+    expect(outsideOut.isError).toBe(true)
+    expect(fs.existsSync(path.join(path.dirname(coreDir), 'escaped.pdf'))).toBe(false)
   })
 })

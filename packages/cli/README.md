@@ -39,6 +39,12 @@ To add it by hand, the server is `sparky mcp` on stdin/stdout:
 
 On macOS and Linux, use `"command": "sparky", "args": ["mcp"]`. With Claude Code: `claude mcp add --scope user sparky -- cmd /c sparky mcp`.
 
+### What an agent can see and touch
+
+`sparky mcp` offers the core tools by default: convert, download, PDF merge/split/compress, video compress/edit, OCR and image edit, plus four helpers (`sparky_list_ops`, `sparky_list_formats`, `sparky_get_job`, `sparky_cancel_job`). Fewer tools means less of the agent's context spent on schemas. `--tools all` (or `SPARKY_MCP_TOOLS=all`) offers every tool; the profiles live in `src/profiles.ts`.
+
+Agents may only read and write under `SPARKY_MCP_ROOTS` (`;`-separated folders; default the Sparky output folder and the folder the client started the server in). `..`, junctions, symlinks, network (`\\host\share`) and `\\?\` paths are checked after resolving. Replacing or trashing originals and saving over an input are refused unless `SPARKY_MCP_ALLOW_REPLACE=1`. The guard covers the MCP only; the CLI and the HTTP API are unchanged.
+
 When the Sparky app updates, its installer closes any `sparky mcp` server it started, since the server runs from the app's folder. Claude Code restarts an MCP server on its next call to it; with another client, restart the client if Sparky's tools stop answering.
 
 ## Local HTTP API
@@ -61,6 +67,9 @@ Invoke-RestMethod -Method Post http://127.0.0.1:8600/v1/jobs -Headers @{ Authori
 | `SPARKY_BIN_DIR` | Folder searched first for ffmpeg, yt-dlp and the other tools. The installer's shim sets it. |
 | `SPARKY_API_PORT` | Port of the running app or `sparky serve` (default 8600). |
 | `SPARKY_LOCAL=1` | Always run jobs in this process (same as `--local`). |
+| `SPARKY_MCP_TOOLS` | `sparky mcp` tool set: `core` (default) or `all` (same as `--tools`). |
+| `SPARKY_MCP_ROOTS` | Folders `sparky mcp` may use, `;`-separated (default: the output folder and the working folder). |
+| `SPARKY_MCP_ALLOW_REPLACE=1` | Let `sparky mcp` replace or trash originals and save over an input. |
 
 ## License
 
