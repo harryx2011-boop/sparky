@@ -41,7 +41,8 @@ function addJob(j: Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'created
   return job
 }
 
-setInterval(() => {
+// The real app imports this module too; only the browser mock needs the fake queue ticking.
+if (!window.sparky) setInterval(() => {
   let running = jobs.filter((j) => j.status === 'running').length
   for (const j of jobs) {
     if (j.status === 'queued' && running < batchConcurrency(settings.performance, 12, settings.batch)) {
