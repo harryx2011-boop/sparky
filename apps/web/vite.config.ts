@@ -6,9 +6,11 @@ import { defineConfig, type Connect, type Plugin } from 'vite'
 const base = process.env.BASE_PATH ?? '/'
 
 // /docs and /docs/<page> are one entry (docs.html) that reads its page from the path; vercel.json does the same rewrite.
+// /privacy and /terms are one entry each (privacy.html, terms.html).
 const rewriteDocs: Connect.NextHandleFunction = (req, _res, next) => {
   const path = (req.url ?? '').split('?')[0]!
   if (path === `${base}docs` || path.startsWith(`${base}docs/`)) req.url = `${base}docs.html`
+  for (const page of ['privacy', 'terms']) if (path === `${base}${page}`) req.url = `${base}${page}.html`
   next()
 }
 const docsRoute: Plugin = {
@@ -28,6 +30,8 @@ export default defineConfig({
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
         download: fileURLToPath(new URL('./download.html', import.meta.url)),
         docs: fileURLToPath(new URL('./docs.html', import.meta.url)),
+        privacy: fileURLToPath(new URL('./privacy.html', import.meta.url)),
+        terms: fileURLToPath(new URL('./terms.html', import.meta.url)),
       },
       output: {
         manualChunks: {

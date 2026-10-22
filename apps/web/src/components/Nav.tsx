@@ -2,6 +2,7 @@ import { CONTACT, GithubIcon, LogoMark } from '@sparky/ui'
 import { motion, useMotionValueEvent, useScroll } from 'motion/react'
 import { useState } from 'react'
 import { DOCS_PAGE, DOWNLOAD_PAGE } from '../links'
+import { MobileMenu } from './MobileMenu'
 import { Magnetic } from './motion'
 import { SECTION_LINKS } from './sections'
 import { ButtonLink } from './ui'
@@ -11,6 +12,7 @@ export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: s
   const { scrollY } = useScroll()
   const [hidden, setHidden] = useState(false)
   const [solid, setSolid] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   // Transparent over the galaxy, solid once you scroll; hides going down, returns going up.
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0
@@ -19,9 +21,9 @@ export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: s
   })
   return (
     <motion.header
-      animate={{ y: hidden ? -80 : 0 }}
+      animate={{ y: hidden && !menuOpen ? -80 : 0 }}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 ${solid ? 'border-[#1a1a1a] bg-background/75 backdrop-blur-md' : 'border-transparent bg-transparent'}`}
+      className={`fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300 print:hidden ${solid || menuOpen ?'border-[#1a1a1a] bg-background/75 backdrop-blur-md' : 'border-transparent bg-transparent'}`}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[72px]">
         <a href={`${home}#top`} className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
@@ -39,6 +41,7 @@ export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: s
           </a>
         </nav>
         <div className="flex items-center gap-2">
+          <MobileMenu home={home} open={menuOpen} onOpenChange={setMenuOpen} />
           <a
             href={CONTACT.github}
             className="hidden size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex"

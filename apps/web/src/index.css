@@ -29,6 +29,41 @@ body {
   color: var(--subtle-foreground);
 }
 
+/* Print (docs and legal pages): the dark theme tokens remapped to dark text on white. The header, footer, docs menu and skip link carry print:hidden. */
+@media print {
+  html.dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    --card: #ffffff;
+    --card-foreground: #000000;
+    --muted-foreground: #333333;
+    --subtle-foreground: #444444;
+    --secondary: #ffffff;
+    --border: #767676;
+    --input: #767676;
+  }
+
+  .doc-page {
+    padding-top: 0;
+  }
+
+  .doc-page a[href^='http']::after,
+  .doc-page a[href^='mailto:']::after,
+  .doc-page a[href^='/']::after {
+    content: ' (' attr(href) ')';
+    overflow-wrap: anywhere;
+  }
+
+  .doc-page section {
+    break-inside: avoid-page;
+  }
+
+  .doc-page h1,
+  .doc-page h2 {
+    break-after: avoid;
+  }
+}
+
 /* Two identical rows side by side; sliding one row's width loops seamlessly. */
 @keyframes marquee {
   from { transform: translateX(0); }

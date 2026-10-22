@@ -3,12 +3,10 @@ import { useEffect } from 'react'
 import { DocBlocks } from '../components/DocBlocks'
 import { DocsNav } from '../components/DocsNav'
 import { Footer } from '../components/Footer'
+import { H1, H2 } from '../components/headings'
 import { Nav } from '../components/Nav'
 import { DOCS, type DocPage } from '../lib/docs'
 import { DOCS_PAGE, HOME } from '../links'
-
-const H1 = 'text-balance text-[clamp(32px,calc(2vw+22px),48px)] font-bold leading-[1.06] tracking-[-0.035em]'
-const H2 = 'mb-4 text-2xl font-semibold leading-tight tracking-[-0.01em]'
 
 /** The page named by the address: /docs is the index, /docs/<slug> one page, anything else a missing page. */
 function pageFromPath(): { page?: DocPage; missing: boolean } {
@@ -80,12 +78,12 @@ export function DocsPage() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground print:hidden">
         Skip to content
       </a>
       <Nav home={HOME} />
-      <main id="main" className="mx-auto grid w-full max-w-[1200px] gap-10 px-4 pb-24 pt-28 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16 lg:pt-36">
-        <aside className="lg:sticky lg:top-28 lg:self-start">
+      <main id="main" className="doc-page mx-auto grid w-full max-w-[1200px] gap-10 px-4 pb-24 pt-28 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16 lg:pt-36">
+        <aside className="lg:sticky lg:top-28 lg:self-start print:hidden">
           <DocsNav active={page?.slug} />
         </aside>
         <div className="min-w-0 max-w-[46rem]">

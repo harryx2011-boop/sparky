@@ -21,8 +21,8 @@ export function DocBlocks({ blocks }: { blocks: readonly Block[] }) {
           )
         if ('table' in b)
           return (
-            <div key={i} className="overflow-x-auto rounded-xl border border-border">
-              <table className="w-full min-w-[32rem] border-collapse text-left text-sm">
+            <div key={i} className="overflow-x-auto rounded-xl border border-border print:overflow-visible">
+              <table className="w-full min-w-[32rem] border-collapse print:min-w-0 text-left text-sm">
                 <thead>
                   <tr className="border-b border-border">
                     {b.table.head.map((h) => (
@@ -49,7 +49,7 @@ export function DocBlocks({ blocks }: { blocks: readonly Block[] }) {
             </p>
           )
         return (
-          <pre key={i} className="overflow-x-auto rounded-xl border border-border bg-card px-4 py-3 font-mono text-[13px] text-foreground">
+          <pre key={i} className="overflow-x-auto rounded-xl print:overflow-visible print:whitespace-pre-wrap print:break-words border border-border bg-card px-4 py-3 font-mono text-[13px] text-foreground">
             {b.code}
           </pre>
         )

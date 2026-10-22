@@ -1,6 +1,6 @@
 import { CONTACT, DiscordIcon, GithubIcon, GmailIcon, LogoMark } from '@sparky/ui'
 import { useState } from 'react'
-import { DOCS_PAGE } from '../links'
+import { DOCS_PAGE, PRIVACY_PAGE, TERMS_PAGE } from '../links'
 import { SECTION_LINKS } from './sections'
 
 const pill =
@@ -18,13 +18,13 @@ export function Footer({ home = '' }: { home?: string }) {
     window.setTimeout(() => setCopied(false), 1800)
   }
   return (
-    <footer className="border-t border-[#1a1a1a] px-4 py-8 sm:px-6">
+    <footer className="border-t border-[#1a1a1a] px-4 py-8 sm:px-6 print:hidden">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1.5 text-[13px] text-subtle-foreground">
           <span className="flex items-center gap-2 text-foreground">
             <LogoMark size={18} /> Sparky
           </span>
-          <span>Free and open source (MIT license).</span>
+          <span>© 2026 ElixirLabs · Free and open source (MIT license).</span>
           <nav aria-label="Page sections" className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
             {SECTION_LINKS.map(([label, href]) => (
               <a key={href} href={`${home}${href}`} className="text-muted-foreground transition-colors hover:text-foreground">
@@ -36,6 +36,12 @@ export function Footer({ home = '' }: { home?: string }) {
             </a>
             <a href={`${DOCS_PAGE}/how-it-works#open-source-parts`} className="text-muted-foreground transition-colors hover:text-foreground">
               Credits
+            </a>
+            <a href={PRIVACY_PAGE} className="text-muted-foreground transition-colors hover:text-foreground">
+              Privacy
+            </a>
+            <a href={TERMS_PAGE} className="text-muted-foreground transition-colors hover:text-foreground">
+              Terms
             </a>
           </nav>
         </div>
