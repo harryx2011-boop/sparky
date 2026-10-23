@@ -24,7 +24,7 @@ export function Footer({ home = '' }: { home?: string }) {
           <span className="flex items-center gap-2 text-foreground">
             <LogoMark size={18} /> Sparky
           </span>
-          <span>© 2026 ElixirLabs · Free and open source (MIT license).</span>
+          <span>Free and open source (MIT license).</span>
           <nav aria-label="Page sections" className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
             {SECTION_LINKS.map(([label, href]) => (
               <a key={href} href={`${home}${href}`} className="text-muted-foreground transition-colors hover:text-foreground">
