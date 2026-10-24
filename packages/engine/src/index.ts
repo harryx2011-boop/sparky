@@ -25,6 +25,7 @@ import { convertArgs, describeOp, downloadArgs, allOps, opById, OpInputError, ty
 import { jobFields, parseOpInput, runOpJob, SECRET_GIVEN, splitInput, splitSecrets } from './ops/run'
 import { splitOut } from './output'
 import { CanceledError } from './process'
+import { createProgressWriter } from './progress-file'
 import { JobQueue } from './queue'
 import { Store } from './store'
 import { detectGpu, locateTools, toolStatuses } from './tools'
@@ -179,6 +180,7 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
     const live = new Set(jobs.map((j) => j.id))
     for (const id of secrets.keys()) if (!live.has(id)) secrets.delete(id)
   })
+  queue.on('change', createProgressWriter())
   let closed = false
   queue.on('finished', (job) => {
     if (!closed) store.record(job)
