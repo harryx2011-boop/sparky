@@ -2,7 +2,7 @@
 import type { OpDescriptor } from '@sparky/engine'
 import { UsageError } from './errors'
 
-export const CORE_OPS = ['convert', 'download', 'pdf.merge', 'pdf.split', 'pdf.compress', 'media.compress', 'media.edit', 'ocr', 'image.edit'] as const
+export const CORE_OPS = ['convert', 'download', 'transcript', 'pdf.merge', 'pdf.split', 'pdf.compress', 'media.compress', 'media.edit', 'ocr', 'image.edit'] as const
 
 /** A profile is a list of op ids; null keeps every op. A new profile is one row. */
 export const PROFILES: Record<string, readonly string[] | null> = { core: CORE_OPS, all: null }

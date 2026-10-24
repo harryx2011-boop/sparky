@@ -32,9 +32,9 @@ afterAll(async () => {
 })
 
 describe('sparky mcp', () => {
-  it('lists one tool per op plus the four helpers', async () => {
+  it('lists one tool per op plus the five helpers', async () => {
     const { tools } = await client.listTools()
-    expect(tools).toHaveLength(listOps().length + 4)
+    expect(tools).toHaveLength(listOps().length + 5)
     const merge = tools.find((t) => t.name === 'sparky_pdf_merge')
     expect(merge?.description).toMatch(/PDF/)
     expect(merge?.inputSchema.properties).toHaveProperty('wait')
@@ -111,11 +111,17 @@ describe('sparky mcp, default profile and folders', () => {
     fs.rmSync(coreDir, { recursive: true, force: true })
   })
 
-  it('offers the core tools and the four helpers only', async () => {
+  it('reports download history an agent can search, without args or secrets', async () => {
+    const r = await core.callTool({ name: 'sparky_list_history', arguments: { text: 'no-such-link', limit: 5 } })
+    expect(textOf(r)).toMatch(/0 .*history/i)
+    expect(textOf(r)).toContain('"entries": []')
+  })
+
+  it('offers the core tools and the five helpers only', async () => {
     const names = (await core.listTools()).tools.map((t) => t.name).sort()
     expect(names).toEqual(
-      ['sparky_convert', 'sparky_download', 'sparky_image_edit', 'sparky_media_compress', 'sparky_media_edit', 'sparky_ocr', 'sparky_pdf_compress', 'sparky_pdf_merge', 'sparky_pdf_split',
-        'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_cancel_job'].sort(),
+      ['sparky_convert', 'sparky_download', 'sparky_image_edit', 'sparky_media_compress', 'sparky_media_edit', 'sparky_ocr', 'sparky_pdf_compress', 'sparky_pdf_merge', 'sparky_pdf_split', 'sparky_transcript',
+        'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_cancel_job', 'sparky_list_history'].sort(),
     )
     expect(core.getInstructions()).toContain(coreDir)
     const listed = textOf(await core.callTool({ name: 'sparky_list_ops', arguments: {} }))

@@ -1,5 +1,5 @@
 // One interface over the two ways to run a job: the open app's HTTP API (jobs show in its Queue), or the engine in this process.
-import { FORMATS, INPUT_EXTS, JOB_REMOVED_FROM_QUEUE, type FormatInfo, type Job } from '@sparky/core'
+import { FORMATS, INPUT_EXTS, JOB_REMOVED_FROM_QUEUE, type FormatInfo, type HistoryEntry, type HistoryQuery, type Job } from '@sparky/core'
 import { createEngine, OpInputError, readToken, type Engine, type EnginePaths, type OpInfo, type TargetInfo } from '@sparky/engine'
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
 import http from 'node:http'
@@ -36,6 +36,8 @@ export interface Backend {
   runOp(op: string, args: Record<string, unknown>, opts?: RunOptions): Promise<Job[]>
   getJob(id: string): Promise<Job | undefined>
   listJobs(): Promise<Job[]>
+  /** Finished jobs, newest first, from the history the app and the CLI share. */
+  history(q: HistoryQuery): Promise<HistoryEntry[]>
   cancelJob(id: string): Promise<Job | undefined>
   close(): Promise<void>
 }
@@ -215,6 +217,10 @@ export class RemoteBackend implements Backend {
   async listJobs() {
     return (await this.call<{ jobs: Job[] }>('GET', '/v1/jobs')).jobs
   }
+  async history(q: HistoryQuery) {
+    const params = new URLSearchParams(Object.entries(q).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))
+    return (await this.call<{ entries: HistoryEntry[] }>('GET', `/v1/history${params.size ? `?${params}` : ''}`)).entries
+  }
   async cancelJob(id: string) {
     try {
       return (await this.call<{ job: Job }>('DELETE', `/v1/jobs/${encodeURIComponent(id)}`)).job
@@ -270,6 +276,9 @@ export class LocalBackend implements Backend {
   }
   async listJobs() {
     return this.engine.listJobs()
+  }
+  async history(q: HistoryQuery) {
+    return this.engine.history(q)
   }
   async cancelJob(id: string) {
     if (!this.engine.getJob(id)) return undefined

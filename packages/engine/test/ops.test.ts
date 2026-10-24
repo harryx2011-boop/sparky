@@ -42,7 +42,7 @@ describe('op registry', () => {
   })
 
   it('words every field of every op, and every choice of every pick-one field', () => {
-    expect(allOps()).toHaveLength(22)
+    expect(allOps()).toHaveLength(23)
     for (const op of allOps()) {
       for (const [name, field] of Object.entries(inputSchema(op).properties as Record<string, { title?: string; description?: string; enum?: unknown[]; anyOf?: { const?: unknown }[]; labels?: Record<string, string> }>)) {
         if (name === 'out') continue

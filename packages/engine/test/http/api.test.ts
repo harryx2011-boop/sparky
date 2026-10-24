@@ -244,6 +244,14 @@ describe('api server', () => {
     expect(r.body.jobs).toEqual([])
   })
 
+  it('lists history, filtered by the query string', async () => {
+    const r = await api('GET', '/v1/history?limit=5&status=done&text=holiday')
+    expect(r.status).toBe(200)
+    expect(r.body.entries).toEqual([])
+    const bad = await api('GET', '/v1/history?status=sideways')
+    expect(bad.status).toBe(400)
+  })
+
   it('turns anything unexpected into 500 internal_error without the stack', async () => {
     const broken: Engine = {
       ...engine,

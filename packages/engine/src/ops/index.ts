@@ -8,9 +8,10 @@ import { imageOps } from './image'
 import { mediaOps } from './media'
 import { ocrOps } from './ocr'
 import { pdfOps } from './pdf'
+import { transcriptOp } from './transcript'
 import type { Op, OpCategory } from './types'
 
-export const OPS = [convertOp, downloadOp] as const
+export const OPS = [convertOp, downloadOp, transcriptOp] as const
 
 const ALL: readonly Op[] = [...OPS, ...pdfOps, ...mediaOps, ...imageOps, ...ocrOps]
 

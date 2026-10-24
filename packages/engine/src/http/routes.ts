@@ -39,6 +39,13 @@ function parse<S extends z.ZodType>(schema: S, body: unknown): z.infer<S> {
 
 const TargetsBody = z.object({ paths: z.array(z.string().min(1)) })
 
+const HistoryQuery = z.object({
+  text: z.string().optional(),
+  kind: z.enum(['all', 'convert', 'download', 'tool']).optional(),
+  status: z.enum(['all', 'done', 'failed', 'canceled']).optional(),
+  limit: z.coerce.number().int().positive().optional(),
+})
+
 const JobsBody = z.object({
   op: z.string().min(1),
   args: z.record(z.string(), z.unknown()).optional(),
@@ -89,6 +96,11 @@ export const ROUTES: readonly Route[] = [
     },
   },
   { method: 'GET', url: '/v1/jobs', handle: ({ engine }) => ({ body: { jobs: engine.listJobs() } }) },
+  {
+    method: 'GET',
+    url: '/v1/history',
+    handle: ({ engine, query }) => ({ body: { entries: engine.history(parse(HistoryQuery, query)) } }),
+  },
   { method: 'GET', url: '/v1/jobs/:id', handle: ({ engine, params }) => ({ body: { job: jobOr404(engine, params.id!) } }) },
   {
     method: 'DELETE',

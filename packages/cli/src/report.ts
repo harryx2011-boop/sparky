@@ -1,5 +1,5 @@
 // How finished and running jobs are shown: the summary agents and --json get, the lines people read, the progress bar.
-import type { Job } from '@sparky/core'
+import type { HistoryEntry, Job } from '@sparky/core'
 
 /** What a caller needs from a job; never its args, so a secret can't leave through here. */
 export interface JobSummary {
@@ -29,6 +29,31 @@ export function summarize(j: Job): JobSummary {
     ...(j.sizeBefore !== undefined ? { sizeBefore: j.sizeBefore } : {}),
     ...(j.sizeAfter !== undefined ? { sizeAfter: j.sizeAfter } : {}),
     ...(settled ? {} : { progress: j.progress }),
+  }
+}
+
+/** What a caller needs from a finished job in History; never its args. */
+export interface HistorySummary {
+  id: string
+  op: string
+  title: string
+  source: string
+  status: HistoryEntry['status']
+  outputs: string[]
+  error?: string
+  finishedAt: string
+}
+
+export function summarizeEntry(e: HistoryEntry): HistorySummary {
+  return {
+    id: e.id,
+    op: e.op,
+    title: e.title,
+    source: e.source,
+    status: e.status,
+    outputs: e.outputs,
+    ...(e.error ? { error: e.error } : {}),
+    finishedAt: new Date(e.finishedAt).toISOString(),
   }
 }
 

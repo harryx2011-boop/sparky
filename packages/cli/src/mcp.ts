@@ -1,6 +1,6 @@
 // `sparky mcp`: the MCP server over stdio. One tool per op in the registry, plus list, job and cancel tools.
 // stdout belongs to the transport; everything else goes to stderr.
-import type { Job } from '@sparky/core'
+import type { HistoryQuery, Job } from '@sparky/core'
 import { listOps, type OpDescriptor } from '@sparky/engine'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
@@ -12,7 +12,7 @@ import { BackendError, messageOf } from './errors'
 import { acceptsText, choiceText, fieldsOf, OUT_TEXT, toolLabel, toolName } from './fields'
 import { checkPaths, guardOptions } from './guard'
 import { profileFrom, selectOps } from './profiles'
-import { headline, summarize } from './report'
+import { headline, summarize, summarizeEntry } from './report'
 
 const JOB_SHAPE = '{ jobs: [{ id, status, outputs, error, note, sizeBefore, sizeAfter }] }'
 
@@ -76,6 +76,21 @@ const EXTRA_TOOLS: Tool[] = [
     name: 'sparky_get_job',
     description: `Reports a Sparky job by id: status (queued, running, done, failed, canceled, paused), progress from 0 to 1 while running, output paths once done, and the error when it failed. Use it after calling a tool with wait=false. Returns ${JOB_SHAPE}.`,
     inputSchema: { type: 'object', properties: { id: { type: 'string', minLength: 1, description: 'A job id from a tool result.' } }, required: ['id'] },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  {
+    name: 'sparky_list_history',
+    description:
+      'Searches the finished Sparky jobs kept in History, newest first: downloads, transcripts, conversions. Use it before downloading or converting something, to see whether it was done already and where the files are. `text` matches the title, the link or the output paths. Returns { entries: [{ id, op, title, source, status, outputs, error, finishedAt }] }.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        text: { type: 'string', description: 'Words to find in the title, the link or the output paths, such as part of a video link.' },
+        kind: { type: 'string', enum: ['all', 'convert', 'download', 'tool'], description: 'download covers downloads and transcripts. All kinds when left out.' },
+        status: { type: 'string', enum: ['all', 'done', 'failed', 'canceled'], description: 'All statuses when left out.' },
+        limit: { type: 'integer', minimum: 1, maximum: 200, description: 'How many entries to return. 20 when left out.' },
+      },
+    },
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   {
@@ -188,6 +203,15 @@ export async function callTool(router: McpRouter, ops: readonly OpDescriptor[], 
         const info = await b.listFormats()
         return textResult(`Sparky reads ${info.inputs.length} file types and writes ${info.formats.length} formats.`, info)
       }
+      case 'sparky_list_history': {
+        const b = await router.pick()
+        const text = typeof input.text === 'string' ? input.text : undefined
+        const kind = ['all', 'convert', 'download', 'tool'].includes(String(input.kind)) ? (input.kind as HistoryQuery['kind']) : undefined
+        const status = ['all', 'done', 'failed', 'canceled'].includes(String(input.status)) ? (input.status as HistoryQuery['status']) : undefined
+        const limit = typeof input.limit === 'number' ? Math.min(Math.max(Math.trunc(input.limit), 1), 200) : 20
+        const entries = (await b.history({ text, kind, status, limit })).map(summarizeEntry)
+        return textResult(`${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} in history.`, { entries })
+      }
       case 'sparky_get_job':
       case 'sparky_cancel_job': {
         const id = typeof input.id === 'string' ? input.id : ''
@@ -239,6 +263,8 @@ export const INSTRUCTIONS = [
   'Every tool takes local file paths and writes its results to disk; results come back as file paths, never file contents.',
   'Results go to `out` when given (a file or a folder), else to the Sparky output folder (Downloads\\Sparky by default).',
   'Calls wait for the job by default. For long videos, pass wait=false and poll sparky_get_job.',
+  'To use what a video says (summarize it, quote it, answer from it), call sparky_transcript first: it saves the captions as a text file and downloads nothing else. Download the video itself only when the picture or sound is needed.',
+  'Before downloading or converting, sparky_list_history shows whether it was done already and where the files are.',
   'When the Sparky app is open the jobs show in its Queue.',
 ].join(' ')
 

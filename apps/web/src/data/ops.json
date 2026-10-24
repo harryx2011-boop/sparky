@@ -43,6 +43,16 @@
     ]
   },
   {
+    "id": "transcript",
+    "label": "Get the transcript of a video",
+    "category": "download",
+    "fields": [
+      "Links",
+      "Caption languages",
+      "Time marks"
+    ]
+  },
+  {
     "id": "pdf.from_images",
     "label": "Images to PDF",
     "category": "pdf",
