@@ -1,4 +1,4 @@
-Status: ACTIVE
+Status: IN PROGRESS
 
 # Next session prompt
 
