@@ -82,3 +82,35 @@ describe('pickCaptionFile', () => {
     expect(pickCaptionFile(['a.en.vtt'], [])).toBe('a.en.vtt')
   })
 })
+
+describe('pickCaptionFile languages', () => {
+  const files = ['x [id].en-US.vtt', 'x [id].fr.vtt']
+  it('takes the first caption file for "all"', () => {
+    expect(pickCaptionFile(files, ['all'])).toBe('x [id].en-US.vtt')
+  })
+  it('matches a pattern the way yt-dlp does, and a plain code only exactly', () => {
+    expect(pickCaptionFile(files, ['en.*'])).toBe('x [id].en-US.vtt')
+    expect(pickCaptionFile(files, ['fr.*'])).toBe('x [id].fr.vtt')
+    expect(pickCaptionFile(files, ['de.*'])).toBeUndefined()
+    expect(pickCaptionFile(files, ['en'])).toBeUndefined()
+  })
+  it('still prefers the exact code to a regional one', () => {
+    expect(pickCaptionFile(['x.en-US.vtt', 'x.en.vtt'], ['en'])).toBe('x.en.vtt')
+  })
+  it('does not treat a title that contains the code as a language', () => {
+    expect(pickCaptionFile(['x.en.fr.vtt'], ['fr'])).toBe('x.en.fr.vtt')
+    expect(pickCaptionFile(['en.talk.fr.vtt'], ['en'])).toBeUndefined()
+  })
+})
+
+describe('vttToText repeated lines', () => {
+  const cue = (from: string, to: string, ...lines: string[]) => `${from} --> ${to}\n${lines.join('\n')}\n`
+  it('keeps a line a speaker really repeats in the next cue', () => {
+    const vtt = ['WEBVTT', cue('00:00:01.000', '00:00:02.000', 'No.'), cue('00:00:02.500', '00:00:03.500', 'No.')].join('\n')
+    expect(vttToText(vtt)).toBe('No.\nNo.')
+  })
+  it('still drops the line a rolling cue carries over from the one before', () => {
+    const vtt = ['WEBVTT', cue('00:00:01.000', '00:00:03.000', 'a', 'b'), cue('00:00:03.000', '00:00:05.000', 'b', 'c')].join('\n')
+    expect(vttToText(vtt)).toBe('a b\nc')
+  })
+})
