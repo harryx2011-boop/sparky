@@ -1,5 +1,9 @@
 # Sparky — Project Context
 
+**Setup revamp (2026-11-01), branch `setup-revamp`:** short root `CLAUDE.md`, plan set in `docs/plans/` (README, ROADMAP, DECISIONS, NEXT-SESSION-PROMPT), 1.1 plan archived with a Status line.
+Queued: memory folder edits (SPK-2, memory track); token check on `apps/web` (no token files, 2 misses); no repo skill rows. Untracked in the live checkout, not repo content: `.aether/`, `.worktrees/`, `design/`.
+Token check: `apps/desktop` 72 rows, 65 paths, 0 misses.
+
 Status: Complete (marked 2026-10-12). Shipped; no work planned. Resume only for updates or changes. Open items are tracked in ~/.claude/BACKLOG.md.
 
 Current version 1.3.0 (root manifest). Latest published release 1.1.1; 1.3.0 installed locally, not released.
@@ -17,7 +21,7 @@ Current version 1.3.0 (root manifest). Latest published release 1.1.1; 1.3.0 ins
 > **Plain-language site rewrite (2026-10-01), branch `plain-copy/sparky` @ `04f56c2`, merged to main 2026-10-01, on `origin/main` (checked 2026-10-12).** `apps/web` plus two docs rewrites in the root `vercel.json` (28 files): about 26 jargon lines removed, sections Agents, Queue simulation and Performance cut, new `/docs` (`apps/web/src/lib/docs.ts`; third page is "Settings and Tools", Sparky has no models). Claims fixed: "fully offline / 0 bytes uploaded" became a works-offline vs needs-a-connection list (downloads, update checks at start, non-English text-reading languages need one), RAR is open-only, "over a thousand sites", channel downloads and "fits in an email" cut. The site shows no version number: manifest is 1.2.0 but the latest published release is 1.1.1. **Unverified:** SponsorBlock source, downloader update source, link-preview image origin, CLI examples carried over from the old site, Deno bundled vs optional. In-app strings ("Everything stays on this PC") untouched.
 
 **Current version:** 1.3.0 (root manifest; every workspace manifest carries the same number; not tagged, latest published release is 1.1.1)
-**Last updated:** 2026-10-09 (1.3.0: MCP tool profiles and path guard; 1.2.0: Save as and Save all for finished files)
+**Last updated:** 2026-10-24 (later: transcript op and history tool for agents; 1.3.0: MCP tool profiles and path guard)
 **Owner:** harryx2011@gmail.com
 **Repo:** https://github.com/harryx2011-boop/sparky (public, MIT, default branch `main`)
 **Site:** https://sparky-labs.vercel.app (Vercel project `sparky-labs`, production branch `main`, auto-deploys on push; config in `vercel.json`, upload filter `.vercelignore`)
@@ -78,7 +82,7 @@ A free Windows desktop app (Electron) that converts files (video, audio, images,
 
 ## Plan of record: 1.1 (2026-09-25, shipped as v1.1.0)
 
-Settled over 20 questions, written up in `docs/plans/sparky-1.1-agents-utilities.md` with research in `docs/research/`. Summary: the engine moves to `packages/engine` behind an op registry; Helix's converter code (ffmpeg arg builders, option validators, the csv/xlsx/json/xml/md/html/txt/pdf document pipeline) ports into it and Helix deletes its converter entirely; a PDF toolkit, media and image editing ops, LibreOffice-gated Office targets and tesseract.js OCR are added; agents reach Sparky through an MCP stdio server, a loopback HTTP API on 8600 (token file in app data) and a `sparky` CLI, bundled in the installer and published to npm; file rows and the format picker show the Windows-associated icon with a vendored VS Code icon fallback; the Settings "Built-in tools" group becomes a Diagnostics group and an Agents group is added. Five phases, one per turn: Engine, Utilities, Surfaces, Icons/UI, Helix removal and release. Ports: site dev 4600, renderer dev:ui 4601, API 8600.
+Settled over 20 questions, written up in `docs/plans/archive/2026-09-25-sparky-1.1-agents-utilities.md` with research in `docs/research/`. Summary: the engine moves to `packages/engine` behind an op registry; Helix's converter code (ffmpeg arg builders, option validators, the csv/xlsx/json/xml/md/html/txt/pdf document pipeline) ports into it and Helix deletes its converter entirely; a PDF toolkit, media and image editing ops, LibreOffice-gated Office targets and tesseract.js OCR are added; agents reach Sparky through an MCP stdio server, a loopback HTTP API on 8600 (token file in app data) and a `sparky` CLI, bundled in the installer and published to npm; file rows and the format picker show the Windows-associated icon with a vendored VS Code icon fallback; the Settings "Built-in tools" group becomes a Diagnostics group and an Agents group is added. Five phases, one per turn: Engine, Utilities, Surfaces, Icons/UI, Helix removal and release. Ports: site dev 4600, renderer dev:ui 4601, API 8600.
 
 ## Open
 
