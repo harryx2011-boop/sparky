@@ -1,6 +1,6 @@
 # Helix file-conversion surfaces: map for the Sparky port
 
-Research report, 2026-09-25. Read from `D:\Helix` at HEAD `47448ea` (root version 1.24.0). Nothing was edited. Companion: `freeconvert-catalog.md`. Plan that consumes this: `../plans/sparky-1.1-agents-utilities.md`.
+Research report, 2026-09-25. Read from `D:\Helix` at HEAD `47448ea` (root version 1.24.0). Nothing was edited. Companion: `freeconvert-catalog.md`. Plan that consumes this: `../plans/archive/2026-09-25-sparky-1.1-agents-utilities.md`.
 
 ## 1. Where Helix converts files
 
