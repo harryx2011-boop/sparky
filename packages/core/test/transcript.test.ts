@@ -89,7 +89,14 @@ describe('pickCaptionFile languages', () => {
     expect(pickCaptionFile(files, ['all'])).toBe('x [id].en-US.vtt')
   })
   it('prefers the original-language track for "all" over translated auto tracks', () => {
-    expect(pickCaptionFile(['x.ab.vtt', 'x.en-orig.vtt', 'x.en.vtt'], ['all'])).toBe('x.en-orig.vtt')
+    expect(pickCaptionFile(['x.ab.vtt', 'x.en-orig.vtt', 'x.fr.vtt'], ['all'])).toBe('x.en-orig.vtt')
+  })
+  it('keeps language order when "all" comes after a language that has a file', () => {
+    expect(pickCaptionFile(['v.ab.vtt', 'v.en-orig.vtt', 'v.en.vtt', 'v.fr.vtt'], ['fr', 'all'])).toBe('v.fr.vtt')
+    expect(pickCaptionFile(['v.ab.vtt', 'v.en-orig.vtt'], ['fr', 'all'])).toBe('v.en-orig.vtt')
+  })
+  it('prefers the uploader captions to the auto track for "all"', () => {
+    expect(pickCaptionFile(['v.ab.vtt', 'v.en-orig.vtt', 'v.en.vtt'], ['all'])).toBe('v.en.vtt')
   })
   it('matches a pattern the way yt-dlp does, and a plain code only exactly', () => {
     expect(pickCaptionFile(files, ['en.*'])).toBe('x [id].en-US.vtt')

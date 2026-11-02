@@ -45,13 +45,17 @@ function langMatches(lang: string, code: string): boolean {
   }
 }
 
-/** The caption file for the first language that has one (an exact code beats a pattern); the first file when no language was asked for; for "all", the original-language track (code ending "-orig", as YouTube names it) before the first file, since "all" also saves every machine-translated track. */
+/** The caption file for the first language that has one (an exact code beats a pattern); the first file when no language was asked for; "all" keeps its place in the order and takes the uploader's captions in the original language when there are some, else the auto original-language track (code ending "-orig", as YouTube names it), else the first file, since "all" also saves every machine-translated track. */
 export function pickCaptionFile(files: readonly string[], langs: readonly string[]): string | undefined {
   const vtt = files.filter((f) => /\.vtt$/i.test(f))
   const code = (f: string) => /\.([^.]+)\.vtt$/i.exec(f)?.[1] ?? ''
   if (!langs.length) return vtt[0]
-  if (langs.some((l) => l.toLowerCase() === 'all')) return vtt.find((f) => /-orig$/i.test(code(f))) ?? vtt[0]
   for (const lang of langs) {
+    if (lang.toLowerCase() === 'all') {
+      const orig = vtt.find((f) => /-orig$/i.test(code(f)))
+      const base = orig && code(orig).replace(/-orig$/i, '').toLowerCase()
+      return vtt.find((f) => code(f).toLowerCase() === base) ?? orig ?? vtt[0]
+    }
     const hit = vtt.find((f) => lang.toLowerCase() === code(f).toLowerCase()) ?? vtt.find((f) => langMatches(lang, code(f)))
     if (hit) return hit
   }
