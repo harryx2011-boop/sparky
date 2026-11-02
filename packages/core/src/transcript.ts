@@ -45,11 +45,12 @@ function langMatches(lang: string, code: string): boolean {
   }
 }
 
-/** The caption file for the first language that has one (an exact code beats a pattern); the first file when no language was asked for, or for "all". */
+/** The caption file for the first language that has one (an exact code beats a pattern); the first file when no language was asked for; for "all", the original-language track (code ending "-orig", as YouTube names it) before the first file, since "all" also saves every machine-translated track. */
 export function pickCaptionFile(files: readonly string[], langs: readonly string[]): string | undefined {
   const vtt = files.filter((f) => /\.vtt$/i.test(f))
-  if (!langs.length || langs.some((l) => l.toLowerCase() === 'all')) return vtt[0]
   const code = (f: string) => /\.([^.]+)\.vtt$/i.exec(f)?.[1] ?? ''
+  if (!langs.length) return vtt[0]
+  if (langs.some((l) => l.toLowerCase() === 'all')) return vtt.find((f) => /-orig$/i.test(code(f))) ?? vtt[0]
   for (const lang of langs) {
     const hit = vtt.find((f) => lang.toLowerCase() === code(f).toLowerCase()) ?? vtt.find((f) => langMatches(lang, code(f)))
     if (hit) return hit

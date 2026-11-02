@@ -1,4 +1,4 @@
-import { TRANSCRIPT_TEXT } from '@sparky/core'
+import { explainYtDlpError, TRANSCRIPT_TEXT } from '@sparky/core'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -98,8 +98,8 @@ describe('transcript op run', () => {
   it('explains a yt-dlp failure in plain words and cleans up', async () => {
     const [job] = await engine.runOp('transcript', { urls: ['https://video.test/broken'] })
     expect(job).toMatchObject({ status: 'failed' })
-    expect(job!.error).toBeTruthy()
-    expect(job!.error).not.toBe(TRANSCRIPT_TEXT.noCaptions)
+    expect(job!.error).toBe(explainYtDlpError('ERROR: Video unavailable').message)
+    expect(job!.error).not.toMatch(/^ERROR:/)
     expect(leftovers()).toEqual([])
   })
 })
