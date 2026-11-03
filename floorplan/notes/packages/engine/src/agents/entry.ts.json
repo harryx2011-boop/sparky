@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/agents/entry.ts",
+  "description": "How an agent client should start the installed Sparky's MCP server on this PC.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "EntryContext.pathDirs",
+      "line": 7,
+      "offset": 0,
+      "text": "The PATH folders, as the app sees them.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "EntryContext.resourcesDir",
+      "line": 8,
+      "offset": 0,
+      "text": "The installed app's `resources` folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "installedEntry",
+      "line": 12,
+      "offset": 0,
+      "text": "`cmd /c sparky mcp` when the shim is on PATH. Otherwise Sparky.exe run as Node with exactly the settings\n`resources\\cli\\sparky.cmd` sets: no cmd in between, so no path character can split the command, and it works\nin a terminal opened before the installer added the folder to PATH. Null when this is not an installed Sparky\n(the dev tree has the shim but no Sparky.exe beside `resources`).",
+      "kind": "doc"
+    }
+  ]
+}

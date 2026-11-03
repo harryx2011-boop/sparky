@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/media/compress.ts",
+  "description": "media.compress: a video or sound file made smaller, aimed at a size (Email, Discord, or MB) or at a quality (Web, Archive).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.targetMb",
+      "line": 31,
+      "offset": 0,
+      "text": "Wins over `target`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "QUALITY_LEVEL",
+      "line": 38,
+      "offset": 0,
+      "text": "Compression level standing in for each quality-led preset: Archive keeps detail, Web trades a little.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "compressOne",
+      "line": 62,
+      "offset": 14,
+      "text": "The caller asked for a file at `out`, so the untouched original goes there.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "compressOne",
+      "line": 102,
+      "offset": 54,
+      "text": "A graphics card encoder can't take two passes here; a rate cap keeps it close to the size instead.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "compressOne",
+      "line": 104,
+      "offset": 56,
+      "text": "Card encoders have a quality floor they won't go under, so a small size can come out far over; the processor's two passes land it.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "compressOne",
+      "line": 120,
+      "offset": 72,
+      "text": "A same-format copy that came out bigger isn't worth keeping.",
+      "kind": "what"
+    }
+  ]
+}

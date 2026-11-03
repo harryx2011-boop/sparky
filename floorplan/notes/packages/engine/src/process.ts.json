@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/process.ts",
+  "description": "Spawning tools with cancel support, priority control and line-by-line output.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RunOptions.onStdout",
+      "line": 17,
+      "offset": 0,
+      "text": "Raw stdout chunks.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "RunOptions.onStdoutLine",
+      "line": 18,
+      "offset": 0,
+      "text": "Complete stdout lines (split on \\n or \\r).",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "RunOptions.stderrLimit",
+      "line": 20,
+      "offset": 0,
+      "text": "Keep at most this many characters of stderr for error messages.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "killTree",
+      "line": 30,
+      "offset": 0,
+      "text": "Kills a process and everything it started (yt-dlp.exe spawns a child on Windows).",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "killTree",
+      "line": 38,
+      "offset": 8,
+      "text": "already gone",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "run",
+      "line": 58,
+      "offset": 0,
+      "text": "Runs a tool and resolves with its output. Rejects with CanceledError when the signal fires.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "run",
+      "line": 74,
+      "offset": 16,
+      "text": "not fatal",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": "runOk",
+      "line": 123,
+      "offset": 0,
+      "text": "Throws unless the process exited cleanly.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/InstallSequence.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "InstallSequence",
+      "line": 180,
+      "offset": 0,
+      "text": "Sparky's installer arrives, installs, and Sparky opens to convert a file. Plays once in view and holds the last frame.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/tools.ts",
+  "description": "Command lines for the document and archive tools.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "pandocArgs",
+      "line": 12,
+      "offset": 0,
+      "text": "Pandoc for MD / HTML / DOCX / TXT. For PDF output Sparky renders HTML and prints it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "PRINT_CSS",
+      "line": 25,
+      "offset": 0,
+      "text": "Small stylesheet used when turning documents into PDF, so they look tidy on paper.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ghostscriptArgs",
+      "line": 51,
+      "offset": 9,
+      "text": "Ghostscript reads % in an output name as a page-number pattern; %% is a plain %.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "sevenZipPackArgs",
+      "line": 60,
+      "offset": 0,
+      "text": "Run with the working directory set to the folder being packed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "parseSevenZipProgress",
+      "line": 65,
+      "offset": 0,
+      "text": "7-Zip prints \"  42% 3 + file\" style lines when -bsp1 is set.",
+      "kind": "doc"
+    }
+  ]
+}

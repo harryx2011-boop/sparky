@@ -12,7 +12,6 @@ export function Footer({ home = '' }: { home?: string }) {
     try {
       await navigator.clipboard.writeText(CONTACT.discord)
     } catch {
-      /* Clipboard can be blocked; the label still shows the handle. */
     }
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1800)

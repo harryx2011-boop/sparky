@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/media/media.test.ts",
+  "description": "The media ops end to end with the real FFmpeg. Point SPARKY_TEST_BIN at a folder with ffmpeg and ffprobe; without it these skip.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 12,
+      "offset": null,
+      "text": "A skip must never pass for green in CI.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 61,
+      "offset": null,
+      "text": "A 3-second 720p clip with a tone, the same clip as MP4, a 12-second one for sizes and cancel, and a sound file.",
+      "kind": "what"
+    }
+  ]
+}

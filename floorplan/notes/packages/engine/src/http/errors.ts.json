@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/http/errors.ts",
+  "description": "Every API failure leaves as `{ error, message, field?, requestId }`, the shape Helix's API uses.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "invalidRequest",
+      "line": 33,
+      "offset": 0,
+      "text": "A body that doesn't match the route's schema.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "toApiError",
+      "line": 40,
+      "offset": 0,
+      "text": "Status and body for anything a route or hook threw.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "toApiError",
+      "line": 44,
+      "offset": 4,
+      "text": "Fastify's own 4xx: malformed JSON, a body it can't read.",
+      "kind": "what"
+    }
+  ]
+}

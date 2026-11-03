@@ -7,20 +7,14 @@ import { breathe } from './deliver'
 import { readBytes } from './document'
 
 export interface RenderOptions {
-  /** Dots per inch; 72 draws a page at its size in points. */
   dpi: number
-  /** A page list such as "1-3,5", or the page numbers themselves (1-based). All pages when left out. */
   pages?: string | readonly number[]
 }
 
 export interface RenderedPage {
-  /** 1-based page number in the document. */
   page: number
-  /** Pages in the document. */
   total: number
-  /** Position of this page among the ones asked for, from 0. */
   index: number
-  /** How many pages were asked for. */
   count: number
   width: number
   height: number
@@ -29,7 +23,6 @@ export interface RenderedPage {
 
 let assets: { standardFontDataUrl: string; cMapUrl: string; wasmUrl: string; iccUrl: string } | undefined
 
-/** pdf.js reads its fonts, character maps and decoders from disk in Node; it wants forward slashes and a trailing one. */
 function pdfjsAssets() {
   if (!assets) {
     const root = path.dirname(createRequire(import.meta.url).resolve('pdfjs-dist/package.json'))
@@ -46,7 +39,6 @@ export async function* renderPdfPages(
   onPage?: (done: number, count: number) => void,
 ): AsyncGenerator<RenderedPage> {
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
-  // Loaded here, not at the top: a native module that fails to load must only fail this job, never the registry.
   const { createCanvas } = await import('@napi-rs/canvas')
   const data = await readBytes(file)
   const task = pdfjs.getDocument({ data, ...pdfjsAssets(), cMapPacked: true, useSystemFonts: true, verbosity: 0 })

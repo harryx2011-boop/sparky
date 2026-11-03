@@ -1,13 +1,7 @@
 import { useReducedMotion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 
-/**
- * A field of glowing sprites. At `progress` 0 the dots trace the Sparky bolt like a small galaxy;
- * as progress rises they swirl out into a spiral star field. Drawn on a 2D canvas with
- * pre-rendered glow sprites, so thousands of dots stay cheap.
- */
 
-// The bolt from the logo, in its 24×24 icon space.
 const BOLT: [number, number][] = [
   [13, 2],
   [3, 14],
@@ -18,7 +12,6 @@ const BOLT: [number, number][] = [
   [13, 2],
 ]
 
-/** White dots with a lime sprinkle. The lime is read from the theme so it stays the one accent. */
 const PALETTE = [
   { token: '--foreground', weight: 0.8 },
   { token: '--lime', weight: 0.2 },
@@ -31,19 +24,15 @@ function tokenRgb(token: string): string {
 }
 
 interface Particle {
-  /** Home on the bolt, in bolt units (0–24). */
   bx: number
   by: number
-  /** Spiral position: radius (0–1 of the field) and angle. */
   r: number
   a: number
   size: number
   sprite: number
   phase: number
   speed: number
-  /** Staggers the scatter so it ripples outwards. */
   delay: number
-  /** Background stars never join the bolt. */
   star: boolean
 }
 
@@ -64,7 +53,6 @@ function pickSprite(): number {
   return 0
 }
 
-/** Points spread evenly along the bolt outline, with a soft glow band and a sprinkle inside. */
 function sampleBolt(count: number): [number, number][] {
   const segs = BOLT.slice(0, -1).map((p, i) => {
     const q = BOLT[i + 1]!
@@ -84,7 +72,6 @@ function sampleBolt(count: number): [number, number][] {
     const spread = gauss() * 0.28
     out.push([seg.p[0] + dx * t + nx * spread, seg.p[1] + dy * t + ny * spread])
   }
-  // A faint dusting inside the bolt, like the core of a galaxy.
   const inside = (x: number, y: number) => {
     let hit = false
     for (let i = 0, j = BOLT.length - 2; i < BOLT.length - 1; j = i++) {
@@ -123,15 +110,10 @@ const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 
 const clamp01 = (t: number) => Math.max(0, Math.min(1, t))
 
 export interface SpriteFieldProps {
-  /** 0 = bolt, 1 = fully scattered galaxy. Read every frame. */
   getProgress: () => number
-  /** Bolt height as a fraction of the canvas height. */
   boltScale?: number
-  /** Horizontal centre of the bolt and the galaxy, 0–1. */
   boltX?: number
-  /** Vertical centre of the bolt, 0–1. */
   boltY?: number
-  /** Gather the dots into the bolt when the field first appears. */
   assembleOnMount?: boolean
   className?: string
 }
@@ -168,7 +150,6 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY 
       const starCount = Math.round(Math.max(160, Math.min(700, 520 * area)))
       const homes = sampleBolt(boltCount)
       particles = homes.map(([bx, by], i) => {
-        // Three spiral arms; the scatter keeps a hint of the galaxy.
         const arm = i % 3
         const r = Math.pow(Math.random(), 0.55)
         return {
@@ -191,7 +172,6 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY 
 
     const draw = (now: number) => {
       const t = (now - born) / 1000
-      // On load the dots fly in from the galaxy to form the bolt.
       const intro = reduce || !assembleOnMount ? 1 : clamp01((t - 0.15) / 1.9)
       const scroll = clamp01(progressRef.current())
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -210,7 +190,6 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY 
         const tw = reduce ? 0.8 : 0.55 + 0.45 * Math.sin(t * p.speed + p.phase)
         const angle = p.a + swirl * (1.2 - p.r * 0.6)
         const gx = cx + Math.cos(angle) * p.r * radius
-        // Flatten the galaxy a little so it reads as a disc.
         const gy = cy + Math.sin(angle) * p.r * radius * 0.62
         let x: number
         let y: number
@@ -222,7 +201,6 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY 
         } else {
           const bx = ox + p.bx * unit
           const by = oy + p.by * unit
-          // 1 = on the bolt, 0 = out in the galaxy.
           const form = ease(clamp01((intro - p.delay * 0.6) / (1 - p.delay * 0.6))) * (1 - ease(clamp01((scroll - p.delay * 0.4) / 0.75)))
           x = gx + (bx - gx) * form
           y = gy + (by - gy) * form
@@ -259,7 +237,6 @@ export function SpriteField({ getProgress, boltScale = 0.62, boltX = 0.5, boltY 
       if (visible && !reduce) raf = requestAnimationFrame(loop)
     }
     document.addEventListener('visibilitychange', onVis)
-    // Reduced motion: one still frame of the finished bolt, redrawn on scroll.
     const onScroll = () => reduce && draw(performance.now())
     if (reduce) {
       draw(performance.now())

@@ -14,7 +14,6 @@ export function decodeText(data: Uint8Array): string {
 
 const NUMBER = /^-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?$/
 
-// Zip codes, phone numbers and padded values are identifiers, not numbers: typing them loses characters.
 function typeCell(value: string): Cell {
   if (value === '') return null
   if (/^-?0\d/.test(value) || value.startsWith('+') || value !== value.trim()) return value
@@ -52,7 +51,6 @@ export async function readWorkbook(data: Uint8Array, o: DocumentOptions = {}): P
 
   const rows: Rows = []
   sheet.eachRow({ includeEmpty: false }, (row) => {
-    // exceljs pads index 0 so column A lands at [1].
     rows.push((row.values as unknown[]).slice(1).map(toCell))
   })
   return rows
@@ -62,7 +60,6 @@ export function toCell(value: unknown): Cell {
   if (value === null || value === undefined) return null
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value
   if (value instanceof Date) return value.toISOString().slice(0, 10)
-  // Formula, hyperlink and rich-text cells arrive as objects; only the rendered value fits a row.
   if (typeof value === 'object') {
     const v = value as { result?: unknown; text?: unknown; richText?: Array<{ text?: string }> }
     if (v.result !== undefined) return toCell(v.result)
@@ -99,10 +96,8 @@ export function readJsonRows(data: Uint8Array): Rows {
 
 export const SCANNED_PDF_MESSAGE = 'This PDF has no selectable text. It is probably a scan, which needs text recognition (OCR) rather than conversion.'
 
-/** Text of every page. Progress runs 0 to 100 across the pages. */
 export async function readPdfText(data: Uint8Array, onProgress?: (pct: number) => void, signal?: AbortSignal): Promise<string> {
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
-  // pdf.js detaches the buffer it is given, so hand it a copy the caller will not reuse.
   const task = pdfjs.getDocument({ data: new Uint8Array(data), useSystemFonts: true, verbosity: 0 })
   const doc = await task.promise.catch(() => {
     throw new Error('This PDF could not be opened. It may be damaged or password protected.')

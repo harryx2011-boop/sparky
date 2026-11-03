@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import { useApp } from '@/lib/state'
 
-/** "Download this?" chip offered when a video link is on the clipboard. */
 export function ClipboardChip() {
   const { go, setPendingLink } = useApp()
   const [url, setUrl] = useState<string | null>(null)

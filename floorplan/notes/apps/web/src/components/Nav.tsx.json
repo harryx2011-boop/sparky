@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/Nav.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Nav",
+      "line": 10,
+      "offset": 0,
+      "text": "`home` prefixes the section links when the header sits on another page; `cta` is where the download button goes.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Nav",
+      "line": 15,
+      "offset": 5,
+      "text": "Transparent over the galaxy, solid once you scroll; hides going down, returns going up.",
+      "kind": "what"
+    }
+  ]
+}

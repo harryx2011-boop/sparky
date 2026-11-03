@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/pages/ConvertPage.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Group.options",
+      "line": 50,
+      "offset": 0,
+      "text": "Formats every file in the group can become.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Group.hiddenNote",
+      "line": 51,
+      "offset": 0,
+      "text": "One plain line naming what this PC lacks for the formats hidden from `options`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "unavailable",
+      "line": 56,
+      "offset": 0,
+      "text": "Targets this PC can't make for any file in the group, keyed by what's missing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "useTargets",
+      "line": 88,
+      "offset": 0,
+      "text": "What each chosen file can become on this PC, asked once per new set of files.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "DropZone",
+      "line": 106,
+      "offset": 0,
+      "text": "The whole zone is one button: click, Enter or Space opens the file picker; dropping files adds them.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "DropZone",
+      "line": 126,
+      "offset": 20,
+      "text": "Drag-over is the lime state; hover only applies when nothing is being dragged, so it can never outrank it.",
+      "kind": "why"
+    }
+  ]
+}

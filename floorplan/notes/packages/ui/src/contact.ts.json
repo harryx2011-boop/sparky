@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/contact.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "CONTACT",
+      "line": 1,
+      "offset": 0,
+      "text": "Contact details shown in the app footer and on the site.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "CONTACT.installer",
+      "line": 6,
+      "offset": 0,
+      "text": "Stable link to the newest installer. The release workflow names the file Sparky-Setup.exe.",
+      "kind": "doc"
+    }
+  ]
+}

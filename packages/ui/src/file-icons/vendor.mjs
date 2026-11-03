@@ -1,12 +1,10 @@
 // Re-vendors the file-type SVGs from vscode-icons at a pinned commit: node packages/ui/src/file-icons/vendor.mjs
-// Writes svg/*.svg (what ships) and svgs.ts (the same markup as strings, so the unit needs no bundler loader).
 import { writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const PACK = { name: 'vscode-icons', version: '12.19.0', commit: 'd2fc92ede72121115e17daf4db40afef6b2c22e4' }
 
-/** Pack file name → the recorded edits (see LICENSE). An ink edit swaps a fill that vanishes on one theme for the text colour. */
 const ICONS = {
   default_file: [['#c5c5c5', 'currentColor']],
   default_folder: [],

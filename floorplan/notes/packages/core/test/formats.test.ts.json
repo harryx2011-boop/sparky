@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/test/formats.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 60,
+      "offset": null,
+      "text": "The document module takes the data formats and pdf to html; every pair that worked before keeps its engine.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 109,
+      "offset": null,
+      "text": "Word files keep their existing routes; LibreOffice only takes over their PDF when it is there.",
+      "kind": "what"
+    }
+  ]
+}

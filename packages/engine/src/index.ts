@@ -31,22 +31,16 @@ import { Store } from './store'
 import { detectGpu, locateTools, toolStatuses } from './tools'
 
 export interface EngineOptions {
-  /** Folders searched for bundled tools, most preferred first. */
   binDirs: string[]
-  /** Where the SQLite file lives. */
   dataDir: string
-  /** Scratch root; each process works in its own `<tempDir>/<pid>`. */
   tempDir: string
-  /** Default output root, e.g. Downloads\Sparky. */
   defaultRoot: string
   appVersion: string
   host: EngineHost
-  /** Skip the graphics card test (used by tests). */
   skipGpu?: boolean
 }
 
 export interface OpInfo extends OpDescriptor {
-  /** Everything the op itself requires is here. */
   available: boolean
   missing: Capability[]
 }
@@ -59,9 +53,7 @@ export interface TargetInfo {
 }
 
 export interface RunOpOptions {
-  /** Aborting cancels every job this call started. */
   signal?: AbortSignal
-  /** Stop waiting after this long and return the jobs as they are; they keep running. */
   timeoutMs?: number
 }
 
@@ -72,11 +64,8 @@ export interface EngineEvents {
 
 export interface Engine {
   listOps(): OpInfo[]
-  /** What each file can become, across every op that takes it. */
   targetsFor(paths: string[]): { path: string; targets: TargetInfo[] }[]
-  /** Validates, then queues one job per item for 'each' ops. Throws OpInputError before anything is queued. */
   startOp(op: string, args: unknown): Job[]
-  /** startOp, then waits until every job is done, failed, canceled or paused. */
   runOp(op: string, args: unknown, opts?: RunOpOptions): Promise<Job[]>
   getJob(id: string): Job | undefined
   listJobs(): Job[]
@@ -94,7 +83,6 @@ export interface Engine {
   startConvert(paths: string[], convert: ConvertSettings): Job[]
   startDownload(req: DownloadRequest): Job
   history(q: HistoryQuery): HistoryEntry[]
-  /** Runs a History entry again, re-validated. */
   rerun(id: string): Job[]
   removeHistory(id: string): void
   clearHistory(): void
@@ -114,7 +102,6 @@ export interface EnginePaths {
   binDirs: string[]
 }
 
-/** The same places the app uses, found without Electron, so a CLI shares its history, settings and tools. */
 export function defaultPaths(): EnginePaths {
   const home = os.homedir()
   const dataDir = path.join(process.env.APPDATA ?? path.join(home, 'AppData', 'Roaming'), 'Sparky')
@@ -123,7 +110,6 @@ export function defaultPaths(): EnginePaths {
     dataDir,
     tempDir: path.join(os.tmpdir(), 'Sparky'),
     defaultRoot: path.join(home, 'Downloads', 'Sparky'),
-    // yt-dlp's writable copy first, then the installed app's bundle.
     binDirs: [path.join(dataDir, 'bin'), path.join(programs, 'Sparky', 'resources', 'bin'), path.join(programs, 'sparky', 'resources', 'bin')],
   }
 }
@@ -137,7 +123,6 @@ function alive(pid: number): boolean {
   }
 }
 
-/** Clears what crashed or force-quit processes left behind, never a live process's folder. */
 function sweepTemp(root: string): void {
   for (const name of fs.readdirSync(root)) {
     const pid = /^\d+$/.test(name) ? Number(name) : undefined
@@ -145,7 +130,6 @@ function sweepTemp(root: string): void {
     try {
       fs.rmSync(path.join(root, name), { recursive: true, force: true })
     } catch {
-      /* a locked leftover waits for the next start; it must never stop this one */
     }
   }
 }
@@ -172,7 +156,6 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
   }
 
   const atOnce = (s: Settings) => batchConcurrency(s.performance, env.cores, s.batch)
-  // Secret fields (passwords) live only here, keyed by job id: never in the job, its snapshots or History.
   const secrets = new Map<string, Record<string, unknown>>()
   const queue = new JobQueue((job, ctx) => runOpJob(env, job, ctx, secrets.get(job.id)), atOnce(settings))
   queue.on('change', (jobs) => {
@@ -223,7 +206,6 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
       return parts.map((a) => {
         const id = randomUUID()
         const { kept, hidden } = splitSecrets(op, a)
-        // Set before add: the queue may start the job inside add().
         if (hidden) secrets.set(id, hidden)
         return queue.add({
           ...jobFields(op, kept, settings),
@@ -269,7 +251,6 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
     pauseAll: () => queue.pauseAll(),
     resumeAll: () => queue.resumeAll(),
     clearFinished: () => queue.clearFinished(),
-    // Node's typed emitter can't resolve its listener type for a generic event name.
     on: (event, listener) => void queue.on(event, listener as never),
     off: (event, listener) => void queue.off(event, listener as never),
 

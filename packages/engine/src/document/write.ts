@@ -134,10 +134,6 @@ const PAGE_SIZES: Record<NonNullable<DocumentOptions['pageSize']>, [number, numb
   legal: [612, 1008],
 }
 
-/**
- * Text to PDF, laid out by hand: pdf-lib draws strings at coordinates and has no text flow,
- * so wrapping, pagination and the baseline walk happen here. Standard Helvetica only.
- */
 export async function writePdf(text: string, o: DocumentOptions = {}): Promise<Uint8Array> {
   const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib')
   const doc = await PDFDocument.create()
@@ -149,13 +145,11 @@ export async function writePdf(text: string, o: DocumentOptions = {}): Promise<U
   const [pw, ph] = o.orientation === 'landscape' ? [base[1], base[0]] : base
   const maxWidth = pw - margin * 2
 
-  // pdf-lib throws on the first character WinAnsi cannot encode; swap those so one emoji cannot fail the file.
   const encodable = new Set(font.getCharacterSet())
   const safe = (s: string) => Array.from(s, (ch) => (encodable.has(ch.codePointAt(0)!) ? ch : '?')).join('')
   const width = (s: string) => font.widthOfTextAtSize(s, size)
   const estimate = Math.max(1, Math.floor(maxWidth / width('x')))
 
-  // Longest prefix that fits one line, found by search so a huge token never measures itself whole.
   const fitPrefix = (s: string): number => {
     let hi = Math.min(s.length, estimate * 2)
     while (hi < s.length && width(s.slice(0, hi)) <= maxWidth) hi = Math.min(s.length, hi * 2)

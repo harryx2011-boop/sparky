@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/media/gif.ts",
+  "description": "media.gif: a video as a GIF, through a palette made from the clip itself so colours don't band.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.fps",
+      "line": 16,
+      "offset": 0,
+      "text": "GIF frame timing is in hundredths of a second, and players slow anything faster than 50 a second right down.",
+      "kind": "what"
+    }
+  ]
+}

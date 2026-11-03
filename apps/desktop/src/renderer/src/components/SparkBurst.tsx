@@ -6,7 +6,6 @@ interface Burst {
   id: number
 }
 
-/** A short spark burst above the dock whenever a job finishes successfully. */
 export function SparkBurst() {
   const reduce = useReducedMotion()
   const [bursts, setBursts] = useState<Burst[]>([])

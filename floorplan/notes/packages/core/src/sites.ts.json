@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/sites.ts",
+  "description": "Sites Sparky recognises by name. One row per site; the UI keeps each one's mark under the same id.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SiteId",
+      "line": 3,
+      "offset": 0,
+      "text": "Any other link can still be pasted by hand.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "Site.hosts",
+      "line": 37,
+      "offset": 0,
+      "text": "Bare hosts; subdomains such as www., m. and music. match too.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "siteFor",
+      "line": 72,
+      "offset": 0,
+      "text": "The site a full http(s) link points at, if Sparky knows it by name.",
+      "kind": "doc"
+    }
+  ]
+}

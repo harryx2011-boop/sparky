@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import { resolve } from 'node:path'
 
-// @sparky/* workspace packages are TypeScript source, so they are bundled rather than externalized.
 const bundleWorkspace = externalizeDepsPlugin({ exclude: ['@sparky/core', '@sparky/engine', '@sparky/ui'] })
 
 export default defineConfig({

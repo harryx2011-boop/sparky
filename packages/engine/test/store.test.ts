@@ -55,14 +55,12 @@ describe('Store', () => {
     expect(s.loadSettings('/root').batch).toBe(true)
     legacy('junk')
     expect(s.loadSettings('/root').batch).toBe(true)
-    // A saved batch choice wins over the old number.
     legacy(1)
     s.saveSettings({ batch: true })
     expect(s.loadSettings('/root').batch).toBe(true)
     s.saveSettings({ batch: false })
     legacy(8)
     expect(s.loadSettings('/root').batch).toBe(false)
-    // A saved theme is kept; only the default moved to dark.
     s.saveSettings({ theme: 'light' })
     expect(s.loadSettings('/root').theme).toBe('light')
     s.close()
@@ -85,7 +83,6 @@ describe('Store migrations', () => {
     expect(s.get('new')).toMatchObject({ op: 'pdf.merge', args: { files: ['a.pdf', 'b.pdf'] } })
     s.close()
 
-    // Opening again runs nothing twice.
     const again = new Store(file)
     expect(again.search().length).toBe(2)
     const download = { url: 'https://example.com/v', mode: 'audio', quality: null, convertTo: null, compression: 1, performance: 'low', extras: { thumbnail: false, subtitles: 'off', subtitleLangs: [], metadata: true, sponsorBlock: false } }
@@ -95,7 +92,6 @@ describe('Store migrations', () => {
     legacy.close()
     expect(again.get('dl')).toMatchObject({ op: 'download', args: { urls: [download.url], mode: 'audio', quality: 'best', compression: 1, metadata: true } })
     expect(again.get('dl')!.args).not.toHaveProperty('convertTo')
-    // A malformed old row still lists; it just has nothing to run again.
     expect(again.get('bad')).toMatchObject({ id: 'bad', op: 'convert' })
     expect(again.get('bad')!.args).toBeUndefined()
     again.close()

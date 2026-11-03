@@ -22,7 +22,6 @@ export type Route =
 
 const isHelp = (t: string | undefined) => t === '--help' || t === '-h'
 
-/** "from-images" and "from_images" name the same tool. */
 const norm = (w: string) => w.toLowerCase().replace(/-/g, '_')
 
 function findOp(ops: readonly OpDescriptor[], words: string[]): OpDescriptor | undefined {
@@ -30,7 +29,6 @@ function findOp(ops: readonly OpDescriptor[], words: string[]): OpDescriptor | u
   return ops.find((o) => norm(o.id) === id)
 }
 
-/** argv (without node and the script) → what to run. Throws UsageError for a name that matches nothing. */
 export function route(argv: readonly string[], ops: readonly OpDescriptor[], commands: readonly Command[] = COMMANDS): Route {
   const [first, ...rest] = argv
   if (first === undefined || isHelp(first)) return { kind: 'text', text: mainHelp(ops, commands) }
@@ -40,7 +38,6 @@ export function route(argv: readonly string[], ops: readonly OpDescriptor[], com
   const command = commands.find((c) => c.name === first)
   if (command) return { kind: 'command', command, argv: rest }
 
-  // `sparky pdf.merge …` and `sparky convert …`
   const direct = findOp(ops, first.split('.'))
   if (direct) return { kind: 'op', op: direct, argv: rest }
 

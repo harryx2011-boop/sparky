@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/install-timeline.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Beat",
+      "line": 1,
+      "offset": 0,
+      "text": "The download page's install sequence: each beat is one state of getting Sparky, played once and held on the last.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FILL",
+      "line": 13,
+      "offset": 0,
+      "text": "How long each progress bar takes to fill, in seconds.",
+      "kind": "doc"
+    }
+  ]
+}

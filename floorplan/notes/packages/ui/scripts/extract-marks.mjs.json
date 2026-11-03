@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/scripts/extract-marks.mjs",
+  "description": "Writes OUT from the Iconify marks named in MARKS, so each surface paints offline and nothing is fetched at runtime.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Run after `npm i`; only the chosen marks are written, never the whole set.\n  id      'name' is @iconify-json/logos (multicolor); 'set:name' is fetched once from api.iconify.design\n  mono    a brand that is one ink colour by design: every fill becomes currentColor\n  ink     a multicolor brand with black parts (TikTok): only the black becomes currentColor, hues stay as drawn",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": "scope",
+      "line": 38,
+      "offset": 0,
+      "text": "Gradient and clip ids repeat across marks (a, b, SVGID_1); prefix them so two marks on one page cannot collide.",
+      "kind": "what"
+    }
+  ]
+}

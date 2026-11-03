@@ -8,7 +8,6 @@ import { editPdf, eachFile, pagesField, pdfFilesField, pdfOp } from './common'
 
 const extractInput = z.object({
   files: pdfFilesField,
-  /** The pages to keep, in the order written, so "3,1,2" also reorders them. */
   pages: pagesField.min(1).meta(PDF_TEXT.fields.extractPages),
 })
 

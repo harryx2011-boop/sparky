@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/links.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "HOME",
+      "line": 1,
+      "offset": 0,
+      "text": "Where the site's pages live, under the base the site is served from.",
+      "kind": "doc"
+    }
+  ]
+}

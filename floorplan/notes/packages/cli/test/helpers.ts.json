@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/test/helpers.ts",
+  "description": "Runs the built CLI the way a user does: node dist/sparky.js, with its own data folder.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "childEnv",
+      "line": 17,
+      "offset": 0,
+      "text": "The environment for a child CLI: its own data folder, the test tools, never the user's app on 8600.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/deliver.ts",
+  "description": "Every pdf op's output path: write to the plan's hidden temporary name, then claim the final name and move it there.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "deliver",
+      "line": 9,
+      "offset": 0,
+      "text": "Runs `write` against a temporary path and returns where the finished file or folder ended up.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "baseName",
+      "line": 30,
+      "offset": 0,
+      "text": "The source's name without its extension, for the files a folder output holds.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "breathe",
+      "line": 42,
+      "offset": 0,
+      "text": "Lets timers and I/O run between pages, so a cancel sent from outside gets through a long, mostly synchronous job.",
+      "kind": "doc"
+    }
+  ]
+}

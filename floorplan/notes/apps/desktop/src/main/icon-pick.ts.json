@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/main/icon-pick.ts",
+  "description": "The Electron-free half of the file-icon lookup, so it can be unit-tested.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "NONSENSE_EXT",
+      "line": 5,
+      "offset": 0,
+      "text": "No program claims this, so its icon is the one Windows shows for \"unknown type\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "IconShot",
+      "line": 7,
+      "offset": 0,
+      "text": "What Windows gave for one extension; null when asking it failed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "IconDecision",
+      "line": 9,
+      "offset": 0,
+      "text": "`retry` answers null now but must not be cached, so the next ask tries again.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "iconExt",
+      "line": 11,
+      "offset": 0,
+      "text": "The extension to probe, lower case without the dot, or null when it is not safe to put in a file name.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "decideIcon",
+      "line": 21,
+      "offset": 0,
+      "text": "`genericHash` is the hash of the unknown-type icon, or null when that baseline could not be read.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "decideIcon",
+      "line": 24,
+      "offset": 3,
+      "text": "Without a baseline an unassociated type would pass as real.",
+      "kind": "what"
+    }
+  ]
+}

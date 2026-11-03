@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Hero.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Hero",
+      "line": 16,
+      "offset": 4,
+      "text": "Wide screens put the words on the left and the bolt on the right; small ones stack the bolt above.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "Hero",
+      "line": 18,
+      "offset": 6,
+      "text": "How far the intro has scrolled away: 0 = bolt, 1 = scattered.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "Hero",
+      "line": 32,
+      "offset": 20,
+      "text": "Calm ground under the headline: the page grid fades out of the text column.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "Hero",
+      "line": 36,
+      "offset": 24,
+      "text": "The field is masked out of the text column, so no dot ever sits behind a letter.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "Hero",
+      "line": 113,
+      "offset": 101,
+      "text": "inert: nothing inside a mock takes focus or clicks. The real controls are in the Convert section below.",
+      "kind": "what"
+    }
+  ]
+}

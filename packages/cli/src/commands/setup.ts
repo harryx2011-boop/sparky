@@ -6,7 +6,6 @@ import { cliPaths } from '../env'
 import { CliError, EXIT, messageOf, UsageError } from '../errors'
 import type { Command, Io } from './types'
 
-/** 7zip-bin's 7za, loaded through require() like the other externals so it resolves beside the bundle or on NODE_PATH. */
 async function path7za(): Promise<string | undefined> {
   try {
     return (await import('7zip-bin')).path7za
@@ -15,7 +14,6 @@ async function path7za(): Promise<string | undefined> {
   }
 }
 
-/** The first tool folder other than `binDir` that already has everything: the installed app's resources\bin. */
 function bundledDir(binDir: string): string | undefined {
   const own = path.resolve(binDir).toLowerCase()
   return cliPaths().binDirs.find((d) => path.resolve(d).toLowerCase() !== own && hasAllTools(d))

@@ -14,12 +14,9 @@ export interface RunOptions {
   env?: NodeJS.ProcessEnv
   signal?: AbortSignal
   lowPriority?: boolean
-  /** Raw stdout chunks. */
   onStdout?: (chunk: string) => void
-  /** Complete stdout lines (split on \n or \r). */
   onStdoutLine?: (line: string) => void
   onStderrLine?: (line: string) => void
-  /** Keep at most this many characters of stderr for error messages. */
   stderrLimit?: number
   timeoutMs?: number
 }
@@ -30,7 +27,6 @@ export interface RunResult {
   stderr: string
 }
 
-/** Kills a process and everything it started (yt-dlp.exe spawns a child on Windows). */
 export function killTree(pid: number | undefined): void {
   if (!pid) return
   if (process.platform === 'win32') {
@@ -39,7 +35,6 @@ export function killTree(pid: number | undefined): void {
     try {
       process.kill(pid, 'SIGKILL')
     } catch {
-      /* already gone */
     }
   }
 }
@@ -60,7 +55,6 @@ function lineSplitter(onLine: (line: string) => void) {
   }
 }
 
-/** Runs a tool and resolves with its output. Rejects with CanceledError when the signal fires. */
 export function run(command: string, args: string[], opts: RunOptions = {}): Promise<RunResult> {
   return new Promise((resolve, reject) => {
     if (opts.signal?.aborted) {
@@ -77,7 +71,6 @@ export function run(command: string, args: string[], opts: RunOptions = {}): Pro
       try {
         os.setPriority(child.pid, os.constants.priority.PRIORITY_BELOW_NORMAL)
       } catch {
-        /* not fatal */
       }
     }
 
@@ -127,7 +120,6 @@ export function run(command: string, args: string[], opts: RunOptions = {}): Pro
   })
 }
 
-/** Throws unless the process exited cleanly. */
 export async function runOk(command: string, args: string[], opts: RunOptions & { explain?: (stderr: string) => string } = {}): Promise<RunResult> {
   const res = await run(command, args, opts)
   if (res.code !== 0) {

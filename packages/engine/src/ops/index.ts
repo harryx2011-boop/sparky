@@ -19,17 +19,14 @@ export function opById(id: string): Op | undefined {
   return ALL.find((op) => op.id === id)
 }
 
-/** Every op, as the registry declares it. */
 export function allOps(): readonly Op[] {
   return ALL
 }
 
-/** Input names the surfaces keep for themselves; no op may declare one. */
 export const RESERVED_INPUTS = ['out', 'wait', 'json', 'help'] as const
 
 const full = new WeakMap<Op, z.ZodObject>()
 
-/** The op's input plus `out`, which the engine adds to every op: a file or a folder that wins over the output root. */
 export function fullInput(op: Op): z.ZodObject {
   let s = full.get(op)
   if (!s) full.set(op, (s = op.input.extend({ out: z.string().min(1).optional() })))
@@ -38,7 +35,6 @@ export function fullInput(op: Op): z.ZodObject {
 
 const MAX = Number.MAX_SAFE_INTEGER
 
-/** `.int()` writes ±MAX_SAFE_INTEGER bounds that mean nothing to a caller. */
 function dropSafeIntBounds(v: unknown): unknown {
   if (Array.isArray(v)) return v.map(dropSafeIntBounds)
   if (!v || typeof v !== 'object') return v
@@ -51,7 +47,6 @@ function dropSafeIntBounds(v: unknown): unknown {
 
 const schemas = new WeakMap<Op, Record<string, unknown>>()
 
-/** JSON Schema of what a caller sends (`io: 'input'`), for the MCP tool list, the HTTP API and the CLI. */
 export function inputSchema(op: Op): Record<string, unknown> {
   let js = schemas.get(op)
   if (!js) {
@@ -62,7 +57,6 @@ export function inputSchema(op: Op): Record<string, unknown> {
   return js
 }
 
-/** Every extension core knows how to read. */
 function knownInputs(): readonly string[] {
   return INPUT_EXTS
 }
@@ -76,9 +70,7 @@ export interface OpDescriptor {
   arity: Op['arity']
   positional: string[]
   requires: ToolId[]
-  /** Fields to render as password inputs and never store. */
   secret: string[]
-  /** The extensions this op takes, from core's known inputs. */
   accepts: string[]
   inputSchema: Record<string, unknown>
 }

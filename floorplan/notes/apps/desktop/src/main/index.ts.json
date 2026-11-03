@@ -1,0 +1,143 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/main/index.ts",
+  "description": "Electron main process: window, tray, notifications, clipboard and IPC.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "userBin",
+      "line": 16,
+      "offset": 0,
+      "text": "yt-dlp updates itself, so it runs from a writable copy in the user's profile.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "api",
+      "line": 21,
+      "offset": 0,
+      "text": "The local HTTP API agents use; null when it could not bind (another Sparky or program holds the port).",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "liveNotifications",
+      "line": 27,
+      "offset": 0,
+      "text": "Windows can drop a notification's click handler if nothing holds on to it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "primary",
+      "line": 29,
+      "offset": 0,
+      "text": "A second copy only hands focus to the first one, then leaves straight away.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "ensureWritableYtDlp",
+      "line": 39,
+      "offset": 6,
+      "text": "Copy on first run, and again when a newer Sparky ships a newer yt-dlp.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "showWindow",
+      "line": 52,
+      "offset": 1,
+      "text": "Launched again while still starting up: the window appears when startup finishes.",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "createWindow",
+      "line": 72,
+      "offset": 8,
+      "text": "Matches the saved theme (dark by default) so the first frame is never a white flash.",
+      "kind": "why"
+    },
+    {
+      "id": "n8",
+      "symbol": "createWindow",
+      "line": 87,
+      "offset": 23,
+      "text": "Let Windows sign out or shut down instead of hiding to the tray.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "createWindow",
+      "line": 99,
+      "offset": 35,
+      "text": "Links open in the browser, never inside the app.",
+      "kind": "why"
+    },
+    {
+      "id": "n10",
+      "symbol": "notifyFinished",
+      "line": 153,
+      "offset": 3,
+      "text": "A single finished download opens its folder right away, notifications aside.",
+      "kind": "what"
+    },
+    {
+      "id": "n11",
+      "symbol": "notifyFinished",
+      "line": 158,
+      "offset": 8,
+      "text": "When the window is in front, the in-app toast is enough.",
+      "kind": "what"
+    },
+    {
+      "id": "n12",
+      "symbol": "refusable",
+      "line": 190,
+      "offset": 0,
+      "text": "Input the engine refuses comes back as data, so the UI shows its plain message instead of Electron's \"Error invoking remote method\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "registerIpc",
+      "line": 288,
+      "offset": 89,
+      "text": "The token never crosses IPC or the clipboard (Windows keeps clipboard history and may sync it): the renderer can only show the file.",
+      "kind": "why"
+    },
+    {
+      "id": "n14",
+      "symbol": "startApi",
+      "line": 308,
+      "offset": 3,
+      "text": "Quit began while it was binding.",
+      "kind": "what"
+    },
+    {
+      "id": "n15",
+      "symbol": "startApi",
+      "line": 311,
+      "offset": 6,
+      "text": "The app works without it; agents fall back to running the engine themselves.",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": null,
+      "line": 321,
+      "offset": null,
+      "text": "Give running jobs a moment to stop and remove their half-written files.",
+      "kind": "what"
+    },
+    {
+      "id": "n17",
+      "symbol": null,
+      "line": 361,
+      "offset": null,
+      "text": "App updates come from GitHub Releases; yt-dlp keeps itself current separately.",
+      "kind": "what"
+    }
+  ]
+}

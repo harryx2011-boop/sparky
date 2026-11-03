@@ -29,7 +29,6 @@ export function DownloadPage() {
       <Nav home={HOME} cta={CONTACT.installer} />
       <main id="main">
         <section className="relative px-4 pb-20 pt-28 sm:px-6 lg:pb-28 lg:pt-40">
-          {/* Calm ground under the copy: the page grid fades out of the text column. */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,var(--background)_0%,var(--background)_40%,transparent_70%)] lg:bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_40%,transparent_60%)]"

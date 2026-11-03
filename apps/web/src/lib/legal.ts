@@ -15,7 +15,6 @@ const PRIVACY_AND_DATA = DOCS.find((d) => d.slug === 'privacy-and-data')
 
 if (!PRIVACY_AND_DATA) throw new Error('docs.ts has no privacy-and-data page for the privacy policy to reuse')
 
-/** The app's privacy text is the docs page, not a copy: this policy renders its sections as they are. */
 export const privacy: LegalDoc = {
   slug: 'privacy',
   title: 'Privacy Policy',

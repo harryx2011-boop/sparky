@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/display.ts",
+  "description": "Small helpers for showing sizes, times and savings.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "formatDuration",
+      "line": 21,
+      "offset": 0,
+      "text": "3725 → \"1:02:05\", 42 → \"0:42\"",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "savedPercent",
+      "line": 36,
+      "offset": 0,
+      "text": "Percent saved, e.g. 318 MB → 96 MB gives 70. Negative when the file grew.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "parseTime",
+      "line": 50,
+      "offset": 0,
+      "text": "Parses \"1:30\", \"90\", \"01:02:03\" or \"1m30s\" into seconds.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "outputName",
+      "line": 62,
+      "offset": 0,
+      "text": "\"clip.mov\" + \"mp4\" → \"clip.mp4\"; adds \" (2)\" etc. when the name is taken.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -12,7 +12,6 @@ const io: Io = { out: (t) => void lines.push(t), err: (t) => void lines.push(t) 
 const env = {}
 const read = (...p: string[]) => fs.readFileSync(path.join(home, ...p), 'utf8')
 
-/** An existing config with another server in it, per client. */
 const SEED: Record<string, [string[], string]> = {
   'claude-code': [['.claude.json'], '﻿{\n  "numStartups": 3,\n  "mcpServers": {\n    "helix": {\n      "type": "http",\n      "url": "http://localhost:3001/mcp"\n    }\n  }\n}\n'],
   cursor: [['.cursor', 'mcp.json'], '{\n  "mcpServers": {\n    "other": {\n      "command": "other"\n    }\n  }\n}\n'],

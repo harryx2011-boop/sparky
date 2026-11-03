@@ -6,7 +6,6 @@ export const OCR_TEXT = {
     label: 'Read the text in an image or PDF',
     done: 'Text read',
     title: (file: string, output: 'txt' | 'pdf' | 'both') => `Read text in ${fileName(file)} → ${output === 'both' ? 'TXT and PDF' : output.toUpperCase()}`,
-    /** A field's label (`title`) and help text (`description`) on the Tools page, the CLI help and the MCP schema. */
     fields: {
       files: { title: 'Pictures or PDFs', description: 'The pictures or PDFs to read. Each one gets its own text file or PDF; a PDF is read page by page.' },
       output: {
@@ -24,7 +23,6 @@ export const OCR_TEXT = {
         description: 'The language of the text, as a code such as eng, fra, deu or chi_sim. Join several with +, such as eng+fra. English is built in; others download once.',
       },
     },
-    /** Added to a PDF's name when the searchable copy is saved, so it never looks like the original. */
     searchableSuffix: ' (searchable)',
   },
   gone: 'The file is gone. It may have been moved or deleted.',

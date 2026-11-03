@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/ResolutionPicker.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "ResolutionPickerProps.value",
+      "line": 7,
+      "offset": 0,
+      "text": "null means \"same as the source\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "ResolutionPickerProps.allowOriginal",
+      "line": 9,
+      "offset": 0,
+      "text": "Adds an \"Original\" choice that keeps the source size.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ResolutionPicker",
+      "line": 15,
+      "offset": 0,
+      "text": "720p · 1080p · 1440p · 4K. Locked options explain why in a tooltip.",
+      "kind": "doc"
+    }
+  ]
+}

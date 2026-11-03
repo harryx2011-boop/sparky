@@ -11,7 +11,6 @@ export async function readBytes(file: string): Promise<Uint8Array> {
   }
 }
 
-/** A pdf-lib parse failure as a sentence: password protected, or damaged. */
 export function explainPdfError(e: unknown): Error {
   const err = e as Error
   if (err?.name === 'EncryptedPDFError' || /encrypt|password/i.test(err?.message ?? '')) return new Error(PDF_TEXT.encrypted)

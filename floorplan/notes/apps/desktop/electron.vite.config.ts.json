@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/electron.vite.config.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "bundleWorkspace",
+      "line": 6,
+      "offset": 0,
+      "text": "@sparky/* workspace packages are TypeScript source, so they are bundled rather than externalized.",
+      "kind": "what"
+    }
+  ]
+}

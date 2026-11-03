@@ -47,15 +47,12 @@ const DEFAULT_OUTPUT: Record<Category, string[]> = {
 interface Group {
   category: Category
   files: ProbeResult[]
-  /** Formats every file in the group can become. */
   options: string[]
-  /** One plain line naming what this PC lacks for the formats hidden from `options`. */
   hiddenNote?: string
 }
 
 type Targets = Map<string, TargetSummary[]>
 
-/** Targets this PC can't make for any file in the group, keyed by what's missing. */
 function unavailable(exts: string[], fs: ProbeResult[], targets: Targets): Map<string, { exts: string[]; missing: string[] }> {
   const byMissing = new Map<string, { exts: string[]; missing: string[] }>()
   for (const ext of exts) {
@@ -88,7 +85,6 @@ function useGroups(files: ProbeResult[], targets: Targets): Group[] {
   }, [files, targets])
 }
 
-/** What each chosen file can become on this PC, asked once per new set of files. */
 function useTargets(files: ProbeResult[]): Targets {
   const [targets, setTargets] = useState<Targets>(new Map())
   const key = files.map((f) => f.path).join('\n')
@@ -107,7 +103,6 @@ function useTargets(files: ProbeResult[]): Targets {
   return targets
 }
 
-/** The whole zone is one button: click, Enter or Space opens the file picker; dropping files adds them. */
 function DropZone({ onFiles, compact }: { onFiles: (paths: string[]) => void; compact: boolean }) {
   const [over, setOver] = useState(false)
   return (
@@ -128,7 +123,6 @@ function DropZone({ onFiles, compact }: { onFiles: (paths: string[]) => void; co
       className={cn(
         'group flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed text-[13px] text-subtle-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         compact ? 'h-[72px] shrink-0' : 'min-h-[220px] grow',
-        // Drag-over is the lime state; hover only applies when nothing is being dragged, so it can never outrank it.
         over ? 'border-lime bg-lime/8 text-foreground' : 'border-input hover:border-muted-foreground hover:bg-accent/40 hover:text-foreground',
       )}
     >

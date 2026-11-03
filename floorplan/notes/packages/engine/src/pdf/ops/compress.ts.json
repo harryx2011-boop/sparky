@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/compress.ts",
+  "description": "pdf.compress: rewrites the PDF through Ghostscript at a compression level. A result no smaller than the original is dropped.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.compression",
+      "line": 13,
+      "offset": 0,
+      "text": "0 (lossless) to 4 (tiny); the compression setting when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "compressOp.run",
+      "line": 35,
+      "offset": 15,
+      "text": "Nothing asked for a particular place: point at the original instead of saving a copy that isn't smaller.",
+      "kind": "what"
+    }
+  ]
+}

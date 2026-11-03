@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/protect.ts",
+  "description": "pdf.protect: a copy of the PDF that asks for a password, limits printing and copying, or both. Needs Ghostscript.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.userPassword",
+      "line": 11,
+      "offset": 0,
+      "text": "Asked for when the PDF is opened.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.ownerPassword",
+      "line": 12,
+      "offset": 0,
+      "text": "Lifts the print and copy limits. A random one is set when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "input.allowPrint",
+      "line": 13,
+      "offset": 0,
+      "text": "true when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "input.allowCopy",
+      "line": 14,
+      "offset": 0,
+      "text": "true when left out.",
+      "kind": "doc"
+    }
+  ]
+}

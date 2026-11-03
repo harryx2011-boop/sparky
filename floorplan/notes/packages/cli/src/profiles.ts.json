@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/profiles.ts",
+  "description": "Which ops `sparky mcp` offers an agent. Every tool's schema costs the agent context, so the default is the core set.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PROFILES",
+      "line": 7,
+      "offset": 0,
+      "text": "A profile is a list of op ids; null keeps every op. A new profile is one row.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "profileFrom",
+      "line": 11,
+      "offset": 0,
+      "text": "`--tools` wins over SPARKY_MCP_TOOLS, which wins over the default.",
+      "kind": "doc"
+    }
+  ]
+}

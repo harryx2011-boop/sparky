@@ -2,7 +2,6 @@ import { FileText, Image, Video, Wrench, type LucideIcon } from '../components/i
 import { Heading, Lead, Reveal } from '../components/ui'
 import ops from '../data/ops.json'
 
-// ops.json comes from the real registry (scripts/gen-site-ops.mjs). A category missing here lands in "More".
 const GROUPS: { category: string; label: string; icon: LucideIcon }[] = [
   { category: 'pdf', label: 'PDF', icon: FileText },
   { category: 'video', label: 'Video and audio', icon: Video },

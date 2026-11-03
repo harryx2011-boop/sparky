@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/pdf/helpers.ts",
+  "description": "Shared setup for the pdf op tests: an engine in a temp folder and PDFs and pictures made on the spot.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 13,
+      "offset": null,
+      "text": "libvips keeps files it has read open in its cache, which stops Windows deleting the temp folder.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "makePdf",
+      "line": 48,
+      "offset": 0,
+      "text": "A PDF whose page n is (100 + 10n) by (200 + 10n) points and says \"Page n\".",
+      "kind": "doc"
+    }
+  ]
+}

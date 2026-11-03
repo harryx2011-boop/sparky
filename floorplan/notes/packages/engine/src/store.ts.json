@@ -1,0 +1,87 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/store.ts",
+  "description": "History and settings, kept in one SQLite file.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "MIGRATIONS",
+      "line": 23,
+      "offset": 0,
+      "text": "Schema changes in order; PRAGMA user_version counts how many have run. Append only.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Store.constructor",
+      "line": 34,
+      "offset": 2,
+      "text": "The app and the CLI can share this file.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "Store.migrate",
+      "line": 60,
+      "offset": 3,
+      "text": "IMMEDIATE takes the write lock before reading the version, so two processes never run the same step twice.",
+      "kind": "why"
+    },
+    {
+      "id": "n4",
+      "symbol": "Store.record",
+      "line": 73,
+      "offset": 0,
+      "text": "---------- History ----------",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "Store.loadSettings",
+      "line": 134,
+      "offset": 0,
+      "text": "---------- Settings ----------",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "Store.loadSettings",
+      "line": 142,
+      "offset": 8,
+      "text": "ignore a corrupt value and fall back to the default",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "Store.loadSettings",
+      "line": 144,
+      "offset": 10,
+      "text": "Older versions stored a \"jobs at once\" number; one meant \"one at a time\", anything more meant batch.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": "toEntry",
+      "line": 174,
+      "offset": 17,
+      "text": "Rows from before ops kept only their convert or download block; the op rebuilds its input from that.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "toEntry",
+      "line": 177,
+      "offset": 20,
+      "text": "a malformed row still lists; it just can't be run again",
+      "kind": "what"
+    },
+    {
+      "id": "n10",
+      "symbol": "sanitize",
+      "line": 181,
+      "offset": 0,
+      "text": "Keeps settings within their allowed ranges even if the file was edited by hand.",
+      "kind": "doc"
+    }
+  ]
+}

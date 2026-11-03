@@ -1,0 +1,87 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/mcp.ts",
+  "description": "`sparky mcp`: the MCP server over stdio. One tool per op in the registry, plus list, job and cancel tools.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "stdout belongs to the transport; everything else goes to stderr.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "toolInputSchema",
+      "line": 24,
+      "offset": 0,
+      "text": "The op's input schema for an agent: labels folded into descriptions, `out` described, `wait` added.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "toolDescription",
+      "line": 40,
+      "offset": 0,
+      "text": "What an agent reads to pick the tool: what it does, what it takes, what it needs, what it returns.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "mcpTools",
+      "line": 101,
+      "offset": 0,
+      "text": "Every tool the server lists: the registry's ops, then the fixed helpers.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "mcpTools",
+      "line": 112,
+      "offset": 11,
+      "text": "Only an op that can replace or bin the originals changes anything but new files.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": null,
+      "line": 123,
+      "offset": null,
+      "text": "── Calls ───────────────────────────────────────────────────────────────────────────────────────",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "scrub",
+      "line": 123,
+      "offset": 0,
+      "text": "Replaces each secret value in text sent back, so a password never leaves through an error message.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "McpRouter",
+      "line": 142,
+      "offset": 0,
+      "text": "Picks the app when it is open (jobs show in its Queue), else a local engine made once and kept. Remembers where each job went.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "runMcpServer",
+      "line": 263,
+      "offset": 0,
+      "text": "Runs until stdin closes. `tools` is a profile name (profiles.ts); left out, SPARKY_MCP_TOOLS or core.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "runMcpServer",
+      "line": 264,
+      "offset": 1,
+      "text": "A stray console.log would corrupt the protocol stream.",
+      "kind": "what"
+    }
+  ]
+}

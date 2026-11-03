@@ -1,0 +1,151 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ytdlp.ts",
+  "description": "Builds yt-dlp command lines, reads link previews and progress.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FILE_ENDINGS",
+      "line": 7,
+      "offset": 0,
+      "text": "Endings that make a bare \"name.ext\" a file, not a site.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "plausibleHost",
+      "line": 13,
+      "offset": 0,
+      "text": "\"youtu.be/x\" looks like a site; \"clip.mp4\" and \"3.14.mp4\" do not.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "asLink",
+      "line": 21,
+      "offset": 0,
+      "text": "Returns a clean URL when the text is a single web link, otherwise undefined. \"youtu.be/x\" counts too.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "asLink",
+      "line": 24,
+      "offset": 3,
+      "text": "People paste links without the https:// part all the time.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "isKnownMediaLink",
+      "line": 38,
+      "offset": 0,
+      "text": "True for links from sites we know the downloader handles well. Used for the clipboard chip.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "inspectArgs",
+      "line": 47,
+      "offset": 4,
+      "text": "Windows pipes default to the ANSI code page, which drops non-Latin titles.",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "parseLinkInfo",
+      "line": 84,
+      "offset": 0,
+      "text": "Turns `yt-dlp -J --flat-playlist` output into the preview card data.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "YtDlpContext.jsRuntime",
+      "line": 144,
+      "offset": 0,
+      "text": "e.g. \"deno:C:\\\\...\\\\deno.exe\"",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "YtDlpPlan.convertAfter",
+      "line": 149,
+      "offset": 0,
+      "text": "Set when Sparky should convert the finished file itself as a second stage.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "planDownload",
+      "line": 152,
+      "offset": 0,
+      "text": "Whether yt-dlp can finish the job alone (audio extraction) or Sparky converts afterwards.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "planDownload",
+      "line": 174,
+      "offset": 22,
+      "text": "Playlist items go in a folder named after the playlist; single videos stay flat.",
+      "kind": "what"
+    },
+    {
+      "id": "n12",
+      "symbol": "planDownload",
+      "line": 189,
+      "offset": 37,
+      "text": "Converting to MP4 still runs a second pass, which applies the Compression level.",
+      "kind": "what"
+    },
+    {
+      "id": "n13",
+      "symbol": "DownloadProgress.speed",
+      "line": 209,
+      "offset": 0,
+      "text": "Bytes per second.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "DownloadProgress.item",
+      "line": 211,
+      "offset": 0,
+      "text": "1-based count of the item being downloaded in this run.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "postprocessLabel",
+      "line": 243,
+      "offset": 0,
+      "text": "Friendly names for yt-dlp's post-processing steps.",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "explainYtDlpError",
+      "line": 258,
+      "offset": 0,
+      "text": "Turns yt-dlp's stderr into a short message and says whether an update might fix it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "explainYtDlpError",
+      "line": 265,
+      "offset": 7,
+      "text": "Whole words only: \"webpage\" and \"API page\" must not read as an age check.",
+      "kind": "why"
+    },
+    {
+      "id": "n18",
+      "symbol": "isDownloadTarget",
+      "line": 282,
+      "offset": 0,
+      "text": "Whether the output format is something Sparky can convert a finished download into.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/SiteStrip.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "ITEMS",
+      "line": 4,
+      "offset": 0,
+      "text": "Every supported site that has a real mark, in registry order.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "DURATION",
+      "line": 6,
+      "offset": 0,
+      "text": "Same pace as Persona's strip (40 s for 14 names), whatever the list length.",
+      "kind": "doc"
+    }
+  ]
+}

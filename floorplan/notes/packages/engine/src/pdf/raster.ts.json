@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/raster.ts",
+  "description": "Draws PDF pages to PNG with pdf.js and @napi-rs/canvas. Shared by pdf.to_images and OCR.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RenderOptions.dpi",
+      "line": 10,
+      "offset": 0,
+      "text": "Dots per inch; 72 draws a page at its size in points.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "RenderOptions.pages",
+      "line": 11,
+      "offset": 0,
+      "text": "A page list such as \"1-3,5\", or the page numbers themselves (1-based). All pages when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "RenderedPage.page",
+      "line": 15,
+      "offset": 0,
+      "text": "1-based page number in the document.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "RenderedPage.total",
+      "line": 16,
+      "offset": 0,
+      "text": "Pages in the document.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "RenderedPage.index",
+      "line": 17,
+      "offset": 0,
+      "text": "Position of this page among the ones asked for, from 0.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "RenderedPage.count",
+      "line": 18,
+      "offset": 0,
+      "text": "How many pages were asked for.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "pdfjsAssets",
+      "line": 26,
+      "offset": 0,
+      "text": "pdf.js reads its fonts, character maps and decoders from disk in Node; it wants forward slashes and a trailing one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "renderPdfPages",
+      "line": 42,
+      "offset": 7,
+      "text": "Loaded here, not at the top: a native module that fails to load must only fail this job, never the registry.",
+      "kind": "why"
+    }
+  ]
+}

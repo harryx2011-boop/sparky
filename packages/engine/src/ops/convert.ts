@@ -22,7 +22,6 @@ const F = CONVERT_TEXT.fields
 
 const input = z.object({
   files: z.array(z.string().min(1)).min(1).meta(F.files),
-  /** Target extension; the input's own extension means "just make it smaller". */
   output: z.string().min(1).meta(F.output),
   compression: compressionField.optional().meta(F.compression),
   resolution: z.union([z.literal('source'), ...heights]).optional().meta(F.resolution),
@@ -41,13 +40,11 @@ const input = z.object({
 
 export type ConvertArgs = z.infer<typeof input>
 
-/** The app's ConvertSettings as this op's flat input. */
 export function convertArgs(files: string[], s: ConvertSettings): ConvertArgs {
   const { advanced, resolution, ...rest } = s
   return { files, ...rest, resolution: resolution ?? 'source', ...defined(advanced) }
 }
 
-/** The flat input back as ConvertSettings; what the caller left out comes from Settings. */
 function toSettings(a: ConvertArgs, s: Settings): ConvertSettings {
   const { codec, videoKbps, audioKbps, imageQuality, trimStart, trimEnd, width, height, fps } = a
   const advanced: AdvancedOptions = defined({ codec, videoKbps, audioKbps, imageQuality, trimStart, trimEnd, width, height, fps })
@@ -76,7 +73,6 @@ const NEEDS: Record<Converter, Capability[]> = {
 function targetNeeds(from: string, to: string): Capability[] {
   const via = engineFor(from, to) ?? engineFor(from, to, { libreoffice: true })
   if (!via) return []
-  // Anything but HTML goes through Pandoc on its way to the printer.
   return via === 'pdf-print' && normalizeExt(from) !== 'html' ? ['pandoc', 'print'] : NEEDS[via]
 }
 
@@ -93,7 +89,6 @@ export const convertOp: Op<typeof input> = {
   input,
   accepts: (ext) => isSupportedInput(ext),
   targets: (ext) => outputsFor(ext).map((f) => ({ ext: f.ext, requires: targetNeeds(ext, f.ext) })),
-  // Only what the app lends is checked up front; a missing tool fails the job with the fix in plain words.
   needs(a) {
     const host = new Set<Capability>()
     if (a.originals === 'trash' || a.originals === 'replace') host.add('trash')

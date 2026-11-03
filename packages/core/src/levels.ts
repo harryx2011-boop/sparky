@@ -1,16 +1,12 @@
 // Performance, compression and resolution levels.
-// Labels and descriptions here are shown to people, so they stay in plain words.
 
 export type PerformanceLevel = 'low' | 'normal' | 'max'
 
 export interface PerformanceInfo {
   id: PerformanceLevel
   label: string
-  /** How many of the five bars light up. */
   bars: 1 | 3 | 5
-  /** One sentence on what the level means for the person, in plain words. */
   description: string
-  /** A few words for captions: what happens to the PC while it works. */
   outcome: string
 }
 
@@ -25,11 +21,8 @@ export function performanceInfo(level: PerformanceLevel): PerformanceInfo {
 }
 
 export interface PerformanceProfile {
-  /** Thread count passed to encoders; 0 means "let the tool decide". */
   threads: number
-  /** Use a hardware (graphics card) encoder when one is available. */
   useGpu: boolean
-  /** Lower the process priority so the PC stays responsive. */
   lowPriority: boolean
 }
 
@@ -44,15 +37,8 @@ export function performanceProfile(level: PerformanceLevel, cores: number): Perf
   }
 }
 
-/** Most jobs Sparky runs side by side, whatever the PC. */
 export const BATCH_MAX = 4
 
-/**
- * How many jobs run at the same time. Off means one at a time.
- * Low keeps the PC quiet, so one. Normal already gives each job half the processor, so two fill it.
- * Max takes everything, so about half the processor's threads, between two and four: extra jobs mostly
- * help when the graphics card does the heavy part or when downloads and documents sit beside a video.
- */
 export function batchConcurrency(level: PerformanceLevel, cores: number, batch: boolean): number {
   if (!batch || level === 'low') return 1
   if (level === 'normal') return 2
@@ -67,18 +53,12 @@ export const DEFAULT_COMPRESSION: CompressionLevel = 2
 export interface CompressionInfo {
   level: CompressionLevel
   label: string
-  /** Friendly hint shown under the slider. */
   hint: string
-  /** x264/x265-style quality number (lower is better). */
   crf: number
   audioKbps: number
-  /** 1–100 quality for lossy images. */
   imageQuality: number
-  /** 7-Zip -mx level for archives. */
   archiveLevel: 0 | 1 | 3 | 5 | 7 | 9
-  /** Ghostscript -dPDFSETTINGS preset, when PDFs can be shrunk. */
   pdfPreset: '/prepress' | '/printer' | '/ebook' | '/screen'
-  /** Caps the video to this fraction of its source size (Tiny only). */
   scaleCap?: number
 }
 
@@ -90,7 +70,6 @@ export const COMPRESSION_LEVELS: readonly CompressionInfo[] = [
   { level: 4, label: 'Tiny', hint: 'As small as it gets, half size video', crf: 32, audioKbps: 96, imageQuality: 55, archiveLevel: 9, pdfPreset: '/screen', scaleCap: 0.5 },
 ]
 
-/** Archives are always lossless, so the slider reads as speed vs. size instead. */
 export const ARCHIVE_COMPRESSION_LABELS = ['Fastest', 'Fast', 'Normal', 'Smaller', 'Smallest'] as const
 
 export function compressionInfo(level: number): CompressionInfo {
@@ -106,7 +85,6 @@ export function resolutionLabel(r: Resolution): string {
   return r === 2160 ? '4K' : `${r}p`
 }
 
-/** Resolutions that need Max performance and a graphics card encoder. */
 export function isHighResolution(r: Resolution): boolean {
   return r >= 1440
 }

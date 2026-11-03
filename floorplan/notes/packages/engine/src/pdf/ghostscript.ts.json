@@ -1,0 +1,127 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ghostscript.ts",
+  "description": "Ghostscript pdfwrite for the pdf ops that rewrite a whole file: shrink, protect, unlock, flatten.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Passwords go to Ghostscript in an @argfile, never on the command line where the process list shows them, and as hex\nstrings of their Latin-1 bytes: RC4 PDF passwords are bytes, and pdf.js and Acrobat read them as Latin-1, not UTF-8.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": "GsCall",
+      "line": 8,
+      "offset": 0,
+      "text": "A Ghostscript run: `args` go on the command line, `secret` only into the @argfile.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "permissionBits",
+      "line": 20,
+      "offset": 0,
+      "text": "The PDF /P value (ISO 32000 table 22): reserved bits 7-8 and 13-32 set, bits 1-2 clear.\nFilling forms and reading for accessibility stay allowed; printing and copying follow the choices.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "passwordToken",
+      "line": 32,
+      "offset": 0,
+      "text": "A password as a PostScript hex string of its Latin-1 bytes, for `-dName=<hex>`: Ghostscript's -d takes one PostScript\ntoken and hands device parameters the same whether they came from -d or -s. Throws, in plain words, for letters Latin-1 lacks.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "outputFile",
+      "line": 42,
+      "offset": 0,
+      "text": "Ghostscript reads % in an output name as a page-number pattern; %% is a plain %.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "protectArgs",
+      "line": 44,
+      "offset": 0,
+      "text": "Without an owner password a random one is set, so the print and copy limits can't be lifted with the opening password.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "flattenArgs",
+      "line": 56,
+      "offset": 0,
+      "text": "Draws annotations and form fields into the page so nothing stays editable.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "argFileEntry",
+      "line": 60,
+      "offset": 0,
+      "text": "One argument as Ghostscript's @file reader (gsargs.c arg_next) reads it back: `\\\"` is a literal quote, a `\\` before\nanything else is literal, and whitespace needs the argument wrapped in quotes. Undefined for the two things that\nreader can't carry: a line break, and whitespace together with a trailing backslash.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "argFileText",
+      "line": 67,
+      "offset": 0,
+      "text": "The @argfile body. A space before each line break keeps a trailing backslash from joining two lines. Throws, in plain words, for an argument the file can't carry.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "commandLine",
+      "line": 77,
+      "offset": 0,
+      "text": "The command line for a call: the secret args only behind `@<file>`, never as they are.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "explainGhostscriptError",
+      "line": 83,
+      "offset": 0,
+      "text": "Ghostscript's stderr as a sentence. A password complaint means a wrong or missing password only when unlocking; otherwise the PDF is locked.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "NOTHING_WRITTEN",
+      "line": 89,
+      "offset": 0,
+      "text": "What Ghostscript prints when it produced nothing from the input, even with exit code 0.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "GsRunOptions.tempDir",
+      "line": 93,
+      "offset": 0,
+      "text": "Where the @argfile is written; it is deleted when the run ends.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "GsRunOptions.password",
+      "line": 96,
+      "offset": 0,
+      "text": "A password was given (unlock).",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "runGhostscript",
+      "line": 106,
+      "offset": 7,
+      "text": "Ghostscript 10 exits 0 when it can't open the input (a wrong password included) and writes an empty PDF.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/Footer.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Footer",
+      "line": 15,
+      "offset": 6,
+      "text": "Clipboard can be blocked; the label still shows the handle.",
+      "kind": "what"
+    }
+  ]
+}

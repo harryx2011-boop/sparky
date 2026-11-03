@@ -12,7 +12,6 @@ import {
 } from 'motion/react'
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 
-/** Words rise and un-blur one after another. Animates on mount, or when scrolled into view. */
 export function SplitText({ text, delay = 0, inView = false, className, stagger = 0.06 }: { text: string; delay?: number; inView?: boolean; className?: string; stagger?: number }) {
   const reduce = useReducedMotion()
   const ref = useRef<HTMLSpanElement>(null)
@@ -38,7 +37,6 @@ export function SplitText({ text, delay = 0, inView = false, className, stagger 
   )
 }
 
-/** Pulls its child a little towards the pointer. */
 export function Magnetic({ children, strength = 0.28, className }: { children: ReactNode; strength?: number; className?: string }) {
   const reduce = useReducedMotion()
   const x = useSpring(0, { stiffness: 260, damping: 18, mass: 0.4 })
@@ -64,7 +62,6 @@ export function Magnetic({ children, strength = 0.28, className }: { children: R
   )
 }
 
-/** A card that tilts a few degrees towards the pointer. */
 export function TiltCard({ children, className, max = 7 }: { children: ReactNode; className?: string; max?: number }) {
   const reduce = useReducedMotion()
   const mx = useMotionValue(0.5)
@@ -91,7 +88,6 @@ export function TiltCard({ children, className, max = 7 }: { children: ReactNode
   )
 }
 
-/** Thin bar along the top that fills as you scroll. */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 24, mass: 0.3 })
@@ -104,7 +100,6 @@ export function ScrollProgress() {
   )
 }
 
-/** An endless ticker. Speeds up a little while you scroll. */
 export function Marquee({ items, className, duration = 40, reverse = false }: { items: ReactNode[]; className?: string; duration?: number; reverse?: boolean }) {
   const reduce = useReducedMotion()
   return (
@@ -128,7 +123,6 @@ export function Marquee({ items, className, duration = 40, reverse = false }: { 
   )
 }
 
-/** Counts up to a number when it scrolls into view. */
 export function CountUp({ to, format = (n) => Math.round(n).toString(), duration = 1.4, className }: { to: number; format?: (n: number) => string; duration?: number; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true })

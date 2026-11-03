@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/test/mcp.test.ts",
+  "description": "`sparky mcp` over real stdio, driven by the SDK's own client.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 91,
+      "offset": null,
+      "text": "Any stray stdout line would have broken the client above; stderr may hold logs.",
+      "kind": "what"
+    }
+  ]
+}

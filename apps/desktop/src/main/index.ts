@@ -13,23 +13,19 @@ import { copyInto, copyTo } from './save'
 const isDev = !app.isPackaged
 const resources = isDev ? path.join(__dirname, '../../resources') : process.resourcesPath
 const bundledBin = path.join(resources, 'bin')
-/** yt-dlp updates itself, so it runs from a writable copy in the user's profile. */
 const userBin = path.join(app.getPath('userData'), 'bin')
 
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
 let engine: Engine
-/** The local HTTP API agents use; null when it could not bind (another Sparky or program holds the port). */
 let api: ApiServer | null = null
 let quitting = false
 let lastOffered = ''
 const dismissed = new Set<string>()
 
 let ready = false
-/** Windows can drop a notification's click handler if nothing holds on to it. */
 const liveNotifications = new Set<Notification>()
 
-// A second copy only hands focus to the first one, then leaves straight away.
 const primary = app.requestSingleInstanceLock()
 if (!primary) app.exit(0)
 app.setAppUserModelId('com.sparky.app')
@@ -40,7 +36,6 @@ function ensureWritableYtDlp(): void {
   const dest = path.join(userBin, name)
   try {
     fs.mkdirSync(userBin, { recursive: true })
-    // Copy on first run, and again when a newer Sparky ships a newer yt-dlp.
     if (fs.existsSync(src) && (!fs.existsSync(dest) || fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs)) {
       fs.copyFileSync(src, dest)
     }
@@ -54,7 +49,6 @@ function send(channel: string, ...args: unknown[]): void {
 }
 
 function showWindow(): void {
-  // Launched again while still starting up: the window appears when startup finishes.
   if (!ready) return
   if (!win) return createWindow()
   if (win.isMinimized()) win.restore()
@@ -75,7 +69,6 @@ function createWindow(): void {
     minHeight: 600,
     show: false,
     frame: false,
-    // Matches the saved theme (dark by default) so the first frame is never a white flash.
     backgroundColor: engine.getSettings().theme === 'light' || (engine.getSettings().theme === 'system' && !nativeTheme.shouldUseDarkColors) ? '#fafafa' : '#0a0a0a',
     icon: path.join(resources, 'icon.png'),
     title: 'Sparky',
@@ -91,7 +84,6 @@ function createWindow(): void {
   win.on('maximize', () => send('window:maximized', true))
   win.on('unmaximize', () => send('window:maximized', false))
   win.on('focus', () => void offerClipboardLink())
-  // Let Windows sign out or shut down instead of hiding to the tray.
   win.on('session-end', () => {
     quitting = true
   })
@@ -104,7 +96,6 @@ function createWindow(): void {
   win.on('closed', () => {
     win = null
   })
-  // Links open in the browser, never inside the app.
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:|^mailto:/.test(url)) void shell.openExternal(url)
     return { action: 'deny' }
@@ -159,13 +150,11 @@ function updateTray(jobs: Job[]): void {
 function notifyFinished(job: Job): void {
   send('queue:finished', job)
   const s = engine.getSettings()
-  // A single finished download opens its folder right away, notifications aside.
   if (job.op === 'download' && job.status === 'done' && job.outputs.length === 1 && s.openFolderOnDownload) {
     shell.showItemInFolder(job.outputs[0]!)
   }
   if (!s.notifications || !Notification.isSupported()) return
   if (job.status === 'canceled') return
-  // When the window is in front, the in-app toast is enough.
   if (win?.isVisible() && win.isFocused()) return
   const ok = job.status === 'done'
   const n = new Notification({
@@ -198,7 +187,6 @@ async function printToPdf(htmlPath: string, pdfPath: string): Promise<void> {
   }
 }
 
-/** Input the engine refuses comes back as data, so the UI shows its plain message instead of Electron's "Error invoking remote method". */
 function refusable(start: () => Job[]): OpStartResult {
   try {
     return { ok: true, jobs: start() }
@@ -297,7 +285,6 @@ function registerIpc(): void {
   })
   handle('clipboard:write', (text: string) => clipboard.writeText(text))
 
-  // The token never crosses IPC or the clipboard (Windows keeps clipboard history and may sync it): the renderer can only show the file.
   handle('api:info', (): ApiInfo => ({ running: api !== null, port: api?.port ?? configuredApiPort(), tokenPath: tokenPath(app.getPath('userData')) }))
   handle('api:revealToken', () => {
     ensureToken(app.getPath('userData'))
@@ -318,11 +305,9 @@ function configuredApiPort(): number {
 async function startApi(): Promise<void> {
   try {
     const started = await startApiServer(engine, { dataDir: app.getPath('userData'), host: 'app', version: app.getVersion() })
-    // Quit began while it was binding.
     if (shutDown) await started.close()
     else api = started
   } catch (e) {
-    // The app works without it; agents fall back to running the engine themselves.
     console.error('Sparky API not started', e)
   }
 }
@@ -333,7 +318,6 @@ let shutDown = false
 app.on('before-quit', (e) => {
   quitting = true
   if (shutDown || !engine) return
-  // Give running jobs a moment to stop and remove their half-written files.
   e.preventDefault()
   shutDown = true
   void (api?.close() ?? Promise.resolve())
@@ -374,7 +358,6 @@ if (primary) app.whenReady().then(async () => {
   updateTray([])
 
   if (!isDev) {
-    // App updates come from GitHub Releases; yt-dlp keeps itself current separately.
     autoUpdater.checkForUpdatesAndNotify().catch(() => undefined)
     void engine.updateYtDlp()
   }

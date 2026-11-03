@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/DragDemo.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "TILES",
+      "line": 30,
+      "offset": 0,
+      "text": "Where things sit on the fixed 1100×540 stage.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "Stage",
+      "line": 198,
+      "offset": 101,
+      "text": "exIndex is read once so the loop resumes where it left off.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "Stage",
+      "line": 207,
+      "offset": 110,
+      "text": "Desktop with files",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "Stage",
+      "line": 230,
+      "offset": 133,
+      "text": "Sparky window",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "Stage",
+      "line": 345,
+      "offset": 248,
+      "text": "The file being dragged",
+      "kind": "what"
+    }
+  ]
+}

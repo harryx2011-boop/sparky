@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/edge.test.ts",
+  "description": "Edge cases with the real tools: odd names, bad folders, broken files and mixed batches.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Needs SPARKY_TEST_BIN like engine.test.ts; skipped without it.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 11,
+      "offset": null,
+      "text": "A skip must never pass for green in CI.",
+      "kind": "why"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 88,
+      "offset": null,
+      "text": "A path \"inside\" a file can never be created.",
+      "kind": "why"
+    }
+  ]
+}

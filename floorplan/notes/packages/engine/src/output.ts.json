@@ -1,0 +1,127 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/output.ts",
+  "description": "Where a result goes. The caller's `out` wins, then originals \"replace\" (beside the source), then the output root's category folder.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OutTarget.file",
+      "line": 10,
+      "offset": 0,
+      "text": "Set when `out` names a file rather than a folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "splitOut",
+      "line": 13,
+      "offset": 0,
+      "text": "A folder when it already is one, ends in a separator or has no extension; anything else names the output file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "splitOut",
+      "line": 19,
+      "offset": 6,
+      "text": "not there yet",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "OutputRequest.input",
+      "line": 24,
+      "offset": 0,
+      "text": "The source file; its name seeds the output name.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "OutputRequest.suffix",
+      "line": 27,
+      "offset": 0,
+      "text": "Added before the extension, e.g. \" (smaller)\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "OutputRequest.replace",
+      "line": 28,
+      "offset": 0,
+      "text": "Originals \"replace\": write beside the source, and take its exact name when the format is unchanged (the caller moves the original aside first).",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "OutputPlan.tmpPath",
+      "line": 33,
+      "offset": 0,
+      "text": "Write here first; a hidden name nothing else will pick.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "OutputPlan.claimFinal",
+      "line": 34,
+      "offset": 0,
+      "text": "Picks the final path and reserves it on disk, so no other job or process can take the same name.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "OutputPlan.place",
+      "line": 35,
+      "offset": 0,
+      "text": "Moves the finished tmpPath onto the claimed path.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "OutputPlan.release",
+      "line": 36,
+      "offset": 0,
+      "text": "Gives the reserved name back when the result never arrived.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "nameKey",
+      "line": 39,
+      "offset": 0,
+      "text": "Windows file names ignore case: \"Clip.mp4\" and \"clip.mp4\" are the same file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "samePath",
+      "line": 41,
+      "offset": 0,
+      "text": "True when two paths name the same file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "freeName",
+      "line": 45,
+      "offset": 0,
+      "text": "A name in `dir` nothing holds yet. `exclude` adds names found taken since the folder was read.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "planOutput",
+      "line": 85,
+      "offset": 24,
+      "text": "Someone took it between the read and the claim, or the folder listing hides it; never try that name again.",
+      "kind": "why"
+    },
+    {
+      "id": "n15",
+      "symbol": "planOutput",
+      "line": 89,
+      "offset": 28,
+      "text": "Windows won't rename a folder onto the empty one that holds the name.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/icons.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "GmailIcon",
+      "line": 13,
+      "offset": 0,
+      "text": "Brand marks in their own colours. GitHub is one ink by design, so it takes the current text colour.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Bolt",
+      "line": 18,
+      "offset": 0,
+      "text": "The Sparky bolt on its own, as an icon.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "LogoMark",
+      "line": 26,
+      "offset": 0,
+      "text": "The Sparky logo: a white bolt on a dark tile. Same drawing as the app icon and the favicon.",
+      "kind": "doc"
+    }
+  ]
+}

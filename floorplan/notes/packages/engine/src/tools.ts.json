@@ -1,0 +1,79 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/tools.ts",
+  "description": "Finds the bundled tools, checks their versions and tests the graphics card encoders.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Tools.tessdata",
+      "line": 18,
+      "offset": 0,
+      "text": "The bundled OCR language folder (`tessdata`, holding eng.traineddata.gz).",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "NAMES.7zip",
+      "line": 29,
+      "offset": 0,
+      "text": "Full 7-Zip (7z + 7z.dll) can open RAR; the standalone 7za can't.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "wellKnownDirs",
+      "line": 37,
+      "offset": 0,
+      "text": "Folders where optional tools usually live when installed by the user.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "wellKnownDirs",
+      "line": 47,
+      "offset": 10,
+      "text": "Newest first: gs10.05 before gs9.56.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "findIn",
+      "line": 65,
+      "offset": 7,
+      "text": "keep looking",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "locateTools",
+      "line": 71,
+      "offset": 0,
+      "text": "Looks in Sparky's own folders first (bundled tools, then the updatable copy of yt-dlp),\nthen on PATH, then in the usual install folders.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "toolStatuses",
+      "line": 112,
+      "offset": 7,
+      "text": "Starting LibreOffice just to read its version is slow; its presence is enough.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": "detectGpu",
+      "line": 123,
+      "offset": 0,
+      "text": "Lists the hardware encoders FFmpeg was built with, then runs a tiny test encode with each\nso only the ones this PC can really use are kept.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "jsRuntimeArg",
+      "line": 145,
+      "offset": 0,
+      "text": "yt-dlp runs better with a JavaScript runtime for YouTube; Deno is the one it recommends.",
+      "kind": "doc"
+    }
+  ]
+}

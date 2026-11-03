@@ -10,12 +10,10 @@ const SIZES = {
 export interface PerformanceBarsProps {
   level: PerformanceLevel
   size?: keyof typeof SIZES
-  /** Bars gently flicker while work is happening. */
   running?: boolean
   className?: string
 }
 
-/** Five bars that fill left to right: one for Low, three for Normal, five for Max. */
 export function PerformanceBars({ level, size = 'sm', running = false, className }: PerformanceBarsProps) {
   const s = SIZES[size]
   const lit = performanceInfo(level).bars

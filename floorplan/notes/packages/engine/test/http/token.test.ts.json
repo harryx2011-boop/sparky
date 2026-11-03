@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/http/token.test.ts",
+  "description": "ensureToken across processes: the app and `sparky serve` starting together must end up with one token.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "node",
+      "line": 20,
+      "offset": 0,
+      "text": "Runs a module snippet in a separate Node process; resolves with its stdout. `onLine` sees each line as it arrives.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 39,
+      "offset": null,
+      "text": "Another process has created the file and not yet written to it.",
+      "kind": "what"
+    }
+  ]
+}

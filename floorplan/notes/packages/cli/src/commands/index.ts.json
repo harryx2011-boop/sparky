@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/commands/index.ts",
+  "description": "The command registry and the router. Adding a built-in = one module + one line in COMMANDS; op commands come from the op registry.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "norm",
+      "line": 25,
+      "offset": 0,
+      "text": "\"from-images\" and \"from_images\" name the same tool.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "route",
+      "line": 32,
+      "offset": 0,
+      "text": "argv (without node and the script) → what to run. Throws UsageError for a name that matches nothing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "route",
+      "line": 41,
+      "offset": 9,
+      "text": "`sparky pdf.merge …` and `sparky convert …`",
+      "kind": "what"
+    }
+  ]
+}

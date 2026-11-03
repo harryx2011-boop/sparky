@@ -1,0 +1,63 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ffmpeg-ops.ts",
+  "description": "FFmpeg argument builders for convert, GIF, thumbnails and compress. Pure: argv out, no file access.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "bitrateForTarget",
+      "line": 44,
+      "offset": 0,
+      "text": "Bitrate that lands a target size: bytes*8/seconds, minus audio, with 6% held back for the container.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "trimArgs",
+      "line": 64,
+      "offset": 0,
+      "text": "Before -i, so ffmpeg seeks instead of decoding and discarding. An end of Infinity runs to the end of the file.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "convertArgs",
+      "line": 78,
+      "offset": 8,
+      "text": "A size target and a format change can arrive together; the solved bitrate wins over crf.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "convertArgs",
+      "line": 97,
+      "offset": 27,
+      "text": "libvpx-vp9 treats crf as a cap on a default bitrate unless -b:v is 0.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "gifArgs",
+      "line": 110,
+      "offset": 0,
+      "text": "Two-pass palette GIF: a single pass quantises per frame and bands badly.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "thumbsArgs",
+      "line": 136,
+      "offset": 0,
+      "text": "A poster frame, a sprite sheet of evenly spaced frames, or an animated WebP preview.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "thumbsArgs",
+      "line": 148,
+      "offset": 12,
+      "text": "Zero duration means the probe failed; one frame a second still gives a usable sheet.",
+      "kind": "what"
+    }
+  ]
+}

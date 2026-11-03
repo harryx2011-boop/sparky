@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/commands/setup.ts",
+  "description": "`sparky setup`: fetches FFmpeg, yt-dlp and the other tools for an npm install that has no app beside it.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "path7za",
+      "line": 9,
+      "offset": 0,
+      "text": "7zip-bin's 7za, loaded through require() like the other externals so it resolves beside the bundle or on NODE_PATH.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "bundledDir",
+      "line": 17,
+      "offset": 0,
+      "text": "The first tool folder other than `binDir` that already has everything: the installed app's resources\\bin.",
+      "kind": "doc"
+    }
+  ]
+}

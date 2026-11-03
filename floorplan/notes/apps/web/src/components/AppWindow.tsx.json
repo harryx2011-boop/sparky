@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/AppWindow.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FitToWidth",
+      "line": 10,
+      "offset": 0,
+      "text": "Scales a fixed-size design down to fit narrow screens without reflowing it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "AppWindow",
+      "line": 42,
+      "offset": 0,
+      "text": "The Sparky app at its 1200 x 740 design size, mirroring apps/desktop/src/renderer (Sidebar, ConvertPage, QueueDock, Footer).\nThe hero puts it on a laptop screen, which scales it. Not claimed: Ctrl-key hints and the collapse button.",
+      "kind": "doc"
+    }
+  ]
+}

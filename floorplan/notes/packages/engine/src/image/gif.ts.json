@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/gif.ts",
+  "description": "Pictures into one animated GIF with sharp: every frame is fitted to the first picture's shape, then libvips' GIF writer (cgif + libimagequant) builds the palette.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "makeGif",
+      "line": 38,
+      "offset": 26,
+      "text": "loop 0 plays forever; 1 plays once.",
+      "kind": "what"
+    }
+  ]
+}

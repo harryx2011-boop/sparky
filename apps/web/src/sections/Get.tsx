@@ -8,12 +8,10 @@ import { ButtonLink } from '../components/ui'
 
 export function Get() {
   const sectionRef = useRef<HTMLElement>(null)
-  // The galaxy from the top of the page gathers back into the bolt as you arrive.
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'center center'] })
   const getProgress = useCallback(() => 1 - scrollYProgress.get(), [scrollYProgress])
   return (
     <section ref={sectionRef} id="get" className="relative overflow-hidden border-t border-[#161616] px-4 pb-32 pt-[320px] sm:px-6 lg:pb-44 lg:pt-[400px]">
-      {/* The bolt lives in a band above the words and fades out before they start. */}
       <div aria-hidden className="absolute inset-x-0 top-0 h-[340px] [mask-image:linear-gradient(180deg,#000_0%,#000_68%,transparent_100%)] lg:h-[420px]">
         <SpriteField getProgress={getProgress} assembleOnMount={false} boltScale={0.7} boltY={0.48} className="size-full opacity-80" />
       </div>

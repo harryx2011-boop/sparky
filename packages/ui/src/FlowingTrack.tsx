@@ -1,7 +1,6 @@
 import { Slider } from 'radix-ui'
 import type { CSSProperties } from 'react'
 
-/** Fixed, not random, so the sparks never jump between renders. x/y in % of the track, t = cycle in seconds. */
 const SPARKS = [
   { x: 6, y: 34, size: 2, t: 9, delay: -1.2, dx: 46, peak: 0.6 },
   { x: 14, y: 66, size: 3, t: 12, delay: -7.5, dx: 38, peak: 0.5 },
@@ -13,7 +12,6 @@ const SPARKS = [
   { x: 83, y: 64, size: 3, t: 10, delay: -4.7, dx: 42, peak: 0.6 },
 ] as const
 
-/** The pill track and its lime fill; the fill carries a slow sheen and drifting sparks, both clipped to it. */
 export function FlowingTrack() {
   return (
     <Slider.Track className="sp-flow-track">

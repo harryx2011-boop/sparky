@@ -5,12 +5,10 @@ export type RawValue = string | boolean
 
 export interface RawArgs {
   positionals: string[]
-  /** Keyed by the name as typed after `--`; each use appends. `--no-x` stores false under `x`. */
   flags: Map<string, RawValue[]>
 }
 
 export interface ParseSpec {
-  /** Flags that never take the next word as their value. */
   booleans?: ReadonlySet<string>
 }
 
@@ -22,10 +20,6 @@ function add(flags: Map<string, RawValue[]>, name: string, v: RawValue) {
   else flags.set(name, [v])
 }
 
-/**
- * `--flag`, `--flag v`, `--flag=v`, `--no-flag`, repeats → arrays, `--` ends flags.
- * A value may start with a single dash (`--volume -3`); a word starting with `--` never is one.
- */
 export function parseArgv(argv: readonly string[], spec: ParseSpec = {}): RawArgs {
   const booleans = spec.booleans ?? new Set<string>()
   const positionals: string[] = []
@@ -68,7 +62,6 @@ export function parseArgv(argv: readonly string[], spec: ParseSpec = {}): RawArg
   return { positionals, flags }
 }
 
-// ── JSON schema typing ──────────────────────────────────────────────────────────────────────────
 
 export interface JsonSchema {
   type?: string | string[]
@@ -94,7 +87,6 @@ export interface ObjectSchema {
   required?: string[]
 }
 
-/** camelCase field → kebab-case flag. */
 export function kebab(name: string): string {
   return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/_/g, '-').toLowerCase()
 }
@@ -108,7 +100,6 @@ export function isBooleanSchema(s: JsonSchema): boolean {
   return Boolean(s.anyOf?.length && s.anyOf.every((b) => typeOf(b) === 'boolean' || b.type === 'null'))
 }
 
-/** The values a pick-one field takes, when it is one. */
 export function choicesOf(s: JsonSchema): unknown[] | undefined {
   if (s.enum) return s.enum
   if (s.const !== undefined) return [s.const]
@@ -119,7 +110,6 @@ export function choicesOf(s: JsonSchema): unknown[] | undefined {
 const TRUE = new Set(['true', 'yes', 'on', '1'])
 const FALSE = new Set(['false', 'no', 'off', '0'])
 
-/** One raw value typed by its schema. `label` names the flag in messages. */
 export function coerceValue(v: RawValue, s: JsonSchema, label: string): unknown {
   if (isBooleanSchema(s)) {
     if (typeof v === 'boolean') return v
@@ -143,7 +133,6 @@ export function coerceValue(v: RawValue, s: JsonSchema, label: string): unknown 
       try {
         return coerceValue(v, branch, label)
       } catch {
-        /* next branch */
       }
     }
     throw new UsageError(`${label} can't take "${v}".`)
@@ -161,7 +150,6 @@ export function coerceValue(v: RawValue, s: JsonSchema, label: string): unknown 
   }
 }
 
-/** Every raw value of an array field: repeats, and commas between numbers (`--sizes 16,32,48`). */
 export function coerceArray(values: RawValue[], s: JsonSchema, label: string): unknown[] {
   const item = s.items ?? {}
   const numeric = ['number', 'integer'].includes(typeOf(item) ?? '') || Boolean(choicesOf(item)?.every((c) => typeof c === 'number'))
@@ -171,19 +159,14 @@ export function coerceArray(values: RawValue[], s: JsonSchema, label: string): u
 
 export interface BindSpec {
   schema: ObjectSchema
-  /** Fields that take bare words, in order; an array field takes every word left. */
   positional: readonly string[]
-  /** `--to` → `output`: extra spellings, used only when the target field exists. */
   aliases?: Record<string, string>
-  /** Flags the surface keeps for itself (`json`, `wait`, …), typed as booleans. */
   reserved?: readonly string[]
-  /** Names the command in messages, e.g. "sparky pdf merge". */
   command: string
 }
 
 export interface Bound {
   args: Record<string, unknown>
-  /** Reserved flags as given. */
   reserved: Record<string, boolean>
 }
 
@@ -193,13 +176,11 @@ function distance(a: string, b: string): number {
   for (let i = 1; i <= a.length; i++)
     for (let j = 1; j <= b.length; j++) {
       d[i]![j] = Math.min(d[i - 1]![j]! + 1, d[i]![j - 1]! + 1, d[i - 1]![j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1))
-      // Two letters swapped count as one typo.
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i]![j] = Math.min(d[i]![j]!, d[i - 2]![j - 2]! + 1)
     }
   return d[a.length]![b.length]!
 }
 
-/** The closest of `names` to `wrong`, when one is close enough to be a typo. */
 export function suggest(wrong: string, names: Iterable<string>): string | undefined {
   let best: string | undefined
   let bestD = Infinity
@@ -210,14 +191,12 @@ export function suggest(wrong: string, names: Iterable<string>): string | undefi
   return best !== undefined && bestD <= Math.max(1, Math.floor(wrong.length / 3)) ? best : undefined
 }
 
-/** The flag names a schema's boolean fields and the reserved flags use, for parseArgv. */
 export function booleanFlags(spec: Pick<BindSpec, 'schema' | 'reserved'>): Set<string> {
   const out = new Set<string>(spec.reserved ?? [])
   for (const [name, s] of Object.entries(spec.schema.properties ?? {})) if (isBooleanSchema(s)) out.add(kebab(name)).add(name)
   return out
 }
 
-/** argv → validated-shape args for an op: flags by kebab or camel name, positionals by `positional`, values typed by the schema. */
 export function bindArgs(argv: readonly string[], spec: BindSpec): Bound {
   const props = spec.schema.properties ?? {}
   const raw = parseArgv(argv, { booleans: booleanFlags(spec) })
@@ -247,7 +226,6 @@ export function bindArgs(argv: readonly string[], spec: BindSpec): Bound {
     values.set(field, [...list, ...vals])
   }
 
-  // Bare words fill the positional fields in order; an array field takes the rest.
   const words = [...raw.positionals]
   for (const field of spec.positional) {
     const s = props[field]
@@ -270,7 +248,6 @@ export function bindArgs(argv: readonly string[], spec: BindSpec): Bound {
   return { args, reserved }
 }
 
-/** Required fields the args don't have, as flags (`--output`) or argument names (`<files>`). */
 export function missingRequired(args: Record<string, unknown>, spec: Pick<BindSpec, 'schema' | 'positional'>): string[] {
   return (spec.schema.required ?? [])
     .filter((f) => args[f] === undefined || (Array.isArray(args[f]) && (args[f] as unknown[]).length === 0))

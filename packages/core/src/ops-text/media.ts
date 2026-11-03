@@ -4,21 +4,16 @@ import { COMPRESSION_LEVELS, PERFORMANCE_LEVELS } from '../levels'
 
 const fileName = (p: string) => p.split(/[\\/]/).pop() ?? p
 
-/** A form field's label and help text: the Tools page, the CLI help and the MCP tool list all read these. */
-// A type, not an interface, so zod's .meta() takes it as is.
 type FieldText = { title: string; description: string; labels?: Record<string, string> }
 
-/** `labels` words each choice of a pick-one field, keyed by the value the op takes. */
 const field = (title: string, description: string, labels?: Record<string, string>): FieldText => ({ title, description, ...(labels ? { labels } : {}) })
 
-/** Video and sound formats, as the format picker words them. */
 const OUTPUT_LABELS = Object.fromEntries(
   FORMATS.filter((f) => (f.category === 'video' && f.ext !== 'gif') || f.category === 'audio').map((f) => [f.ext, `${f.label} · ${f.note}`]),
 )
 const PERFORMANCE_LABELS = Object.fromEntries(PERFORMANCE_LEVELS.map((l) => [l.id, `${l.label} · ${l.outcome}`]))
 const QUALITY_LABELS = Object.fromEntries(COMPRESSION_LEVELS.map((l) => [String(l.level), `${l.label} · ${l.hint}`]))
 
-/** Fields more than one media op takes. */
 const COMMON = {
   media: field('Files', 'The videos or sound files to work on.'),
   videos: field('Files', 'The videos to work on.'),

@@ -8,7 +8,6 @@ import { progressPatch } from './fields'
 import { fullInput, opById } from './index'
 import { OpInputError, type Op, type OpContext, type OpJobFields } from './types'
 
-/** Absolute, keeping a trailing separator, which marks a folder that doesn't exist yet. */
 function absoluteOut(out: string): string {
   const abs = path.resolve(out)
   return /[\\/]$/.test(out) && !/[\\/]$/.test(abs) ? abs + path.sep : abs
@@ -36,7 +35,6 @@ export function parseOpInput(op: Op, raw: unknown): ParsedInput {
   return { args, out: out === undefined ? undefined : absoluteOut(out) }
 }
 
-/** 'each' ops become one input per item of their first positional field; 'all' ops stay whole. */
 export function splitInput(op: Op, args: Record<string, unknown>): Record<string, unknown>[] {
   const key = op.positional[0]
   const list = key === undefined ? undefined : args[key]
@@ -62,14 +60,11 @@ export function opContext(env: EngineEnv, run: Pick<RunContext, 'signal' | 'upda
   }
 }
 
-/** Set in stored args when the job was given a secret field. */
 export const SECRET_GIVEN = 'secretGiven'
 
-/** Splits validated args into what may be stored and the op's secret fields, which only live in memory. */
 export function splitSecrets(op: Op, args: Record<string, unknown>): { kept: Record<string, unknown>; hidden?: Record<string, unknown> } {
   const keys = (op.secret ?? []).filter((k) => args[k] !== undefined)
   if (!keys.length) return { kept: args }
-  // The marker says a secret was given, so a rerun from History knows to ask for it; op schemas drop unknown keys.
   const kept: Record<string, unknown> = { ...args, [SECRET_GIVEN]: true }
   const hidden: Record<string, unknown> = {}
   for (const k of keys) {
@@ -79,7 +74,6 @@ export function splitSecrets(op: Op, args: Record<string, unknown>): { kept: Rec
   return { kept, hidden }
 }
 
-/** The queue's runner: look the op up by id and run it. `secrets` are the fields kept out of `job.args`. */
 export async function runOpJob(env: EngineEnv, job: Job, run: RunContext, secrets?: Record<string, unknown>): Promise<Partial<Job>> {
   const op = opById(job.op)
   if (!op) throw new Error(unknownOpError(job.op))

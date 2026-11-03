@@ -1,0 +1,87 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "scripts/fetch-tools.mjs",
+  "description": "Downloads the Windows builds of the tools Sparky bundles into apps/desktop/resources/bin.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 3,
+      "offset": null,
+      "text": "They are not committed to git; the installer ships them so users need no setup.\n\n  node scripts/fetch-tools.mjs            fetch anything missing\n  node scripts/fetch-tools.mjs --force    fetch everything again\n\nSet GITHUB_TOKEN to avoid GitHub's API rate limit on shared CI runners.\n\n`fetchTools({ binDir, force })` is the same work as a function; `sparky setup` calls it for npm installs that have no app.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": "TOOLS",
+      "line": 19,
+      "offset": 0,
+      "text": "Each tool: where it comes from and which files to keep.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "TOOLS.asset",
+      "line": 31,
+      "offset": 8,
+      "text": "The oldest release branch, not master: newer FFmpeg needs a newer graphics driver for NVIDIA speed\n(master and 9.0 need driver 610+, which most PCs don't have yet).",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "TOOLS.asset",
+      "line": 46,
+      "offset": 23,
+      "text": "The full 7-Zip (7z.exe + 7z.dll) can open RAR archives; the standalone 7za can't.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "DATA",
+      "line": 60,
+      "offset": 0,
+      "text": "Data files fetched as they are (no release, no unpacking). `gzip` stores them compressed, the way tesseract.js reads them.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "DATA.url",
+      "line": 63,
+      "offset": 0,
+      "text": "The fast LSTM English model (about 4 MB) for OCR; other languages download on demand.",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "findExtractor",
+      "line": 142,
+      "offset": 16,
+      "text": "npm drops the execute bit on 7zip-bin's Linux and macOS binaries.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": "toolPresent",
+      "line": 146,
+      "offset": 0,
+      "text": "True when every tool's files are in `dir` (either download option counts).",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "hasAllTools",
+      "line": 164,
+      "offset": 0,
+      "text": "True when `dir` already holds every tool and data file, as the installed app's resources\\bin does.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "isEntry",
+      "line": 261,
+      "offset": 0,
+      "text": "Run as a script only when this file itself is the entry point, never when bundled into another program.\nCompared as real paths, case-insensitively on Windows, so a linked folder or a lower-case drive letter still counts.",
+      "kind": "why"
+    }
+  ]
+}

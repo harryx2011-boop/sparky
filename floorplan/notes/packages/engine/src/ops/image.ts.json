@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/image.ts",
+  "description": "image ops: edit (resize, rotate, flip, re-encode), Windows icons, and pictures into an animated GIF.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "gifInput.delayMs",
+      "line": 118,
+      "offset": 0,
+      "text": "GIF stores each frame's time in 16 bits; sharp takes it in milliseconds.",
+      "kind": "what"
+    }
+  ]
+}

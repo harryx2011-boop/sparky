@@ -1,6 +1,5 @@
 import { cn } from '@sparky/ui'
 
-/** Thin progress bar. A negative value shows an indeterminate shimmer. */
 export function Progress({ value, running, className, tone }: { value: number; running?: boolean; className?: string; tone?: 'default' | 'success' | 'error' | 'muted' }) {
   const indeterminate = value < 0
   const pct = indeterminate ? 100 : Math.max(0, Math.min(100, value * 100))

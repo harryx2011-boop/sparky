@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/http/routes.ts",
+  "description": "The API's routes as one table. A handler gets the engine and the parsed request and throws on failure; the server shapes the error.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RouteContext.token",
+      "line": 14,
+      "offset": 0,
+      "text": "The server's own token, for the hello proof.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Route.public",
+      "line": 28,
+      "offset": 0,
+      "text": "Answered without the token. Only /v1/hello, which proves the server holds the token without asking for it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ROUTES.handle",
+      "line": 67,
+      "offset": 0,
+      "text": "A client checks the proof before sending its token, so an impostor on the port never receives it.",
+      "kind": "why"
+    },
+    {
+      "id": "n4",
+      "symbol": "ROUTES.handle",
+      "line": 90,
+      "offset": 23,
+      "text": "No abort signal: a client that hangs up leaves its jobs running, as closing the app window does.",
+      "kind": "what"
+    }
+  ]
+}

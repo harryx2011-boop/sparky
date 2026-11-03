@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/queue.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "controllable",
+      "line": 8,
+      "offset": 0,
+      "text": "A runner whose jobs finish only when the test says so.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 117,
+      "offset": null,
+      "text": "A runner that takes a moment to stop, like a real process.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 159,
+      "offset": null,
+      "text": "And the other way round: Resume last means it goes back in line.",
+      "kind": "what"
+    }
+  ]
+}

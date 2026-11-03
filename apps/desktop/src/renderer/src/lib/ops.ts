@@ -19,9 +19,7 @@ export interface FieldSpec {
   max?: number
   integer?: boolean
   options?: Choice[]
-  /** For lists: numbers or text. */
   numeric?: boolean
-  /** A password or similar: typed hidden, never kept by the engine. */
   secret?: boolean
 }
 
@@ -29,7 +27,6 @@ type Schema = Record<string, unknown>
 
 const WORDS: Record<string, string> = { mb: 'MB', kb: 'KB', dpi: 'DPI', pdf: 'PDF', pdfs: 'PDFs', gif: 'GIF', ico: 'ICO', url: 'link', urls: 'links', fps: 'frames per second', px: 'px' }
 
-/** "targetMb" → "Target MB", "page_size" → "Page size". */
 export function humanize(key: string): string {
   const words = key
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
@@ -40,7 +37,6 @@ export function humanize(key: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-/** Choice labels come from the field's `labels` meta (`.meta({ labels: { h: 'Side to side' } })`), else the value made readable. */
 function consts(s: Schema): Choice[] | undefined {
   const labels = (s.labels && typeof s.labels === 'object' ? s.labels : {}) as Record<string, unknown>
   const choice = (v: string | number): Choice => ({ value: v, label: typeof labels[String(v)] === 'string' ? (labels[String(v)] as string) : humanize(String(v)) })
@@ -58,7 +54,6 @@ function bound(s: Schema, inclusive: 'minimum' | 'maximum', exclusive: 'exclusiv
   return undefined
 }
 
-/** Every field but `out`, required ones first, in the schema's own order. */
 export function fieldsOf(op: OpSummary): FieldSpec[] {
   const props = (op.inputSchema.properties ?? {}) as Record<string, Schema>
   const required = new Set((op.inputSchema.required as string[] | undefined) ?? [])
@@ -86,7 +81,6 @@ export function fieldsOf(op: OpSummary): FieldSpec[] {
 
 export type Values = Record<string, unknown>
 
-/** The form's starting values: the schema's defaults, else empty. */
 export function initial(fields: FieldSpec[]): Values {
   const v: Values = {}
   for (const f of fields) {
@@ -99,7 +93,6 @@ export function initial(fields: FieldSpec[]): Values {
   return v
 }
 
-/** What the person set. Empty fields are left out for the engine's own defaults; a switch with a default is always sent, so turning a default-on switch off reaches the engine. */
 export function toArgs(fields: FieldSpec[], values: Values): Values {
   const args: Values = {}
   for (const f of fields) {
@@ -118,7 +111,6 @@ export function toArgs(fields: FieldSpec[], values: Values): Values {
   return args
 }
 
-/** The first required field left empty, with a plain line for it. */
 export function missingRequired(fields: FieldSpec[], values: Values): { key: string; message: string } | undefined {
   for (const f of fields) {
     if (!f.required || f.kind === 'boolean') continue
@@ -129,7 +121,6 @@ export function missingRequired(fields: FieldSpec[], values: Values): { key: str
   return undefined
 }
 
-/** Whether a field error from the engine ("files.1", "pages") belongs to this field. */
 export function errorFor(field: string | undefined, key: string): boolean {
   return field !== undefined && (field === key || field.startsWith(`${key}.`) || field.startsWith(`${key}[`))
 }
@@ -140,7 +131,6 @@ export function joinWords(parts: string[]): string {
   return parts.length < 2 ? (parts[0] ?? '') : `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
 }
 
-/** "LibreOffice", "LibreOffice and Ghostscript", "a part of Sparky that’s missing". */
 export function needsList(missing: string[]): string {
   const tools = missing.filter((m): m is ToolStatus['id'] => m in TOOL_NAMES)
   const addOns = tools.filter((t) => OPTIONAL_TOOLS.has(t)).map((t) => TOOL_NAMES[t])
@@ -150,20 +140,17 @@ export function needsList(missing: string[]): string {
   return joinWords(parts)
 }
 
-/** One plain line for a list row: "Needs LibreOffice". */
 export function needsText(missing: string[]): string {
   return `Needs ${needsList(missing)}`
 }
 
 const NOUNS: Record<Category, string> = { video: 'videos', audio: 'audio files', image: 'images', document: 'documents', archive: 'archives' }
 
-/** What an op takes, for the file picker: "PDF files", "Images and videos". */
 export function acceptsText(accepts: string[]): string | undefined {
   if (!accepts.length) return undefined
   if (accepts.length <= 3) return `${joinWords(accepts.map((e) => e.toUpperCase()))} files`
   const all = accepts.map((e) => categoryOf(e)).filter((c): c is Category => c !== undefined)
   const unique = [...new Set(all)]
-  // One stray extension (GIF counts as video) shouldn't make an image tool read "Images and videos".
   const main = unique.filter((c) => all.filter((x) => x === c).length > 1)
   const cats = main.length ? main : unique
   const text = joinWords(cats.map((c) => NOUNS[c]))
@@ -180,10 +167,8 @@ export const OP_GROUPS: { id: string; label: string }[] = [
   { id: 'tool', label: 'More Tools' },
 ]
 
-/** Ops with a page of their own. */
 export const OWN_PAGE = new Set(['convert', 'download'])
 
-/** The Tools list: ops grouped in a fixed order, groups this build doesn't name at the end. */
 export function groupOps(ops: OpSummary[]): { id: string; label: string; ops: OpSummary[] }[] {
   const shown = ops.filter((o) => !OWN_PAGE.has(o.category))
   const known = OP_GROUPS.map((g) => ({ ...g, ops: shown.filter((o) => o.category === g.id) }))

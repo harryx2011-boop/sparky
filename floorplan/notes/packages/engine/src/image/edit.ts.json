@@ -1,0 +1,63 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/edit.ts",
+  "description": "Resize, rotate, flip and re-encode one picture with sharp.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OPAQUE",
+      "line": 25,
+      "offset": 0,
+      "text": "Formats without an alpha channel: transparent pixels are laid onto the background.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Animation",
+      "line": 29,
+      "offset": 0,
+      "text": "Frame times and loop count, set again when frames are joined back into one animation.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "encode",
+      "line": 44,
+      "offset": 10,
+      "text": "A quality asks for a smaller palette PNG; without one PNG stays lossless.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "ANIMATED",
+      "line": 54,
+      "offset": 0,
+      "text": "Formats that hold every frame of a moving picture.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "editImage",
+      "line": 56,
+      "offset": 0,
+      "text": "Returns a note for the finished job, when there is something to say.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "editImage",
+      "line": 67,
+      "offset": 11,
+      "text": "sharp mirrors before it turns, whatever the call order. Mirroring the turned picture left to right is\nthe same as mirroring the original top to bottom when the turn is a quarter, so the axes swap.",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": "editImage",
+      "line": 93,
+      "offset": 37,
+      "text": "sharp can't turn a multi-frame picture, so each frame is turned alone and the frames joined again.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/pdf/parts.test.ts",
+  "description": "The pure pieces under the pdf ops: page layout, split plans, Ghostscript arguments, PNG row filters.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "readArgFile",
+      "line": 8,
+      "offset": 0,
+      "text": "A port of Ghostscript's @file reader (base/gsargs.c, arg_next, depth > 0), to check what it makes of our argfile.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 123,
+      "offset": null,
+      "text": "Bits 1 and 2 must stay clear, 7 and 8 set.",
+      "kind": "why"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 185,
+      "offset": null,
+      "text": "Two rows of three grey pixels: 10 20 30 / 15 25 35.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": null,
+      "line": 186,
+      "offset": null,
+      "text": "Sub",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": null,
+      "line": 187,
+      "offset": null,
+      "text": "Up",
+      "kind": "what"
+    }
+  ]
+}

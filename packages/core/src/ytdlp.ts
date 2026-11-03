@@ -4,14 +4,12 @@ import { formatInfo, normalizeExt } from './formats'
 import type { DownloadRequest, LinkEntry, LinkInfo } from './jobs'
 import { siteFor } from './sites'
 
-/** Endings that make a bare "name.ext" a file, not a site. */
 const FILE_ENDINGS = new Set([
   'mp4', 'mkv', 'mov', 'webm', 'avi', 'gif', 'mp3', 'wav', 'flac', 'm4a', 'ogg', 'opus', 'aac',
   'png', 'jpg', 'jpeg', 'webp', 'avif', 'heic', 'bmp', 'ico', 'svg', 'pdf', 'docx', 'doc', 'md', 'html', 'txt', 'rtf',
   'zip', '7z', 'rar', 'gz', 'tar', 'bz2', 'xz', 'exe', 'msi', 'dll', 'iso', 'json', 'xml', 'csv', 'log', 'ts', 'js',
 ])
 
-/** "youtu.be/x" looks like a site; "clip.mp4" and "3.14.mp4" do not. */
 function plausibleHost(text: string): boolean {
   const host = text.split(/[/?#]/, 1)[0]!.replace(/^www\./, '')
   const labels = host.split('.')
@@ -20,11 +18,9 @@ function plausibleHost(text: string): boolean {
   return labels.every((l) => /^[a-z0-9-]+$/i.test(l) && !l.startsWith('-') && !l.endsWith('-'))
 }
 
-/** Returns a clean URL when the text is a single web link, otherwise undefined. "youtu.be/x" counts too. */
 export function asLink(text: string): string | undefined {
   let t = text.trim().replace(/^<|>$/g, '')
   if (!t || /\s/.test(t) || t.length > 2048) return undefined
-  // People paste links without the https:// part all the time.
   if (!/^[a-z][a-z0-9+.-]*:/i.test(t) && /^(www\.)?[\w-]+(\.[\w-]+)+([/?#]|$)/i.test(t)) {
     if (!plausibleHost(t)) return undefined
     t = `https://${t}`
@@ -39,7 +35,6 @@ export function asLink(text: string): string | undefined {
   }
 }
 
-/** True for links from sites we know the downloader handles well. Used for the clipboard chip. */
 export function isKnownMediaLink(text: string): boolean {
   const url = asLink(text)
   return Boolean(url && siteFor(url))
@@ -49,7 +44,6 @@ export function inspectArgs(url: string, jsRuntime?: string): string[] {
   return [
     '--dump-single-json',
     '--flat-playlist',
-    // Windows pipes default to the ANSI code page, which drops non-Latin titles.
     '--encoding',
     'utf-8',
     '--no-warnings',
@@ -87,7 +81,6 @@ interface RawInfo {
   entries?: ({ id?: string; title?: string; duration?: number | null; url?: string; webpage_url?: string } | null)[]
 }
 
-/** Turns `yt-dlp -J --flat-playlist` output into the preview card data. */
 export function parseLinkInfo(json: string, url: string): LinkInfo {
   const raw = JSON.parse(json) as RawInfo
   const isPlaylist = raw._type === 'playlist' || Array.isArray(raw.entries)
@@ -148,17 +141,14 @@ const AUDIO_TARGETS = new Set(['mp3', 'm4a', 'flac', 'wav', 'ogg'])
 export interface YtDlpContext {
   outputDir: string
   ffmpegDir?: string
-  /** e.g. "deno:C:\\...\\deno.exe" */
   jsRuntime?: string
 }
 
 export interface YtDlpPlan {
   args: string[]
-  /** Set when Sparky should convert the finished file itself as a second stage. */
   convertAfter?: string
 }
 
-/** Whether yt-dlp can finish the job alone (audio extraction) or Sparky converts afterwards. */
 export function planDownload(req: DownloadRequest, ctx: YtDlpContext): YtDlpPlan {
   const comp = compressionInfo(req.compression)
   const target = req.convertTo ? normalizeExt(req.convertTo) : undefined
@@ -181,7 +171,6 @@ export function planDownload(req: DownloadRequest, ctx: YtDlpContext): YtDlpPlan
     '-P',
     ctx.outputDir,
     '-o',
-    // Playlist items go in a folder named after the playlist; single videos stay flat.
     '%(playlist_title&{}/|)s%(playlist_index&{} - |)s%(title).150B [%(id)s].%(ext)s',
   ]
   if (ctx.ffmpegDir) args.push('--ffmpeg-location', ctx.ffmpegDir)
@@ -197,7 +186,6 @@ export function planDownload(req: DownloadRequest, ctx: YtDlpContext): YtDlpPlan
   } else {
     const h = req.quality
     args.push('-f', 'bv*+ba/b', '-S', h ? `res:${h},ext:mp4:m4a` : 'ext:mp4:m4a', '--merge-output-format', 'mp4')
-    // Converting to MP4 still runs a second pass, which applies the Compression level.
     if (target) convertAfter = target
   }
 
@@ -218,10 +206,8 @@ export interface DownloadProgress {
   kind: 'download'
   downloaded: number
   total?: number
-  /** Bytes per second. */
   speed?: number
   eta?: number
-  /** 1-based count of the item being downloaded in this run. */
   item?: number
 }
 
@@ -254,7 +240,6 @@ export function parseYtDlpLine(line: string): DownloadProgress | PostprocessProg
   }
 }
 
-/** Friendly names for yt-dlp's post-processing steps. */
 export function postprocessLabel(name: string): string {
   if (/ExtractAudio/i.test(name)) return 'Converting audio'
   if (/Merger/i.test(name)) return 'Joining video and sound'
@@ -270,7 +255,6 @@ export interface YtDlpError {
   suggestUpdate: boolean
 }
 
-/** Turns yt-dlp's stderr into a short message and says whether an update might fix it. */
 export function explainYtDlpError(stderr: string): YtDlpError {
   const lines = stderr.split(/\r?\n/).filter((l) => l.startsWith('ERROR:'))
   const raw = (lines[lines.length - 1] ?? stderr.trim().split(/\r?\n/).pop() ?? '').replace(/^ERROR:\s*(\[[^\]]+\]\s*)?(\S+:\s*)?/, '')
@@ -278,7 +262,6 @@ export function explainYtDlpError(stderr: string): YtDlpError {
   if (/Private video/i.test(raw)) return { message: 'This video is private, so it can’t be downloaded.', suggestUpdate: false }
   if (/not a bot|cookies/i.test(raw))
     return { message: 'The site is asking for a sign-in check right now. Wait a few minutes and try again, or update the downloader.', suggestUpdate: true }
-  // Whole words only: "webpage" and "API page" must not read as an age check.
   if (/confirm your age|age[- ]?(restricted|gated)/i.test(raw))
     return { message: 'This video is age-restricted and needs a signed-in account, so it can’t be downloaded.', suggestUpdate: false }
   if (/members?-only|\blog ?in\b|\bsign ?in\b/i.test(raw))
@@ -296,7 +279,6 @@ export function updateArgs(): string[] {
   return ['-U']
 }
 
-/** Whether the output format is something Sparky can convert a finished download into. */
 export function isDownloadTarget(ext: string): boolean {
   const cat = formatInfo(ext)?.category
   return cat === 'video' || cat === 'audio'

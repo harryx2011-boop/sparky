@@ -7,10 +7,8 @@ import { FlowingTrack } from './FlowingTrack'
 export interface CompressionSliderProps {
   value: CompressionLevel
   onChange: (value: CompressionLevel) => void
-  /** Archives are lossless, so their stops read as speed vs. size. */
   variant?: 'media' | 'archive'
   disabled?: boolean
-  /** Shown on the right of the label row. Defaults to the level's plain hint. */
   detail?: string
   showStops?: boolean
   label?: string

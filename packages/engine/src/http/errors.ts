@@ -30,7 +30,6 @@ const OP_STATUS: Record<OpInputCode, number> = {
   unavailable: 422,
 }
 
-/** A body that doesn't match the route's schema. */
 export function invalidRequest(error: z.core.$ZodError): ApiError {
   const where = (p: PropertyKey[]) => p.map(String).join('.')
   const problems = error.issues.map((i) => (i.path.length ? `${where(i.path)}: ${i.message}` : i.message))
@@ -38,12 +37,10 @@ export function invalidRequest(error: z.core.$ZodError): ApiError {
   return new ApiError(400, 'invalid_request', apiInvalidRequestError(problems), first?.path.length ? where(first.path) : undefined)
 }
 
-/** Status and body for anything a route or hook threw. */
 export function toApiError(e: unknown): ApiError {
   if (e instanceof ApiError) return e
   if (e instanceof OpInputError) return new ApiError(OP_STATUS[e.code], e.code, e.message, e.field)
   const status = (e as { statusCode?: unknown }).statusCode
-  // Fastify's own 4xx: malformed JSON, a body it can't read.
   if (typeof status === 'number' && status >= 400 && status < 500) {
     const badJson = (e as { code?: unknown }).code === 'FST_ERR_CTP_INVALID_JSON_BODY' || e instanceof SyntaxError
     return new ApiError(400, 'invalid_request', apiInvalidRequestError(badJson ? [] : [(e as Error).message]))

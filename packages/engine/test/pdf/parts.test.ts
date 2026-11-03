@@ -5,7 +5,6 @@ import { argFileEntry, argFileText, commandLine, explainGhostscriptError, flatte
 import { mmToPt, placeImage } from '../../src/pdf/layout'
 import { splitParts } from '../../src/pdf/ops/split'
 
-/** A port of Ghostscript's @file reader (base/gsargs.c, arg_next, depth > 0), to check what it makes of our argfile. */
 function readArgFile(text: string): string[] {
   const out: string[] = []
   let p = 0
@@ -121,7 +120,6 @@ describe('ghostscript arguments', () => {
     expect(permissionBits({ print: false, copy: false })).toBe(-3136)
     expect(permissionBits({ print: true, copy: false })).toBe(-3136 | 4 | 2048)
     expect(permissionBits({ print: true, copy: true })).toBe(-3136 | 4 | 2048 | 16)
-    // Bits 1 and 2 must stay clear, 7 and 8 set.
     expect(permissionBits({ print: true, copy: true }) & 3).toBe(0)
     expect(permissionBits({ print: false, copy: false }) & 0xc0).toBe(0xc0)
   })
@@ -184,10 +182,9 @@ describe('ghostscript arguments', () => {
 
 describe('unpredictPng', () => {
   it('undoes Sub, Up, Average and Paeth rows', () => {
-    // Two rows of three grey pixels: 10 20 30 / 15 25 35.
     const rows = [
-      [1, 10, 10, 10], // Sub
-      [2, 5, 5, 5], // Up
+      [1, 10, 10, 10],
+      [2, 5, 5, 5],
     ]
     expect([...unpredictPng(Uint8Array.from(rows.flat()), 3, 1)]).toEqual([10, 20, 30, 15, 25, 35])
     const avg = [0, 10, 20, 30, 3, 10, 10, 10]

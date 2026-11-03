@@ -41,7 +41,6 @@ const AUDIO_CODEC: Partial<Record<MediaFormat, string[]>> = {
   flac: ['-c:a', 'flac'],
 }
 
-/** Bitrate that lands a target size: bytes*8/seconds, minus audio, with 6% held back for the container. */
 export function bitrateForTarget(targetBytes: number, durationSec: number, audioBitrate: number): number | null {
   if (durationSec <= 0) return null
   const total = (targetBytes * 8) / durationSec
@@ -62,7 +61,6 @@ function videoFilters(o: ConvertOptions): string[] {
   return filters
 }
 
-// Before -i, so ffmpeg seeks instead of decoding and discarding. An end of Infinity runs to the end of the file.
 function trimArgs(o: { trim?: ConvertOptions['trim'] }): string[] {
   if (!o.trim) return []
   const { start, end } = o.trim
@@ -77,7 +75,6 @@ export function convertArgs(
   _inputFormat: MediaFormat,
   durationSec = 0,
 ): string[] {
-  // A size target and a format change can arrive together; the solved bitrate wins over crf.
   if (o.targetBytes && durationSec > 0 && mediaKindOf(to) !== 'audio') {
     const bitrate = bitrateForTarget(o.targetBytes, durationSec, o.audioBitrate ?? 128_000)
     if (bitrate) {
@@ -97,7 +94,6 @@ export function convertArgs(
     if (filters.length) args.push('-vf', filters.join(','))
     if (o.crf !== undefined) args.push('-crf', String(o.crf))
     if (o.videoBitrate) args.push('-b:v', String(o.videoBitrate))
-    // libvpx-vp9 treats crf as a cap on a default bitrate unless -b:v is 0.
     else if (to === 'webm' && o.crf !== undefined) args.push('-b:v', '0')
     if (o.preset) args.push('-preset', o.preset)
     if (o.stripAudio) args.push('-an')
@@ -111,7 +107,6 @@ export function convertArgs(
   return args
 }
 
-/** Two-pass palette GIF: a single pass quantises per frame and bands badly. */
 export function gifArgs(
   input: string,
   paletteOut: string,
@@ -138,7 +133,6 @@ export function gifArgs(
   }
 }
 
-/** A poster frame, a sprite sheet of evenly spaced frames, or an animated WebP preview. */
 export function thumbsArgs(input: string, output: string, o: ThumbsOptions, durationSec = 0): string[] {
   const base = ['-hide_banner', '-nostdin', '-y']
   const scale = `scale=${o.width}:-2:flags=lanczos`
@@ -151,7 +145,6 @@ export function thumbsArgs(input: string, output: string, o: ThumbsOptions, dura
     const count = o.count ?? 25
     const columns = o.columns ?? 5
     const rows = Math.ceil(count / columns)
-    // Zero duration means the probe failed; one frame a second still gives a usable sheet.
     const fps = durationSec > 0 ? count / durationSec : 1
     return [
       ...base,

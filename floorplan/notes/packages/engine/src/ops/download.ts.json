@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/download.ts",
+  "description": "download: a link (or a playlist) through yt-dlp, optionally converted in the same job.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.title",
+      "line": 14,
+      "offset": 0,
+      "text": "Title shown in the queue.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.items",
+      "line": 17,
+      "offset": 0,
+      "text": "1-based playlist positions; left out downloads everything.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "input.count",
+      "line": 18,
+      "offset": 0,
+      "text": "How many items this will download, for overall progress.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "downloadArgs",
+      "line": 31,
+      "offset": 0,
+      "text": "The app's DownloadRequest as this op's flat input.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "toRequest",
+      "line": 36,
+      "offset": 0,
+      "text": "One link's request; what the caller left out comes from Settings.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "downloadOp.accepts",
+      "line": 62,
+      "offset": 0,
+      "text": "Takes links, not files.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/image/harness.ts",
+  "description": "A real engine in a scratch folder, shared by the image and ocr tests.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 9,
+      "offset": null,
+      "text": "A skip must never pass for green in CI.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 11,
+      "offset": null,
+      "text": "The tests open fixtures and results by path; libvips' cache would hold them open and block removing the folder on Windows.",
+      "kind": "what"
+    }
+  ]
+}

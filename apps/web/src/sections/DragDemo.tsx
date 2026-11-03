@@ -27,7 +27,6 @@ const EXAMPLES: Example[] = [
   { name: 'report', from: 'DOCX', to: 'PDF', options: ['PDF', 'MD', 'HTML', 'TXT'], before: 2.4 * MB, after: 0.62 * MB, icon: FileText },
 ]
 
-// Where things sit on the fixed 1100×540 stage.
 const TILES = [
   { x: 100, y: 160 },
   { x: 240, y: 160 },
@@ -196,7 +195,6 @@ function Stage() {
       stopped = true
       running.forEach((r) => r.stop())
     }
-    // exIndex is read once so the loop resumes where it left off.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, reduce])
 
@@ -206,7 +204,6 @@ function Stage() {
 
   return (
     <div ref={ref} className="relative select-none" style={{ width: W, height: H }}>
-      {/* Desktop with files */}
       <div className="absolute left-0 top-0 h-full w-[340px] overflow-hidden rounded-2xl border border-border bg-secondary">
         <div className="flex h-10 items-center gap-2 border-b border-white/5 px-4 font-mono text-[11px] uppercase tracking-[0.14em] text-subtle-foreground">Desktop</div>
         {EXAMPLES.map((e, i) => {
@@ -230,7 +227,6 @@ function Stage() {
         })}
       </div>
 
-      {/* Sparky window */}
       <div className="absolute left-[400px] top-0 flex h-full w-[700px] flex-col overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0e0e0e] shadow-[0_30px_90px_rgba(0,0,0,.55)]">
         <div className="flex h-10 shrink-0 items-center gap-2 border-b border-[#1c1c1c] px-4 text-xs text-subtle-foreground">
           <LogoMark size={16} /> Sparky
@@ -346,7 +342,6 @@ function Stage() {
         </div>
       </div>
 
-      {/* The file being dragged */}
       <AnimatePresence>
         {(phase === 'drag' || phase === 'over') && (
           <motion.div

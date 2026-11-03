@@ -5,8 +5,6 @@ import path from 'node:path'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { allOps, createEngine, inputSchema, opById, type Engine } from '../src'
 
-// A stand-in for yt-dlp: the real engine runs the op, but the process runner answers for this one file.
-// Links name the case: "nocaps" saves nothing, "broken" fails, anything else saves "Talk <id>.en.vtt".
 const fake = vi.hoisted(() => ({ file: 'yt-dlp', calls: [] as string[][] }))
 vi.mock('../src/process', async (orig) => {
   const real = await orig<typeof import('../src/process')>()

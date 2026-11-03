@@ -103,7 +103,6 @@ function ToastVisual() {
 }
 
 function SponsorVisual() {
-  // A video timeline with the sponsor segments snipped out.
   const segments = [
     { w: 8, cut: true },
     { w: 34, cut: false },

@@ -32,7 +32,6 @@ async function pdfText(file: string, pageNumber = 1): Promise<string> {
   return content.items.map((i) => ('str' in i ? i.str : '')).join(' ')
 }
 
-/** A two-page letter-size PDF with one large word per page, drawn with a standard font pdf.js renders without system fonts. */
 async function twoPagePdf(file: string, words: [string, string]): Promise<void> {
   const { PDFDocument, StandardFonts } = await import('pdf-lib')
   const doc = await PDFDocument.create()
@@ -61,7 +60,6 @@ describe.skipIf(!hasEnglish)('ocr', () => {
     const out = job!.outputs![0]!
     expect(path.basename(out)).toBe('sign.txt')
     expect(fs.readFileSync(out, 'utf8')).toContain('SPARKY')
-    // The bundled model was read, then kept in the data folder for next time.
     expect(fs.existsSync(path.join(h.dir, 'data', 'tessdata', 'eng.traineddata'))).toBe(true)
   })
 
@@ -134,7 +132,6 @@ describe.skipIf(!hasEnglish)('ocr', () => {
     expect(job!.status).toBe('canceled')
   })
 
-  /** Every worker thread started while `fn` runs, so a test can check none is left behind. */
   async function watchWorkers<T>(fn: () => Promise<T>): Promise<{ result: T; live: () => number }> {
     const live = new Set<Worker>()
     const post = Worker.prototype.postMessage
@@ -169,7 +166,6 @@ describe.skipIf(!hasEnglish)('ocr', () => {
     fs.mkdirSync(cache, { recursive: true })
     fs.writeFileSync(path.join(cache, 'zzq.traineddata'), 'not a language model')
     const { result, live } = await watchWorkers(() => h.engine.runOp('ocr', { files: [png], language: 'zzq' }, { timeoutMs: 20_000 }))
-    // Still stuck when the wait runs out: stop it so the rest of the suite can run.
     if (result[0]!.status === 'running') h.engine.cancelJob(result[0]!.id)
     expect(result[0]).toMatchObject({ status: 'failed' })
     expect(result[0]!.error).toMatch(LANGUAGE_FAILED)

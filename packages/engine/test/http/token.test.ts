@@ -17,7 +17,6 @@ const tmp = () => {
 }
 afterEach(() => dirs.splice(0).forEach((d) => fs.rmSync(d, { recursive: true, force: true })))
 
-/** Runs a module snippet in a separate Node process; resolves with its stdout. `onLine` sees each line as it arrives. */
 function node(code: string, env: Record<string, string>, onLine?: (line: string) => void): Promise<string> {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, ['--experimental-strip-types', '--no-warnings', '--input-type=module', '-e', code], { env: { ...process.env, ...env }, windowsHide: true })
@@ -37,7 +36,6 @@ describe('ensureToken across processes', () => {
   it('waits for a token another process is still writing instead of replacing it', async () => {
     const dir = tmp()
     const theirs = 'a'.repeat(64)
-    // Another process has created the file and not yet written to it.
     const writer = `
       import fs from 'node:fs'
       const fd = fs.openSync(process.env.FILE, 'wx', 0o600)

@@ -7,6 +7,5 @@ declare global {
   }
 }
 
-/** The real bridge inside Electron, or a mock when the UI runs in a plain browser. */
 export const api: SparkyApi = window.sparky ?? mockApi
 export const isMock = !window.sparky

@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/commands/op.ts",
+  "description": "`sparky <op words> …`: any op in the registry, its flags generated from the op's input schema.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FLAG_ALIASES",
+      "line": 15,
+      "offset": 0,
+      "text": "Extra spellings; each applies only when the op has the target field.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "missingTargetHint",
+      "line": 21,
+      "offset": 0,
+      "text": "\"Choose one with --output: pdf, jpg, webp\" when a target field is missing and the backend can list targets.",
+      "kind": "doc"
+    }
+  ]
+}

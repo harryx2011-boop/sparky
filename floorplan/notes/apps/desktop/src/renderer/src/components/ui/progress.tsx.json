@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/components/ui/progress.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Progress",
+      "line": 3,
+      "offset": 0,
+      "text": "Thin progress bar. A negative value shows an indeterminate shimmer.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,10 +1,8 @@
 import { SITES } from '@sparky/core'
 import { BRAND_MARKS, BrandMark } from '@sparky/ui'
 
-/** Every supported site that has a real mark, in registry order. */
 const ITEMS = SITES.filter((s) => BRAND_MARKS[s.id])
 
-/** Same pace as Persona's strip (40 s for 14 names), whatever the list length. */
 const DURATION = `${(ITEMS.length * 40) / 14}s`
 
 function Row({ hidden }: { hidden?: boolean }) {

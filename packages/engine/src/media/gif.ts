@@ -13,7 +13,6 @@ const F = MEDIA_TEXT.gif.fields
 
 const input = z.object({
   files: z.array(z.string().min(1)).min(1).meta(F.files),
-  // GIF frame timing is in hundredths of a second, and players slow anything faster than 50 a second right down.
   fps: z.number().positive().max(50).meta(F.fps).optional(),
   width: z.number().int().min(16).meta(F.width).optional(),
   loop: z.boolean().default(true).meta(F.loop),

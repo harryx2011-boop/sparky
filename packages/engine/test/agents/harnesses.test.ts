@@ -9,7 +9,6 @@ let home: string
 const env = {}
 const WIN_ABS = { command: 'cmd', args: ['/c', 'C:\\Users\\Jo Smith\\AppData\\Local\\Programs\\Sparky\\resources\\cli\\sparky.cmd', 'mcp'] }
 
-/** An existing config with another server in it, per client. */
 const SEED: Record<string, [string[], string]> = {
   'claude-code': [['.claude.json'], '\uFEFF{\n  "numStartups": 3,\n  "mcpServers": {\n    "helix": {\n      "type": "http",\n      "url": "http://localhost:3001/mcp"\n    }\n  }\n}\n'],
   cursor: [['.cursor', 'mcp.json'], '{\n  "mcpServers": {\n    "other": {\n      "command": "other"\n    }\n  }\n}\n'],

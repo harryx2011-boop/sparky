@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/help.ts",
+  "description": "Help text, generated from the op descriptors and the command registry.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "rows",
+      "line": 31,
+      "offset": 0,
+      "text": "Two columns: a left cell, then wrapped text aligned after it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "opHelp",
+      "line": 69,
+      "offset": 0,
+      "text": "`sparky pdf merge --help`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "groups",
+      "line": 95,
+      "offset": 0,
+      "text": "Ops grouped by the first word of their id: `pdf` → pdf.merge, pdf.split, …",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "groupHelp",
+      "line": 105,
+      "offset": 0,
+      "text": "`sparky pdf --help`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "mainHelp",
+      "line": 117,
+      "offset": 0,
+      "text": "`sparky --help`.",
+      "kind": "doc"
+    }
+  ]
+}

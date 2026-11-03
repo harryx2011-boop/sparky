@@ -5,8 +5,6 @@ import { defineConfig, type Connect, type Plugin } from 'vite'
 
 const base = process.env.BASE_PATH ?? '/'
 
-// /docs and /docs/<page> are one entry (docs.html) that reads its page from the path; vercel.json does the same rewrite.
-// /privacy and /terms are one entry each (privacy.html, terms.html).
 const rewriteDocs: Connect.NextHandleFunction = (req, _res, next) => {
   const path = (req.url ?? '').split('?')[0]!
   if (path === `${base}docs` || path.startsWith(`${base}docs/`)) req.url = `${base}docs.html`
@@ -19,7 +17,6 @@ const docsRoute: Plugin = {
   configurePreviewServer: (s) => void s.middlewares.use(rewriteDocs),
 }
 
-// BASE_PATH serves the site from a subfolder (e.g. "/sparky/"); Vercel serves it from the root.
 export default defineConfig({
   base,
   plugins: [react(), tailwindcss(), docsRoute],

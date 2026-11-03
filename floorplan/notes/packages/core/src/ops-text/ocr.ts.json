@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ops-text/ocr.ts",
+  "description": "Labels and messages for the ocr ops. Every user-facing string for them lives here.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OCR_TEXT.ocr.fields",
+      "line": 9,
+      "offset": 0,
+      "text": "A field's label (`title`) and help text (`description`) on the Tools page, the CLI help and the MCP schema.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "OCR_TEXT.ocr.searchableSuffix",
+      "line": 26,
+      "offset": 0,
+      "text": "Added to a PDF's name when the searchable copy is saved, so it never looks like the original.",
+      "kind": "doc"
+    }
+  ]
+}

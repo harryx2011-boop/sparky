@@ -4,7 +4,6 @@ import { SECTION_LINKS } from './sections'
 
 const LINK = 'flex min-h-11 items-center rounded-lg px-3 text-base text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
 
-/** The section links the header hides below lg, behind a button. Escape closes it and returns focus to the button. */
 export function MobileMenu({ home, open, onOpenChange }: { home: string; open: boolean; onOpenChange: (open: boolean) => void }) {
   const button = useRef<HTMLButtonElement>(null)
 

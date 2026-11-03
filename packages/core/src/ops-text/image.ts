@@ -1,11 +1,9 @@
 // Labels and messages for the image ops. Every user-facing string for them lives here.
 const fileName = (p: string) => p.split(/[\\/]/).pop() ?? p
 
-/** A field's label (`title`) and help text (`description`) on the Tools page, the CLI help and the MCP schema. */
 interface FieldText {
   title: string
   description: string
-  /** Words for each choice of a pick-one field, keyed by the value sent. */
   labels?: Record<string, string>
 }
 

@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/document/read.ts",
+  "description": "Readers: turn a document's bytes into rows or text.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "typeCell",
+      "line": 17,
+      "offset": 0,
+      "text": "Zip codes, phone numbers and padded values are identifiers, not numbers: typing them loses characters.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "readWorkbook",
+      "line": 54,
+      "offset": 13,
+      "text": "exceljs pads index 0 so column A lands at [1].",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "toCell",
+      "line": 63,
+      "offset": 4,
+      "text": "Formula, hyperlink and rich-text cells arrive as objects; only the rendered value fits a row.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "readPdfText",
+      "line": 99,
+      "offset": 0,
+      "text": "Text of every page. Progress runs 0 to 100 across the pages.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "readPdfText",
+      "line": 101,
+      "offset": 2,
+      "text": "pdf.js detaches the buffer it is given, so hand it a copy the caller will not reuse.",
+      "kind": "what"
+    }
+  ]
+}

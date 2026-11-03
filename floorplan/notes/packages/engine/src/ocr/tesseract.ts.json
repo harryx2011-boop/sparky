@@ -1,0 +1,135 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ocr/tesseract.ts",
+  "description": "Text out of pictures with tesseract.js (WebAssembly Tesseract in a worker thread). English ships in the bundle; other languages download once into the data folder.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OcrSetup.language",
+      "line": 9,
+      "offset": 0,
+      "text": "Tesseract language code(s), e.g. \"eng\" or \"eng+fra\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "OcrSetup.bundled",
+      "line": 10,
+      "offset": 0,
+      "text": "The bundled `tessdata` folder, when there is one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "OcrSetup.cachePath",
+      "line": 11,
+      "offset": 0,
+      "text": "Where languages are kept, uncompressed, for tesseract.js to read.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "unpackedPath",
+      "line": 24,
+      "offset": 0,
+      "text": "A path inside app.asar, moved to the same place in app.asar.unpacked. Either separator.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "workerPath",
+      "line": 28,
+      "offset": 0,
+      "text": "tesseract.js starts its worker from a file inside its own package. Packaged, that package sits in\napp.asar.unpacked (asarUnpack), because a worker thread can't start from inside the archive.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "cdnUrl",
+      "line": 36,
+      "offset": 0,
+      "text": "Where tesseract.js itself downloads a language for its LSTM engine.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "writeWhole",
+      "line": 38,
+      "offset": 0,
+      "text": "Written under a temporary name first, so a half-written language never looks usable.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "unpackedSize",
+      "line": 44,
+      "offset": 0,
+      "text": "A gzip file's last four bytes hold its unpacked size.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "stageLanguage",
+      "line": 55,
+      "offset": 0,
+      "text": "Puts `<lang>.traineddata` in the cache before any worker starts: from the bundle when it has the language,\nelse downloaded once. tesseract.js reads the cache first, and a language it fails to load itself\nleaves createWorker waiting forever, so every download and its failure happen here instead.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "dropRepeatAnswers",
+      "line": 81,
+      "offset": 0,
+      "text": "tesseract.js's worker answers a failed initialize twice: a reject, then a resolve for the same job\n(its initialize has no return after `res.reject`). The second answer finds no pending job and throws\na TypeError inside the thread's message listener, an uncaught exception. Answers after the first for\na job are dropped here; a job's first answer, progress and every other job's messages pass untouched.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "whenAborted",
+      "line": 97,
+      "offset": 0,
+      "text": "Rejects when the signal fires, so a job never waits on a worker that was stopped.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "openReader",
+      "line": 115,
+      "offset": 10,
+      "text": "Started on English, which was just checked against the bundle: createWorker only reports failures of its first step.",
+      "kind": "what"
+    },
+    {
+      "id": "n13",
+      "symbol": "openReader",
+      "line": 116,
+      "offset": 11,
+      "text": "Everything is staged in the cache, so the language path is the cache too and nothing is fetched from here on.",
+      "kind": "what"
+    },
+    {
+      "id": "n14",
+      "symbol": "openReader",
+      "line": 123,
+      "offset": 18,
+      "text": "Without a handler, a failed job also throws inside tesseract.js's message listener, which would crash the process.",
+      "kind": "what"
+    },
+    {
+      "id": "n15",
+      "symbol": "openReader",
+      "line": 130,
+      "offset": 25,
+      "text": "The worker thread tesseract.js listens on; not in its typings.",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": "openReader",
+      "line": 136,
+      "offset": 31,
+      "text": "reinitialize's promise does reject when a language fails to load, unlike createWorker's.",
+      "kind": "what"
+    }
+  ]
+}

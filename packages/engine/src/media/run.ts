@@ -23,7 +23,6 @@ import { run, throwIfAborted, type RunResult } from '../process'
 import type { OpContext, OpResult } from '../ops/types'
 import { encoderSection, type EditSpec } from './filters'
 
-/** Video and sound formats the media ops can write. GIF has its own op. */
 export const MEDIA_OUTPUTS = FORMATS.filter((f) => (f.category === 'video' && f.ext !== 'gif') || f.category === 'audio').map((f) => f.ext) as [string, ...string[]]
 
 export const isVideoOrAudio = (ext: string) => {
@@ -33,13 +32,10 @@ export const isVideoOrAudio = (ext: string) => {
 
 export const isVideo = (ext: string) => categoryOf(ext) === 'video'
 
-/** True when the output format holds a picture. */
 export const isVideoOutput = (ext: string) => formatInfo(ext)?.category === 'video'
 
-/** A picture worth editing: ffprobe found one (cover art doesn't count) and the name doesn't say sound file. */
 export const hasPicture = (file: string, info: FfprobeInfo) => info.hasVideo && categoryOf(file) !== 'audio'
 
-/** The source's own format when the media ops can write it, else the usual one for what it holds. */
 export function sameOrDefaultExt(file: string, picture: boolean): string {
   const ext = normalizeExt(file)
   if ((MEDIA_OUTPUTS as string[]).includes(ext) && isVideoOutput(ext) === picture) return ext
@@ -58,7 +54,6 @@ export interface FileOutcome {
   warnings?: (string | undefined)[]
 }
 
-/** Runs one file at a time and adds the results up. */
 export async function forEachFile(files: string[], one: (file: string) => Promise<FileOutcome>): Promise<OpResult> {
   const r: Required<OpResult> = { outputs: [], sizeBefore: 0, sizeAfter: 0, warnings: [] }
   for (const file of files) {
@@ -77,7 +72,6 @@ export async function sourceSize(file: string): Promise<number> {
   return stat.size
 }
 
-/** What ffprobe says; a failed probe reads as "has both, length unknown" so the job still tries. */
 export async function probeMedia(ctx: OpContext, file: string): Promise<FfprobeInfo> {
   return (await probe(ctx, file)) ?? { hasAudio: true, hasVideo: true }
 }
@@ -88,15 +82,12 @@ export function ffmpegPath(ctx: OpContext): string {
 }
 
 export interface StepOptions {
-  /** Seconds this pass will write, for progress. */
   total?: number
-  /** This pass's share of the job's progress: starts at `from`, covers `span`. */
   from?: number
   span?: number
   lowPriority: boolean
 }
 
-/** One FFmpeg run, reporting progress from `-progress pipe:1`. Resolves with the result; cancel rejects. */
 export async function ffmpegStep(ctx: OpContext, args: string[], o: StepOptions): Promise<RunResult> {
   const from = o.from ?? 0
   const span = o.span ?? 1
@@ -114,14 +105,12 @@ export async function ffmpegStep(ctx: OpContext, args: string[], o: StepOptions)
   })
 }
 
-/** ffmpegStep that throws the plain-language reason on failure. */
 export async function ffmpegOk(ctx: OpContext, args: string[], o: StepOptions): Promise<void> {
   const res = await ffmpegStep(ctx, args, o)
   if (res.code !== 0) throw new Error(explainFfmpegError(res.stderr))
 }
 
 export interface EncoderChoice {
-  /** Codec, quality, threads, sound and container flags, from convert's own plan. */
   encode: string[]
   encoder?: string
   usedGpu: boolean
@@ -141,7 +130,6 @@ export interface EncoderRequest {
   audioKbps?: number
 }
 
-/** The encoder convert would use for this target: the Settings codec, the graphics card on Max when it has one, else the CPU. */
 export function chooseEncoder(ctx: OpContext, r: EncoderRequest): EncoderChoice {
   const plan = buildFfmpegPlan({
     input: r.input,
@@ -162,10 +150,6 @@ export function chooseEncoder(ctx: OpContext, r: EncoderRequest): EncoderChoice 
   return { encode: encoderSection(plan.args, r.input), encoder: plan.encoder, usedGpu: plan.usedGpu, lowPriority: plan.lowPriority, note: plan.notes[0] }
 }
 
-/**
- * Runs `attempt` with the machine's graphics card, and once more on the processor when a card encoder fails,
- * as convert does. `attempt` returns the failed run's stderr, or undefined when it worked.
- */
 export async function withGpuFallback(
   ctx: OpContext,
   attempt: (gpu: GpuInfo) => Promise<{ usedGpu: boolean; stderr?: string; note?: string }>,
@@ -183,15 +167,9 @@ export async function withGpuFallback(
 export interface Saved {
   path: string
   size: number
-  /** The result was dropped and the source stands in for it. */
   keptOriginal: boolean
 }
 
-/**
- * Writes through a hidden temp name, then claims the final name and moves the file onto it, like convert.
- * `keepOriginal` sees the finished size and can drop the result in favour of the source: with no `out` the source path
- * stands in for it; with one, a copy of the source lands there, since the caller asked for a file at that place.
- */
 export async function saveOutput(
   ctx: OpContext,
   req: OutputRequest & { input: string },

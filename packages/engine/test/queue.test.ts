@@ -5,7 +5,6 @@ import { JobQueue, type RunContext } from '../src/queue'
 
 const tick = (ms = 5) => new Promise((r) => setTimeout(r, ms))
 
-/** A runner whose jobs finish only when the test says so. */
 function controllable() {
   const pending = new Map<string, { resolve: () => void; reject: (e: unknown) => void; ctx: RunContext }>()
   const runner = (job: Job, ctx: RunContext) =>
@@ -115,7 +114,6 @@ describe('JobQueue', () => {
   })
 
   it('cancels a job that was still stopping after Pause', async () => {
-    // A runner that takes a moment to stop, like a real process.
     const q = new JobQueue(
       (_job, ctx) =>
         new Promise((_resolve, reject) => {
@@ -158,7 +156,6 @@ describe('JobQueue', () => {
     await tick(40)
     expect(all.get('b')!.status).toBe('paused')
 
-    // And the other way round: Resume last means it goes back in line.
     const back = slow()
     add(back, 'c')
     await tick()

@@ -1,0 +1,79 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/image/edit.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 23,
+      "offset": null,
+      "text": "The Tools page labels each field with its title and explains it with its description.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 84,
+      "offset": null,
+      "text": "Left half red, right half blue.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 146,
+      "offset": null,
+      "text": "Quarters: red top-left, green top-right, blue bottom-left, white bottom-right.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": null,
+      "line": 161,
+      "offset": null,
+      "text": "90° clockwise: blue red / white green. Then left-right: red blue / green white.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": null,
+      "line": 162,
+      "offset": null,
+      "text": "Then top-bottom instead: white green / blue red.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": null,
+      "line": 163,
+      "offset": null,
+      "text": "270°: green white / red blue, then left-right: white green / blue red.",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": null,
+      "line": 164,
+      "offset": null,
+      "text": "180°: white blue / green red, then left-right: blue white / red green.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": null,
+      "line": 202,
+      "offset": null,
+      "text": "Bottom-up rows, BGR: the first stored pixel is the bottom-left one, red.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": null,
+      "line": 203,
+      "offset": null,
+      "text": "100 × 3 = 300 bytes a row, already a multiple of 4.",
+      "kind": "what"
+    }
+  ]
+}

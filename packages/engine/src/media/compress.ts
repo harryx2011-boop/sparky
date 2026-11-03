@@ -28,7 +28,6 @@ const F = MEDIA_TEXT.compress.fields
 const input = z.object({
   files: z.array(z.string().min(1)).min(1).meta(F.files),
   target: z.enum(Object.keys(PRESET_TARGETS) as [CompressTarget, ...CompressTarget[]]).meta(F.target).optional(),
-  /** Wins over `target`. */
   targetMb: z.number().positive().meta(F.targetMb).optional(),
   output: z.enum(MEDIA_OUTPUTS).meta(F.output).optional(),
   performance: performanceField.meta(F.performance).optional(),
@@ -36,7 +35,6 @@ const input = z.object({
 
 export type CompressArgs = z.infer<typeof input>
 
-/** Compression level standing in for each quality-led preset: Archive keeps detail, Web trades a little. */
 const QUALITY_LEVEL: Record<'web' | 'archive', CompressionLevel> = { web: 3, archive: 1 }
 
 const mbText = (bytes: number) => String(Number((bytes / 1024 / 1024).toFixed(1)))
@@ -61,7 +59,6 @@ async function compressOne(ctx: OpContext, file: string, a: CompressArgs): Promi
   if (bytes !== null && sameExt && sizeBefore <= bytes) {
     const warnings = [MEDIA_TEXT.alreadyUnder(mbText(bytes))]
     if (!ctx.out) return { output: file, sizeBefore, sizeAfter: sizeBefore, warnings }
-    // The caller asked for a file at `out`, so the untouched original goes there.
     const copy = await saveOutput(ctx, req, (tmp) => fs.copyFile(file, tmp))
     return { output: copy.path, sizeBefore, sizeAfter: copy.size, warnings }
   }
@@ -102,10 +99,8 @@ async function compressOne(ctx: OpContext, file: string, a: CompressArgs): Promi
           const r = await ffmpegStep(ctx, plainArgs(file, tmp, enc.encode), step)
           return done(r.code, r.stderr)
         }
-        // A graphics card encoder can't take two passes here; a rate cap keeps it close to the size instead.
         if (enc.usedGpu || !TWO_PASS_ENCODERS.has(enc.encoder ?? '')) {
           const r = await ffmpegStep(ctx, cappedRateArgs(file, tmp, enc.encode, videoKbps), step)
-          // Card encoders have a quality floor they won't go under, so a small size can come out far over; the processor's two passes land it.
           if (r.code === 0 && enc.usedGpu && bytes !== null && (await fs.stat(tmp)).size > bytes) return { usedGpu: true, stderr: '' }
           return done(r.code, r.stderr)
         }
@@ -122,7 +117,6 @@ async function compressOne(ctx: OpContext, file: string, a: CompressArgs): Promi
         await fs.rm(work, { recursive: true, force: true })
       }
     },
-    // A same-format copy that came out bigger isn't worth keeping.
     (size) => sameExt && size >= sizeBefore,
   )
   if (saved.keptOriginal) warnings.push(MEDIA_TEXT.alreadySmall)

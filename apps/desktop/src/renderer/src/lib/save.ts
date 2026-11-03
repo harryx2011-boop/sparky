@@ -2,10 +2,8 @@ import type { Job } from '@sparky/core'
 import { toast } from 'sonner'
 import { api } from './api'
 
-/** Every file a finished job made. */
 export const savable = (jobs: Job[]): string[] => jobs.filter((j) => j.status === 'done').flatMap((j) => j.outputs)
 
-/** Asks where to save, copies the files there and says how it went. */
 export async function saveFiles(paths: string[]): Promise<void> {
   if (!paths.length) return
   try {

@@ -1,6 +1,4 @@
 // End-to-end conversions with the real tools.
-// Point SPARKY_TEST_BIN at a folder with ffmpeg, ffprobe, pandoc, 7z/7za (and optionally yt-dlp).
-// Without it, these tests are skipped.
 import type { ConvertSettings, Job } from '@sparky/core'
 import fs from 'node:fs'
 import http from 'node:http'
@@ -13,7 +11,6 @@ import { samePath } from '../src/output'
 import { run } from '../src/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
-// A skip must never pass for green in CI.
 if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 const has = (name: string) => Boolean(BIN && [name, `${name}.exe`].some((f) => fs.existsSync(path.join(BIN, f))))
 
@@ -63,9 +60,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     })
     engine.setSettings({ batch: true, performance: 'max' })
     const ffmpeg = path.join(BIN!, 'ffmpeg')
-    // A 3-second 720p test clip with a tone.
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=30:duration=3', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', path.join(dir, 'clip.mov')])
-    // A longer one so progress has time to be reported mid-way.
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=1280x720:rate=30:duration=20', '-c:v', 'libx264', '-preset', 'ultrafast', path.join(dir, 'long.mov')])
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'testsrc2=size=640x480', '-frames:v', '1', path.join(dir, 'photo.png')])
     await run(ffmpeg, ['-y', '-f', 'lavfi', '-i', 'sine=frequency=330:duration=2', path.join(dir, 'tone.wav')])
@@ -100,7 +95,6 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     expect(fs.statSync(job.outputs[0]!).size).toBeGreaterThan(1000)
     expect(job.sizeBefore).toBeGreaterThan(0)
     expect(progress.some((p) => p > 0 && p < 1)).toBe(true)
-    // Originals are kept by default.
     expect(fs.existsSync(path.join(dir, 'long.mov'))).toBe(true)
   })
 
@@ -110,7 +104,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     expect(again.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip (2).mp4'))
     expect(job.outputs[0]).toBe(path.join(dir, 'Sparky', 'Video', 'clip.mp4'))
     const [p] = await engine.probe([job.outputs[0]!])
-    expect(p!.height).toBe(360) // Tiny halves the size
+    expect(p!.height).toBe(360)
   })
 
   it('makes GIFs and pulls the sound out of video', async () => {
@@ -143,7 +137,6 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     fs.copyFileSync(path.join(dir, 'photo.png'), copy)
     const job = await convert(copy, { output: 'png', originals: 'replace', compression: 4 })
     expect(job.status, job.error).toBe('done')
-    // The new file is in place first; the original is set aside, then recycled.
     expect(trashed).toContain(path.join(dir, 'replace-me (original).png'))
     expect(job.outputs[0]).toBe(copy)
     expect(fs.existsSync(copy)).toBe(true)
@@ -158,7 +151,6 @@ describe.skipIf(!BIN)('engine with real tools', () => {
       expect(job!.status, job!.error).toBe('done')
       expect(samePath(job!.outputs[0]!, self)).toBe(true)
       expect(fs.statSync(self).size).toBeGreaterThan(0)
-      // Only the set-aside original may go to the Recycle Bin, never the result.
       expect(trashed.slice(before).every((p) => !samePath(p, self))).toBe(true)
     }
   })
@@ -199,7 +191,6 @@ describe.skipIf(!BIN)('engine with real tools', () => {
   })
 
   it.skipIf(!has('yt-dlp'))('downloads a link and converts it in the same job', async () => {
-    // yt-dlp's generic extractor handles a direct video link served locally.
     const server = http.createServer((_req, res) => {
       const file = path.join(dir, 'clip.mov')
       res.writeHead(200, { 'Content-Type': 'video/quicktime', 'Content-Length': fs.statSync(file).size })

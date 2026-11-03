@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/report.ts",
+  "description": "How finished and running jobs are shown: the summary agents and --json get, the lines people read, the progress bar.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "JobSummary",
+      "line": 4,
+      "offset": 0,
+      "text": "What a caller needs from a job; never its args, so a secret can't leave through here.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "JobSummary.progress",
+      "line": 14,
+      "offset": 0,
+      "text": "0–1 while running, -1 when it can't be measured. Left out once settled.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "HistorySummary",
+      "line": 33,
+      "offset": 0,
+      "text": "What a caller needs from a finished job in History; never its args.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "countLine",
+      "line": 69,
+      "offset": 0,
+      "text": "\"2 done, 1 failed\"",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "headline",
+      "line": 75,
+      "offset": 0,
+      "text": "One plain line for a set of jobs: what happened and where the results are.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "progressBar",
+      "line": 97,
+      "offset": 0,
+      "text": "A one-line bar on a terminal's stderr; nothing at all when stderr is not a terminal.",
+      "kind": "doc"
+    }
+  ]
+}

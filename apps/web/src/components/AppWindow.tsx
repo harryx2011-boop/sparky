@@ -7,7 +7,6 @@ import { useDemo } from '../state'
 const W = 1200
 const H = 740
 
-/** Scales a fixed-size design down to fit narrow screens without reflowing it. */
 export function FitToWidth({ children, width = W, height = H }: { children: ReactNode; width?: number; height?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
@@ -40,8 +39,6 @@ const FILES = [
   ['notes.md', 'MD · 8 KB'],
 ] as const
 
-/** The Sparky app at its 1200 x 740 design size, mirroring apps/desktop/src/renderer (Sidebar, ConvertPage, QueueDock, Footer).
- *  The hero puts it on a laptop screen, which scales it. Not claimed: Ctrl-key hints and the collapse button. */
 export function AppWindow() {
   const { level, compression, setCompression, effectiveResolution } = useDemo()
   const comp = compressionInfo(compression)

@@ -19,7 +19,6 @@ export const PDF_TEXT = {
     'pdf.flatten': { label: 'Flatten a PDF', done: 'Flattened' },
   },
 
-  /** Form labels (`title`) and help text (`description`) for each input field, keyed by field meaning. */
   fields: {
     pdfs: { title: 'PDF files', description: 'The PDFs to work on. Each one is handled on its own.' },
     mergeFiles: { title: 'PDF files', description: 'The PDFs to join, in the order they should appear.' },
@@ -48,7 +47,6 @@ export const PDF_TEXT = {
     password: { title: 'Password', description: 'The password that opens the PDF. Leave it empty for a PDF that opens without one but limits printing or copying.' },
   },
 
-  /** Added to the source name before the extension. */
   suffix: {
     images: ' (pages)',
     merged: ' (merged)',
@@ -61,14 +59,10 @@ export const PDF_TEXT = {
     flattened: ' (flattened)',
   },
 
-  /** Queue title, e.g. "Merge PDFs: a.pdf and 2 more". */
   title: (label: string, name: string, count: number) => (count > 1 ? `${label}: ${name} and ${count - 1} more` : `${label}: ${name}`),
 
-  /** " (page 03)": one page of a PDF saved on its own. */
   pageSuffix: (page: number, total: number) => ` (page ${pad(page, total)})`,
-  /** " (image 2)": one picture pulled out of a PDF. */
   imageSuffix: (n: number, total: number) => ` (image ${pad(n, total)})`,
-  /** One part of a split PDF: " (pages 1-3)", " (page 4)", else " (part 2)". */
   partSuffix: (pages: readonly number[], part: number, parts: number) => {
     const first = pages[0]
     const last = pages[pages.length - 1]

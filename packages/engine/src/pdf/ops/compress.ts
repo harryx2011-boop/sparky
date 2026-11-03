@@ -10,7 +10,6 @@ import { needGhostscript, pdfFilesField, pdfOp } from './common'
 
 const input = z.object({
   files: pdfFilesField,
-  /** 0 (lossless) to 4 (tiny); the compression setting when left out. */
   compression: compressionField.optional().meta(PDF_TEXT.fields.compression),
 })
 
@@ -33,7 +32,6 @@ export const compressOp: Op<typeof input> = {
         let after = (await fs.stat(plan.tmpPath)).size
         if (after >= before) {
           result.warnings.push(PDF_TEXT.alreadySmall)
-          // Nothing asked for a particular place: point at the original instead of saving a copy that isn't smaller.
           if (!ctx.out) {
             await cleanup()
             result.outputs.push(file)

@@ -1,0 +1,143 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/levels.ts",
+  "description": "Performance, compression and resolution levels.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PerformanceLevel",
+      "line": 3,
+      "offset": 0,
+      "text": "Labels and descriptions here are shown to people, so they stay in plain words.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "PerformanceInfo.bars",
+      "line": 8,
+      "offset": 0,
+      "text": "How many of the five bars light up.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "PerformanceInfo.description",
+      "line": 9,
+      "offset": 0,
+      "text": "One sentence on what the level means for the person, in plain words.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "PerformanceInfo.outcome",
+      "line": 10,
+      "offset": 0,
+      "text": "A few words for captions: what happens to the PC while it works.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "PerformanceProfile.threads",
+      "line": 24,
+      "offset": 0,
+      "text": "Thread count passed to encoders; 0 means \"let the tool decide\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "PerformanceProfile.useGpu",
+      "line": 25,
+      "offset": 0,
+      "text": "Use a hardware (graphics card) encoder when one is available.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "PerformanceProfile.lowPriority",
+      "line": 26,
+      "offset": 0,
+      "text": "Lower the process priority so the PC stays responsive.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "BATCH_MAX",
+      "line": 40,
+      "offset": 0,
+      "text": "Most jobs Sparky runs side by side, whatever the PC.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "batchConcurrency",
+      "line": 42,
+      "offset": 0,
+      "text": "How many jobs run at the same time. Off means one at a time.\nLow keeps the PC quiet, so one. Normal already gives each job half the processor, so two fill it.\nMax takes everything, so about half the processor's threads, between two and four: extra jobs mostly\nhelp when the graphics card does the heavy part or when downloads and documents sit beside a video.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "CompressionInfo.hint",
+      "line": 56,
+      "offset": 0,
+      "text": "Friendly hint shown under the slider.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "CompressionInfo.crf",
+      "line": 57,
+      "offset": 0,
+      "text": "x264/x265-style quality number (lower is better).",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "CompressionInfo.imageQuality",
+      "line": 59,
+      "offset": 0,
+      "text": "1–100 quality for lossy images.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "CompressionInfo.archiveLevel",
+      "line": 60,
+      "offset": 0,
+      "text": "7-Zip -mx level for archives.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "CompressionInfo.pdfPreset",
+      "line": 61,
+      "offset": 0,
+      "text": "Ghostscript -dPDFSETTINGS preset, when PDFs can be shrunk.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "CompressionInfo.scaleCap",
+      "line": 62,
+      "offset": 0,
+      "text": "Caps the video to this fraction of its source size (Tiny only).",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "ARCHIVE_COMPRESSION_LABELS",
+      "line": 73,
+      "offset": 0,
+      "text": "Archives are always lossless, so the slider reads as speed vs. size instead.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "isHighResolution",
+      "line": 88,
+      "offset": 0,
+      "text": "Resolutions that need Max performance and a graphics card encoder.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/main/save.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "uniqueName",
+      "line": 4,
+      "offset": 0,
+      "text": "`name.ext` becomes `name (2).ext`, `name (3).ext`… until it is not in `taken` (compared without case, as Windows does).",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "copyInto",
+      "line": 12,
+      "offset": 0,
+      "text": "Copies each file into `dir`, never overwriting what is already there. Files that cannot be copied are returned, not thrown.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "copyInto",
+      "line": 20,
+      "offset": 8,
+      "text": "COPYFILE_EXCL",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "copyTo",
+      "line": 30,
+      "offset": 0,
+      "text": "Copies one file to the exact path the user picked; the save dialog has already confirmed any overwrite.",
+      "kind": "doc"
+    }
+  ]
+}

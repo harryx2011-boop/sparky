@@ -16,7 +16,6 @@ export async function makeIcon(input: string, output: string, sizes: readonly nu
       throwIfAborted(signal)
       const png = await sharp(bytes, { animated: false })
         .autoOrient()
-        // Letterboxed on transparency, so a wide logo keeps its shape.
         .resize({ width: size, height: size, fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
         .ensureAlpha()
         .png({ compressionLevel: 9 })

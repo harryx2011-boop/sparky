@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/components/QueueDock.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "QueueDock",
+      "line": 10,
+      "offset": 0,
+      "text": "The live queue, always visible at the bottom. Drag its top edge to resize.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "QueueDock",
+      "line": 17,
+      "offset": 7,
+      "text": "Newest active work first, then recently finished.",
+      "kind": "what"
+    }
+  ]
+}

@@ -57,7 +57,6 @@ describe('formats', () => {
     expect(engineFor('a.pdf', 'txt')).toBe('pdf-text')
     expect(engineFor('a.zip', '7z')).toBe('7zip')
     expect(engineFor('a.mp3', 'png')).toBeUndefined()
-    // The document module takes the data formats and pdf to html; every pair that worked before keeps its engine.
     for (const [from, to] of [['csv', 'xlsx'], ['csv', 'pdf'], ['xlsx', 'csv'], ['json', 'xml'], ['xml', 'json'], ['xml', 'html'], ['pdf', 'html']] as [string, string][]) {
       expect(engineFor(`a.${from}`, to), `${from} to ${to}`).toBe('document')
     }
@@ -107,7 +106,6 @@ describe('formats', () => {
       }
       expect(engineFor(`a.${from}`, 'md', { libreoffice: true }), `${from} to md`).toBeUndefined()
     }
-    // Word files keep their existing routes; LibreOffice only takes over their PDF when it is there.
     expect(engineFor('a.docx', 'pdf')).toBe('pdf-print')
     expect(engineFor('a.docx', 'md', { libreoffice: true })).toBe('pandoc')
   })

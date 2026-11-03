@@ -12,12 +12,10 @@ import { filesField, pdfOp } from './common'
 
 const input = z.object({
   files: filesField.meta(PDF_TEXT.fields.pictures),
-  /** 'fit' (default) makes each page the picture's own size at its DPI. */
   pageSize: z.enum(['fit', 'a4', 'a3', 'letter', 'legal']).optional().meta(PDF_TEXT.fields.pageSize),
   orientation: z.enum(['auto', 'portrait', 'landscape']).optional().meta(PDF_TEXT.fields.orientation),
   marginMm: z.number().min(0).optional().meta(PDF_TEXT.fields.marginMm),
   fit: z.enum(['contain', 'cover']).optional().meta(PDF_TEXT.fields.fit),
-  /** true (default): one PDF for all the pictures; false: one PDF per picture. */
   merge: z.boolean().default(true).meta(PDF_TEXT.fields.merge),
 })
 

@@ -18,7 +18,6 @@ export function formatSpeed(bytesPerSecond: number | undefined): string | undefi
   return `${formatBytes(bytesPerSecond)}/s`
 }
 
-/** 3725 → "1:02:05", 42 → "0:42" */
 export function formatDuration(seconds: number | undefined): string {
   if (seconds === undefined || !Number.isFinite(seconds) || seconds < 0) return '—'
   const s = Math.round(seconds)
@@ -34,7 +33,6 @@ export function formatEta(seconds: number | undefined): string | undefined {
   return `${formatDuration(seconds)} left`
 }
 
-/** Percent saved, e.g. 318 MB → 96 MB gives 70. Negative when the file grew. */
 export function savedPercent(before: number | undefined, after: number | undefined): number | undefined {
   if (!before || after === undefined || before <= 0) return undefined
   return Math.round((1 - after / before) * 100)
@@ -49,7 +47,6 @@ export function describeSaving(before: number | undefined, after: number | undef
   return `${sizes} · same size`
 }
 
-/** Parses "1:30", "90", "01:02:03" or "1m30s" into seconds. */
 export function parseTime(text: string): number | undefined {
   const t = text.trim()
   if (!t) return undefined
@@ -62,7 +59,6 @@ export function parseTime(text: string): number | undefined {
   return parts.reduce((acc, p) => acc * 60 + parseFloat(p), 0)
 }
 
-/** "clip.mov" + "mp4" → "clip.mp4"; adds " (2)" etc. when the name is taken. */
 export function outputName(inputName: string, ext: string, taken: (name: string) => boolean, suffix = ''): string {
   const dot = inputName.lastIndexOf('.')
   const base = (dot > 0 ? inputName.slice(0, dot) : inputName) + suffix

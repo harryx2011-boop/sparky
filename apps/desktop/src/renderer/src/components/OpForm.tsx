@@ -20,7 +20,6 @@ const AUTO = '__auto'
 
 const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p
 
-/** Same affordance as the Convert page: click, Enter or Space picks files; dropping adds them. */
 function FilePicker({ id, value, onChange, multiple, accepts, invalid, describedBy }: { id: string; value: string[]; onChange: (v: string[]) => void; multiple: boolean; accepts: string[]; invalid: boolean; describedBy?: string }) {
   const [over, setOver] = useState(false)
   const add = (paths: string[]) => {
@@ -87,7 +86,6 @@ function FilePicker({ id, value, onChange, multiple, accepts, invalid, described
   )
 }
 
-/** Type a value and press Enter or comma to add it; Backspace in an empty box removes the last one. */
 function ChipInput({ id, value, onChange, numeric, invalid, describedBy }: { id: string; value: (string | number)[]; onChange: (v: (string | number)[]) => void; numeric?: boolean; invalid: boolean; describedBy?: string }) {
   const [draft, setDraft] = useState('')
   const commit = () => {
@@ -183,7 +181,6 @@ function FieldControl({ field, value, onChange, accepts, error }: { field: Field
       const options = field.options ?? []
       const current = value === undefined ? AUTO : String(value)
       const fromString = (s: string) => (s === AUTO ? undefined : options.find((o) => String(o.value) === s)?.value)
-      // Chosen from the field alone, so the control never swaps after a pick. A field that can be left unset keeps "Automatic" in a Select.
       const canBeUnset = !field.required && field.default === undefined
       control =
         options.length <= 4 && !canBeUnset ? (

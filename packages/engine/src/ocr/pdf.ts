@@ -5,7 +5,6 @@ import { renderPdfPages } from '../pdf/raster'
 import { throwIfAborted } from '../process'
 import type { OcrPage } from './tesseract'
 
-/** Starts every page after the first in the text, as Tesseract's own text output does. */
 export const PAGE_BREAK = '\f'
 
 export interface PdfReadOptions {
@@ -15,9 +14,7 @@ export interface PdfReadOptions {
 }
 
 export interface PdfRead {
-  /** Each page's text, in order. */
   pages: string[]
-  /** One searchable PDF, when asked for. */
   pdf?: Buffer
 }
 
@@ -38,7 +35,6 @@ export async function ocrPdf(file: string, opts: PdfReadOptions, read: ReadPage,
         .catch(() => {
           throw new Error(OCR_TEXT.failedPdf)
         })
-      // Tesseract sizes a page from the picture's resolution, which a rendered PNG doesn't carry: give it the source page's size back.
       const { width, height } = copied!.getSize()
       copied!.scale((r.width * 72) / opts.dpi / width, (r.height * 72) / opts.dpi / height)
       merged.addPage(copied!)

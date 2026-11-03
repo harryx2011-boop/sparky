@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/lib/fileIcons.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "known",
+      "line": 5,
+      "offset": 0,
+      "text": "Resolved icons, and lookups still on their way, shared by every row for the session.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "useFileIcon",
+      "line": 24,
+      "offset": 0,
+      "text": "The icon Windows gives this extension: a data URL, null when the pack should draw it, undefined while asking.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ExtIcon",
+      "line": 41,
+      "offset": 0,
+      "text": "A file-type icon: the Windows association when there is one, else the bundled pack. Holds its space while asking.",
+      "kind": "doc"
+    }
+  ]
+}

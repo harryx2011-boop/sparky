@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/from-images.ts",
+  "description": "pdf.from_images: pictures into one PDF, or one PDF per picture.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.pageSize",
+      "line": 15,
+      "offset": 0,
+      "text": "'fit' (default) makes each page the picture's own size at its DPI.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.merge",
+      "line": 19,
+      "offset": 0,
+      "text": "true (default): one PDF for all the pictures; false: one PDF per picture.",
+      "kind": "doc"
+    }
+  ]
+}

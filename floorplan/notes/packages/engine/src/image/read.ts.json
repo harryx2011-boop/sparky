@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/read.ts",
+  "description": "Which pictures sharp can open, and a plain-language error when it can't.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SHARP_READS",
+      "line": 6,
+      "offset": 0,
+      "text": "What sharp's bundled libvips decodes. HEIC, BMP and ICO need other routes.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "checkImage",
+      "line": 10,
+      "offset": 0,
+      "text": "Throws in plain words when the file is missing or isn't a picture sharp opens.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "readBytes",
+      "line": 16,
+      "offset": 0,
+      "text": "The file's bytes, handed to sharp instead of its path: libvips keeps files it opened by path in its\ncache, and on Windows that holds them open, so the user couldn't move or delete a source afterwards.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "explainSharpError",
+      "line": 22,
+      "offset": 0,
+      "text": "sharp's own errors (\"Input file contains unsupported image format\") become one sentence a person can act on.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Get.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Get",
+      "line": 11,
+      "offset": 2,
+      "text": "The galaxy from the top of the page gathers back into the bolt as you arrive.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "Get",
+      "line": 15,
+      "offset": 6,
+      "text": "The bolt lives in a band above the words and fades out before they start.",
+      "kind": "what"
+    }
+  ]
+}

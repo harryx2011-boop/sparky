@@ -9,7 +9,6 @@ export interface ComboGroup {
   items: { value: string; label: string; hint?: string; icon?: ReactNode }[]
 }
 
-/** Searchable, grouped picker (shadcn's Combobox pattern: Popover + Command). */
 export function Combobox({
   value,
   onChange,
@@ -27,7 +26,6 @@ export function Combobox({
   display: ReactNode
   className?: string
   label: string
-  /** Leads the closed picker; the search glyph when omitted. */
   icon?: ReactNode
 }) {
   const [open, setOpen] = useState(false)

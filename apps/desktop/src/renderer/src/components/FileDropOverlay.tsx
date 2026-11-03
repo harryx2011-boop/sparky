@@ -6,13 +6,11 @@ import { useApp } from '@/lib/state'
 
 const hasFiles = (e: DragEvent) => Boolean(e.dataTransfer?.types.includes('Files'))
 
-/** Files dragged anywhere over the window light up the whole window; dropping adds them on the Convert page. */
 export function FileDropOverlay() {
   const { addFiles, go } = useApp()
   const [over, setOver] = useState(false)
 
   useEffect(() => {
-    // dragenter/dragleave fire for every child crossed, so count them.
     let depth = 0
     const enter = (e: DragEvent) => {
       if (!hasFiles(e)) return

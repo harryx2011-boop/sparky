@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/extract-pages.ts",
+  "description": "pdf.extract_pages: a new PDF of only the chosen pages, in the order written.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "extractInput.pages",
+      "line": 11,
+      "offset": 0,
+      "text": "The pages to keep, in the order written, so \"3,1,2\" also reorders them.",
+      "kind": "doc"
+    }
+  ]
+}

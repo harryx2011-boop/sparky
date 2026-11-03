@@ -1,0 +1,151 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/formats.ts",
+  "description": "What Sparky can read, what it can write, and which tool does the work.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OUTPUT_FOLDERS",
+      "line": 16,
+      "offset": 0,
+      "text": "Folder names under the output root. Downloads get their own folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FormatInfo.ext",
+      "line": 26,
+      "offset": 0,
+      "text": "Lower-case extension without the dot.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "FormatInfo.note",
+      "line": 29,
+      "offset": 0,
+      "text": "Short plain-language description for the format picker.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "EXTRA_INPUTS",
+      "line": 80,
+      "offset": 0,
+      "text": "Inputs Sparky accepts beyond the output list.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "OFFICE_TARGETS",
+      "line": 101,
+      "offset": 0,
+      "text": "Office files only LibreOffice opens, and what it can make of each. They light up once LibreOffice is found.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "DATA_DOCS",
+      "line": 112,
+      "offset": 0,
+      "text": "Data formats only the engine's document module reads.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "rawExt",
+      "line": 114,
+      "offset": 0,
+      "text": "The raw extension of a path or bare extension, ignoring dots in folder names.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "rawExt",
+      "line": 117,
+      "offset": 3,
+      "text": "A bare word (\"mp4\") is an extension; a path with no dot in its file name has none.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "INPUT_EXTS",
+      "line": 142,
+      "offset": 0,
+      "text": "Every extension Sparky reads, lower case without the dot: the formats it writes, the extra inputs (the LibreOffice-gated Office files among them) and their aliases.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "outputsFor",
+      "line": 144,
+      "offset": 0,
+      "text": "Formats a given input can become. Includes the input's own format, which\nmeans \"just make it smaller\" (compress without converting), when that makes sense.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "outputsFor",
+      "line": 151,
+      "offset": 7,
+      "text": "Video can also drop the picture and keep just the sound.",
+      "kind": "what"
+    },
+    {
+      "id": "n12",
+      "symbol": "outputsFor",
+      "line": 158,
+      "offset": 14,
+      "text": "Old Excel and the other Office files go through LibreOffice only.",
+      "kind": "what"
+    },
+    {
+      "id": "n13",
+      "symbol": "isCompressOnly",
+      "line": 170,
+      "offset": 0,
+      "text": "True when the output keeps the input's format, so the job only shrinks the file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "compressionApplies",
+      "line": 174,
+      "offset": 0,
+      "text": "Whether the Compression slider does anything for this output.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "compressionApplies",
+      "line": 177,
+      "offset": 3,
+      "text": "TIFF is written lossless (LZW) for print, so there is nothing to trade.",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": "resolutionApplies",
+      "line": 182,
+      "offset": 0,
+      "text": "Whether a Resolution choice makes sense for this output.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "engineFor",
+      "line": 196,
+      "offset": 0,
+      "text": "Picks the tool for a conversion. Returns undefined when it can't be done.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "engineFor",
+      "line": 212,
+      "offset": 16,
+      "text": "Pairs Pandoc and printing already handle keep them; the document module takes the rest of its matrix.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,5 +1,4 @@
 // Which bytes a non-ASCII password must be for pdf.js to open an RC4 128-bit (R3) PDF, the kind pdf.protect makes.
-// The PDF is encrypted here by the spec's own algorithms (ISO 32000-1, 7.6.3), so no Ghostscript is needed.
 import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { passwordToken } from '../../src/pdf/ghostscript'
@@ -30,7 +29,6 @@ const rounds19 = (key: Buffer, data: Buffer) => {
   return d
 }
 
-/** A one-page PDF encrypted with R3, 128-bit RC4, whose user password is exactly `userBytes`. */
 function encryptedPdf(userBytes: Buffer): Uint8Array {
   const id = Buffer.from('0123456789abcdef0123456789abcdef', 'hex')
   const P = -3904
@@ -89,7 +87,6 @@ describe('non-ASCII PDF passwords', () => {
     const latin1 = Buffer.from(passwordToken('café').slice(1, -1), 'hex')
     expect(await opens(encryptedPdf(latin1), 'café')).toBe(true)
     expect(await opens(encryptedPdf(latin1), 'cafe')).toBe(false)
-    // What Ghostscript would have been given through -sUserPassword=café in a UTF-8 argfile.
     expect(await opens(encryptedPdf(Buffer.from('café', 'utf8')), 'café')).toBe(false)
   })
 })

@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/MobileMenu.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "MobileMenu",
+      "line": 7,
+      "offset": 0,
+      "text": "The section links the header hides below lg, behind a button. Escape closes it and returns focus to the button.",
+      "kind": "doc"
+    }
+  ]
+}

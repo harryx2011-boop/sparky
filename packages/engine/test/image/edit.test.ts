@@ -20,7 +20,6 @@ describe('image and ocr op declarations', () => {
       expect(Object.keys(props)).toContain('out')
       expect(JSON.stringify(js)).not.toContain(String(Number.MAX_SAFE_INTEGER))
       for (const name of RESERVED_INPUTS) expect(Object.keys(op.input.shape), `${op.id}.${name}`).not.toContain(name)
-      // The Tools page labels each field with its title and explains it with its description.
       for (const key of Object.keys(op.input.shape)) {
         expect(props[key]?.title, `${op.id}.${key} title`).toBeTruthy()
         expect(props[key]?.description, `${op.id}.${key} description`).toBeTruthy()
@@ -82,7 +81,6 @@ describe('image.edit', () => {
     h = await harness('image-edit')
     wide = path.join(h.dir, 'wide.png')
     await sharp({ create: { width: 400, height: 200, channels: 3, background: '#336699' } }).png().toFile(wide)
-    // Left half red, right half blue.
     halves = path.join(h.dir, 'halves.png')
     const red = await sharp({ create: { width: 50, height: 40, channels: 3, background: '#ff0000' } }).png().toBuffer()
     await sharp({ create: { width: 100, height: 40, channels: 3, background: '#0000ff' } }).composite([{ input: red, left: 0, top: 0 }]).png().toFile(halves)
@@ -145,7 +143,6 @@ describe('image.edit', () => {
   })
 
   it('turns first, then mirrors the turned picture', async () => {
-    // Quarters: red top-left, green top-right, blue bottom-left, white bottom-right.
     const quad = path.join(h.dir, 'quad.png')
     const block = (background: string) => sharp({ create: { width: 20, height: 20, channels: 3, background } }).png().toBuffer()
     await sharp({ create: { width: 40, height: 40, channels: 3, background: '#ffffff' } })
@@ -161,13 +158,9 @@ describe('image.edit', () => {
     const G = [0, 255, 0]
     const B = [0, 0, 255]
     const W = [255, 255, 255]
-    // 90° clockwise: blue red / white green. Then left-right: red blue / green white.
     expect(await corners(await done({ files: [quad], rotate: 90, flip: 'h' }))).toEqual([R, B, G, W])
-    // Then top-bottom instead: white green / blue red.
     expect(await corners(await done({ files: [quad], rotate: 90, flip: 'v' }))).toEqual([W, G, B, R])
-    // 270°: green white / red blue, then left-right: white green / blue red.
     expect(await corners(await done({ files: [quad], rotate: 270, flip: 'h' }))).toEqual([W, G, B, R])
-    // 180°: white blue / green red, then left-right: blue white / red green.
     expect(await corners(await done({ files: [quad], rotate: 180, flip: 'h' }))).toEqual([B, W, R, G])
   })
 
@@ -206,9 +199,7 @@ describe('image.edit', () => {
     expect(bmp.subarray(0, 2).toString('ascii')).toBe('BM')
     expect(bmp.readUInt32LE(2)).toBe(bmp.length)
     expect([bmp.readInt32LE(18), bmp.readInt32LE(22), bmp.readUInt16LE(28)]).toEqual([100, 40, 24])
-    // Bottom-up rows, BGR: the first stored pixel is the bottom-left one, red.
     expect([...bmp.subarray(54, 57)]).toEqual([0, 0, 255])
-    // 100 × 3 = 300 bytes a row, already a multiple of 4.
     expect(bmp.length).toBe(54 + 300 * 40)
   })
 

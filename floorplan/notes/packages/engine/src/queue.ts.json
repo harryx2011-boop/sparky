@@ -1,0 +1,95 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/queue.ts",
+  "description": "One shared queue for conversions and downloads.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RunContext.update",
+      "line": 9,
+      "offset": 0,
+      "text": "Merge progress, speed, stage and so on into the job.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "NewJob",
+      "line": 14,
+      "offset": 0,
+      "text": "A job before the queue gives it an id and a status. `op` defaults to the kind, the way rows from before ops read back.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "JobQueue",
+      "line": 23,
+      "offset": 0,
+      "text": "Runs up to `concurrency` jobs at once.\nPausing a running job stops its process; downloads pick up where they left off,\nconversions start again from the beginning when resumed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "JobQueue.cancelAfterStop",
+      "line": 27,
+      "offset": 0,
+      "text": "Cancel pressed while a pause was still stopping the process.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "JobQueue.resumeAfterStop",
+      "line": 28,
+      "offset": 0,
+      "text": "Resume pressed while a pause was still stopping the process: go straight back to the line.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "JobQueue.waiters",
+      "line": 29,
+      "offset": 0,
+      "text": "Callers waiting for a job to stop (done, failed, canceled or paused).",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "JobQueue.pause",
+      "line": 65,
+      "offset": 4,
+      "text": "The last press wins: a Pause after a Resume-while-stopping keeps it paused.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": "JobQueue.reorder",
+      "line": 132,
+      "offset": 0,
+      "text": "Reorders jobs to match `ids`. Jobs not listed keep their relative order at the end.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "JobQueue.whenSettled",
+      "line": 138,
+      "offset": 0,
+      "text": "Resolves with the job the next time it stops: done, failed, canceled or paused (or removed). Unknown ids resolve undefined.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "JobQueue.shutdown",
+      "line": 155,
+      "offset": 0,
+      "text": "Stops everything and waits (up to `timeoutMs`) for jobs to clean up their partial files.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "JobQueue.changed",
+      "line": 216,
+      "offset": 0,
+      "text": "Progress updates are throttled to ~10 per second; status changes go out right away.",
+      "kind": "doc"
+    }
+  ]
+}

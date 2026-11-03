@@ -35,7 +35,6 @@ export async function makeGif(inputs: readonly string[], output: string, o: GifO
   }
   throwIfAborted(signal)
   const gif = await sharp(frames, { join: { animated: true } })
-    // loop 0 plays forever; 1 plays once.
     .gif({ delay: frames.map(() => o.delayMs), loop: o.loop ? 0 : 1, keepDuplicateFrames: true })
     .toBuffer()
   await fs.writeFile(output, gif)

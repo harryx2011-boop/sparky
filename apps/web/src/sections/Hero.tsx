@@ -13,10 +13,8 @@ export function Hero() {
   const introRef = useRef<HTMLDivElement>(null)
   const windowRef = useRef<HTMLDivElement>(null)
   const reduce = useReducedMotion()
-  // Wide screens put the words on the left and the bolt on the right; small ones stack the bolt above.
   const wide = useMediaQuery('(min-width: 1024px)')
 
-  // How far the intro has scrolled away: 0 = bolt, 1 = scattered.
   const { scrollYProgress: away } = useScroll({ target: introRef, offset: ['start start', 'end start'] })
   const getProgress = useCallback(() => away.get() * 1.25, [away])
   const textY = useTransform(away, [0, 1], [0, -140])
@@ -31,12 +29,10 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <div ref={introRef} className="relative flex min-h-[100svh] items-center px-4 sm:px-6">
-        {/* Calm ground under the headline: the page grid fades out of the text column. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_34%,var(--background)_46%)] lg:bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_44%,transparent_64%)]"
         />
-        {/* The field is masked out of the text column, so no dot ever sits behind a letter. */}
         <SpriteField
           getProgress={getProgress}
           boltX={wide ? 0.74 : 0.5}
@@ -114,7 +110,6 @@ export function Hero() {
           <motion.div style={reduce ? undefined : { rotateX, scale, opacity, transformOrigin: 'center top' }}>
             <div role="img" aria-label="The Sparky app on a laptop, ready to convert three files: a video, a sound recording and a note, to MP4, with two jobs already running in the queue.">
               <DeviceLaptop viewport={[1200, 740]}>
-                {/* inert: nothing inside a mock takes focus or clicks. The real controls are in the Convert section below. */}
                 <div inert className="size-full">
                   <AppWindow />
                 </div>

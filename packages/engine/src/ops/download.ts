@@ -11,13 +11,10 @@ const F = DOWNLOAD_TEXT.fields
 
 const input = z.object({
   urls: z.array(z.string().min(1)).min(1).meta(F.urls),
-  /** Title shown in the queue. */
   title: z.string().optional().meta(F.title),
   mode: z.enum(['video', 'audio']).optional().meta(F.mode),
   quality: z.union([z.literal('best'), ...heights]).optional().meta(F.quality),
-  /** 1-based playlist positions; left out downloads everything. */
   items: z.array(z.number().int().positive()).optional().meta(F.items),
-  /** How many items this will download, for overall progress. */
   count: z.number().int().positive().optional().meta(F.count),
   convertTo: z.string().min(1).optional().meta(F.convertTo),
   compression: compressionField.optional().meta(F.compression),
@@ -31,13 +28,11 @@ const input = z.object({
 
 export type DownloadArgs = z.infer<typeof input>
 
-/** The app's DownloadRequest as this op's flat input. */
 export function downloadArgs(req: DownloadRequest): DownloadArgs {
   const { url, extras, quality, convertTo, ...rest } = req
   return { urls: [url], ...defined(rest), quality: quality ?? 'best', ...(convertTo ? { convertTo } : {}), ...defined(extras) }
 }
 
-/** One link's request; what the caller left out comes from Settings. */
 function toRequest(a: DownloadArgs, url: string, s: Settings): DownloadRequest {
   const { thumbnail, subtitles, subtitleLangs, metadata, sponsorBlock } = a
   return {
@@ -64,7 +59,6 @@ export const downloadOp: Op<typeof input> = {
   positional: ['urls'],
   resumable: true,
   input,
-  // Takes links, not files.
   accepts: () => false,
   requires: ['yt-dlp'],
   many: (a) => a.urls.length > 1 || (a.count ?? a.items?.length ?? 1) > 1,

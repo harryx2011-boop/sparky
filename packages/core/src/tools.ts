@@ -9,7 +9,6 @@ const PANDOC_FORMATS: Record<string, string> = {
   txt: 'plain',
 }
 
-/** Pandoc for MD / HTML / DOCX / TXT. For PDF output Sparky renders HTML and prints it. */
 export function pandocArgs(input: string, output: string, opts: { to?: string; title?: string } = {}): string[] {
   const from = PANDOC_FORMATS[normalizeExt(input)] ?? 'markdown'
   const to = opts.to ?? PANDOC_FORMATS[normalizeExt(output)] ?? 'html'
@@ -23,7 +22,6 @@ export function pandocArgs(input: string, output: string, opts: { to?: string; t
   return args
 }
 
-/** Small stylesheet used when turning documents into PDF, so they look tidy on paper. */
 export const PRINT_CSS = `
   @page { margin: 20mm 18mm; }
   html { font: 11pt/1.55 "Segoe UI", system-ui, sans-serif; color: #111; }
@@ -50,7 +48,6 @@ export function ghostscriptArgs(input: string, output: string, level: Compressio
     '-dQUIET',
     '-dBATCH',
     '-dSAFER',
-    // Ghostscript reads % in an output name as a page-number pattern; %% is a plain %.
     `-sOutputFile=${output.replace(/%/g, '%%')}`,
     input,
   ]
@@ -60,13 +57,11 @@ export function sevenZipExtractArgs(archive: string, outDir: string): string[] {
   return ['x', '-y', '-bsp1', '-bb0', `-o${outDir}`, '--', archive]
 }
 
-/** Run with the working directory set to the folder being packed. */
 export function sevenZipPackArgs(output: string, level: CompressionLevel): string[] {
   const type = normalizeExt(output) === 'zip' ? 'zip' : '7z'
   return ['a', `-t${type}`, `-mx=${compressionInfo(level).archiveLevel}`, '-y', '-bsp1', '-bb0', '--', output, '*']
 }
 
-/** 7-Zip prints "  42% 3 + file" style lines when -bsp1 is set. */
 export function parseSevenZipProgress(chunk: string): number | undefined {
   const matches = [...chunk.matchAll(/(\d{1,3})%/g)]
   const last = matches[matches.length - 1]

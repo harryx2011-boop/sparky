@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 // Downloads Satoshi (Indian Type Foundry, free via Fontshare) into the site and the app.
-// The font files aren't committed; the Vercel build and the Release workflow run this before building.
-// Without it, both fall back to the next fonts in the stack.
-//
-//   node scripts/fetch-fonts.mjs
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
@@ -28,7 +24,6 @@ try {
   fs.writeFileSync(zip, Buffer.from(await res.arrayBuffer()))
   const require = createRequire(path.join(root, 'package.json'))
   const sevenZip = require('7zip-bin').path7za
-  // npm drops the execute bit on Linux (Vercel's build container), so 7za fails with EACCES without this.
   if (process.platform !== 'win32') fs.chmodSync(sevenZip, 0o755)
   execFileSync(sevenZip, ['x', '-y', `-o${path.join(work, 'x')}`, zip], { stdio: 'ignore' })
 

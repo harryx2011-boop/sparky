@@ -19,7 +19,6 @@ export function ButtonLink({ variant = 'secondary', size = 'md', className, ...p
   )
 }
 
-/** Fades and lifts content in as it scrolls into view. */
 export function Reveal({ children, className, delay = 0, y = 40 }: { children: ReactNode; className?: string; delay?: number; y?: number }) {
   const reduce = useReducedMotion()
   return (
@@ -35,7 +34,6 @@ export function Reveal({ children, className, delay = 0, y = 40 }: { children: R
   )
 }
 
-/** Section heading. Each line's words rise into place when it scrolls into view. */
 export function Heading({ lines, className }: { lines: string[]; className?: string }) {
   return (
     <h2 className={cn('text-balance text-[clamp(36px,calc(2vw+24px),52px)] font-bold leading-[1.04] tracking-[-0.035em]', className)}>
@@ -57,7 +55,6 @@ const SPARK_POSITIONS = [
   [48, 3, 0.5], [60, 52, 2.3], [4, 30, 1.6], [77, 64, 0.9],
 ] as const
 
-/** Twinkling dots scattered over a section. Positions are in percent. */
 export function Sparks({ count = 8, className }: { count?: number; className?: string }) {
   return (
     <div aria-hidden className={cn('pointer-events-none absolute inset-0 overflow-hidden', className)}>

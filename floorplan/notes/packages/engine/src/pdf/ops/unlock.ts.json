@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/unlock.ts",
+  "description": "pdf.unlock: a copy of the PDF with its password and limits removed. Needs Ghostscript and, for a PDF that asks for one, the password.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.password",
+      "line": 11,
+      "offset": 0,
+      "text": "The password that opens the PDF. A PDF that only limits printing or copying opens without one.",
+      "kind": "doc"
+    }
+  ]
+}

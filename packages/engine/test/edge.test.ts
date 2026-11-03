@@ -1,5 +1,4 @@
 // Edge cases with the real tools: odd names, bad folders, broken files and mixed batches.
-// Needs SPARKY_TEST_BIN like engine.test.ts; skipped without it.
 import type { ConvertSettings, Job } from '@sparky/core'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -9,7 +8,6 @@ import { createEngine, type Engine } from '../src'
 import { run } from '../src/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
-// A skip must never pass for green in CI.
 if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 const has = (name: string) => Boolean(BIN && [name, `${name}.exe`].some((f) => fs.existsSync(path.join(BIN, f))))
 const RAW_TOOL_TEXT = /ENOENT|EACCES|EPERM|ENOTDIR|Invalid data found|Compressed: 0|Can't open as archive|moov atom/i
@@ -87,7 +85,6 @@ describe.skipIf(!BIN)('engine edge cases', () => {
 
   it('fails in plain words when the output folder cannot be created', async () => {
     const root = engine.getSettings().outputRoot
-    // A path "inside" a file can never be created.
     engine.setSettings({ outputRoot: path.join(dir, 'clip.mov', 'Sparky') })
     try {
       const job = await convert(path.join(dir, 'tone.wav'), { output: 'mp3' })

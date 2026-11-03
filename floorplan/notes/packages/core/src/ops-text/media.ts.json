@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ops-text/media.ts",
+  "description": "Labels and messages for the media ops. Every user-facing string for them lives here.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 7,
+      "offset": null,
+      "text": "A form field's label and help text: the Tools page, the CLI help and the MCP tool list all read these.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FieldText",
+      "line": 7,
+      "offset": 0,
+      "text": "A type, not an interface, so zod's .meta() takes it as is.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "field",
+      "line": 9,
+      "offset": 0,
+      "text": "`labels` words each choice of a pick-one field, keyed by the value the op takes.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "OUTPUT_LABELS",
+      "line": 11,
+      "offset": 0,
+      "text": "Video and sound formats, as the format picker words them.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "COMMON",
+      "line": 17,
+      "offset": 0,
+      "text": "Fields more than one media op takes.",
+      "kind": "doc"
+    }
+  ]
+}

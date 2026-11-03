@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/pages/DownloadPage.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "DownloadPage",
+      "line": 32,
+      "offset": 10,
+      "text": "Calm ground under the copy: the page grid fades out of the text column.",
+      "kind": "what"
+    }
+  ]
+}

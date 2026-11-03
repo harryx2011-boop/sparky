@@ -1,0 +1,87 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/options.ts",
+  "description": "Option shapes for the media and document operations, and the checks that keep them in range.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "ThumbsOptions",
+      "line": 46,
+      "offset": 0,
+      "text": "One shape for all three thumbnail modes; only the framing differs.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "ThumbsOptions.at",
+      "line": 49,
+      "offset": 0,
+      "text": "poster and preview: where to start, in seconds.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ThumbsOptions.count",
+      "line": 50,
+      "offset": 0,
+      "text": "sprite: how many frames to lay out, and how many per row.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "ThumbsOptions.durationSec",
+      "line": 52,
+      "offset": 0,
+      "text": "preview: how long, and how smooth.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "PRESET_TARGETS",
+      "line": 165,
+      "offset": 0,
+      "text": "Size a compress preset aims for, in bytes. Null means quality-led, no size goal.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "DocumentOptions",
+      "line": 172,
+      "offset": 0,
+      "text": "Presentation choices for document conversion. None of these paths is lossy in the codec sense.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "DocumentOptions.delimiter",
+      "line": 173,
+      "offset": 0,
+      "text": "Delimiter for csv in and out. Tab covers the .tsv-in-a-.csv case.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "DocumentOptions.header",
+      "line": 174,
+      "offset": 0,
+      "text": "Treat the first row as headers when reading, and emit them when writing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "DocumentOptions.sheet",
+      "line": 175,
+      "offset": 0,
+      "text": "Which sheet to read from a workbook: index or name. Default: the first.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "DocumentOptions.indent",
+      "line": 176,
+      "offset": 0,
+      "text": "Indent for json output. 0 emits a single line.",
+      "kind": "doc"
+    }
+  ]
+}

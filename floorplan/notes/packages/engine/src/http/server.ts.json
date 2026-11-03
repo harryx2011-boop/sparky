@@ -1,0 +1,79 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/http/server.ts",
+  "description": "The local HTTP API: loopback only, bearer token, the op registry over JSON. Hosted by the app on 8600, or by `sparky serve`.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "apiPort",
+      "line": 14,
+      "offset": 0,
+      "text": "The port the API uses: the caller's, else `SPARKY_API_PORT`, else 8600. A client calls it with no argument to find the server.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "ApiServerOptions.dataDir",
+      "line": 24,
+      "offset": 0,
+      "text": "Where the token file lives: the engine's data folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ApiServerOptions.port",
+      "line": 25,
+      "offset": 0,
+      "text": "0 picks a free port. Default: apiPort().",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "ApiServerOptions.host",
+      "line": 26,
+      "offset": 0,
+      "text": "Reported by /v1/health, so a client knows whether its jobs show in the app's Queue.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "ApiServerOptions.bind",
+      "line": 28,
+      "offset": 0,
+      "text": "Only 127.0.0.1 is accepted; anything else throws before listening.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "BODY_LIMIT",
+      "line": 37,
+      "offset": 0,
+      "text": "A long file list must never be refused; only JSON with local paths comes in.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "startApiServer",
+      "line": 54,
+      "offset": 11,
+      "text": "Quitting the app must not wait on a client blocked in `wait: true`.",
+      "kind": "why"
+    },
+    {
+      "id": "n8",
+      "symbol": "startApiServer",
+      "line": 57,
+      "offset": 14,
+      "text": "Every body is read as JSON whatever its content type; an empty one is no body.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "startApiServer",
+      "line": 67,
+      "offset": 24,
+      "text": "Hashing both sides gives equal lengths, so the comparison takes the same time whatever was sent.",
+      "kind": "what"
+    }
+  ]
+}

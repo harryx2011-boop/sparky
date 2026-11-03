@@ -15,7 +15,6 @@ export interface Tools {
   deno?: string
   ghostscript?: string
   libreoffice?: string
-  /** The bundled OCR language folder (`tessdata`, holding eng.traineddata.gz). */
   tessdata?: string
 }
 
@@ -27,7 +26,6 @@ const NAMES: Record<ToolId, string[]> = {
   ffprobe: [exe('ffprobe')],
   'yt-dlp': [exe('yt-dlp')],
   pandoc: [exe('pandoc')],
-  // Full 7-Zip (7z + 7z.dll) can open RAR; the standalone 7za can't.
   '7zip': [exe('7z'), exe('7za'), exe('7zz')],
   deno: [exe('deno')],
   ghostscript: isWin ? ['gswin64c.exe', 'gswin32c.exe'] : ['gs'],
@@ -36,7 +34,6 @@ const NAMES: Record<ToolId, string[]> = {
 
 const OPTIONAL = OPTIONAL_TOOLS
 
-/** Folders where optional tools usually live when installed by the user. */
 function wellKnownDirs(id: ToolId): string[] {
   if (!isWin) return []
   const pf = [process.env['ProgramFiles'], process.env['ProgramFiles(x86)']].filter(Boolean) as string[]
@@ -47,7 +44,6 @@ function wellKnownDirs(id: ToolId): string[] {
       try {
         return fs
           .readdirSync(root)
-          // Newest first: gs10.05 before gs9.56.
           .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }))
           .map((v) => path.join(root, v, 'bin'))
       } catch {
@@ -66,17 +62,12 @@ function findIn(dirs: string[], names: string[]): string | undefined {
       try {
         if (fs.statSync(full).isFile()) return full
       } catch {
-        /* keep looking */
       }
     }
   }
   return undefined
 }
 
-/**
- * Looks in Sparky's own folders first (bundled tools, then the updatable copy of yt-dlp),
- * then on PATH, then in the usual install folders.
- */
 export function locateTools(dirs: string[]): Tools {
   const pathDirs = (process.env.PATH ?? '').split(path.delimiter).filter(Boolean)
   const tools: Tools = {}
@@ -118,7 +109,6 @@ export async function toolStatuses(tools: Tools): Promise<ToolStatus[]> {
       const p = tools[id]
       const base = { id, label: TOOL_LABELS[id], optional: OPTIONAL.has(id), path: p }
       if (!p) return { ...base, found: false }
-      // Starting LibreOffice just to read its version is slow; its presence is enough.
       if (id === 'libreoffice') return { ...base, found: true }
       try {
         const res = await run(p, VERSION_ARGS[id], { timeoutMs: 15_000 })
@@ -130,10 +120,6 @@ export async function toolStatuses(tools: Tools): Promise<ToolStatus[]> {
   )
 }
 
-/**
- * Lists the hardware encoders FFmpeg was built with, then runs a tiny test encode with each
- * so only the ones this PC can really use are kept.
- */
 export async function detectGpu(ffmpeg: string | undefined): Promise<GpuInfo & { label: string }> {
   if (!ffmpeg) return { encoders: [], label: describeGpu({ encoders: [] }) }
   try {
@@ -156,7 +142,6 @@ export async function detectGpu(ffmpeg: string | undefined): Promise<GpuInfo & {
   }
 }
 
-/** yt-dlp runs better with a JavaScript runtime for YouTube; Deno is the one it recommends. */
 export function jsRuntimeArg(tools: Tools): string | undefined {
   return tools.deno ? `deno:${tools.deno}` : undefined
 }

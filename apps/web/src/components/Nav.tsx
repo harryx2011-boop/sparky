@@ -7,13 +7,11 @@ import { Magnetic } from './motion'
 import { SECTION_LINKS } from './sections'
 import { ButtonLink } from './ui'
 
-/** `home` prefixes the section links when the header sits on another page; `cta` is where the download button goes. */
 export function Nav({ home = '', cta = DOWNLOAD_PAGE }: { home?: string; cta?: string }) {
   const { scrollY } = useScroll()
   const [hidden, setHidden] = useState(false)
   const [solid, setSolid] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  // Transparent over the galaxy, solid once you scroll; hides going down, returns going up.
   useMotionValueEvent(scrollY, 'change', (y) => {
     const prev = scrollY.getPrevious() ?? 0
     setSolid(y > 40)

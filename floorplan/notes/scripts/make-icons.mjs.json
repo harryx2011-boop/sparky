@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "scripts/make-icons.mjs",
+  "description": "Renders the Sparky bolt into the icons the app and installer use, plus the installer's side and header images.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Run with: node scripts/make-icons.mjs (uses the sharp dependency from apps/desktop).",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "ico",
+      "line": 17,
+      "offset": 0,
+      "text": "An ICO holding PNG images, one per size; Windows picks the closest for each place it shows the icon.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "bmp",
+      "line": 36,
+      "offset": 0,
+      "text": "NSIS only reads 24-bit BMP files.",
+      "kind": "what"
+    }
+  ]
+}

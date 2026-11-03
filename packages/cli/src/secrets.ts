@@ -6,14 +6,11 @@ import { EXIT, UsageError } from './errors'
 
 export interface SecretIo {
   env: Record<string, string | undefined>
-  /** stdin is a terminal a person can type into. */
   interactive: boolean
   readStdin(): Promise<string>
-  /** Asks with the typed characters hidden; '' means skip. */
   prompt(label: string): Promise<string>
 }
 
-/** Replaces each secret field's "-" with stdin, fills absent ones from the environment or a prompt, and refuses literals. */
 export async function resolveSecrets(op: Pick<OpDescriptor, 'secret'>, args: Record<string, unknown>, io: SecretIo, titles: Record<string, string> = {}): Promise<Record<string, unknown>> {
   const out = { ...args }
   const fromStdin = op.secret.filter((f) => out[f] === '-')
@@ -42,7 +39,6 @@ async function readAll(stream: NodeJS.ReadStream): Promise<string> {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-/** Reads a line from the terminal without echoing it. Ctrl+C exits 130. */
 function hiddenPrompt(label: string): Promise<string> {
   const { stdin, stderr } = process
   return new Promise((resolve) => {

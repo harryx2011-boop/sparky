@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/extract-images.ts",
+  "description": "Pulls the pictures out of a PDF. JPG and JPEG 2000 streams are written as they are; other grey, RGB, CMYK",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "and indexed samples (1, 2, 4 or 8 bits) are rebuilt into PNG with sharp. The rest are counted as skipped.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "imageStreams",
+      "line": 22,
+      "offset": 0,
+      "text": "Every image stream the file holds, less the ones used only as another image's transparency.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ColourSpace.palette",
+      "line": 50,
+      "offset": 0,
+      "text": "RGB lookup table for an indexed space.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "unpredictPng",
+      "line": 103,
+      "offset": 0,
+      "text": "Undoes the PNG row filters (Predictor 10 to 15).",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "extractImage",
+      "line": 134,
+      "offset": 0,
+      "text": "One image stream as a file's bytes, or undefined when Sparky can't rebuild it.",
+      "kind": "doc"
+    }
+  ]
+}

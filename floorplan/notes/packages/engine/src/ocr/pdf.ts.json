@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ocr/pdf.ts",
+  "description": "A PDF read page by page: each page drawn to a picture, read by the one worker, and the per-page searchable PDFs joined in order.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PAGE_BREAK",
+      "line": 8,
+      "offset": 0,
+      "text": "Starts every page after the first in the text, as Tesseract's own text output does.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "PdfRead.pages",
+      "line": 17,
+      "offset": 0,
+      "text": "Each page's text, in order.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "PdfRead.pdf",
+      "line": 18,
+      "offset": 0,
+      "text": "One searchable PDF, when asked for.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "ocrPdf",
+      "line": 38,
+      "offset": 15,
+      "text": "Tesseract sizes a page from the picture's resolution, which a rendered PNG doesn't carry: give it the source page's size back.",
+      "kind": "what"
+    }
+  ]
+}

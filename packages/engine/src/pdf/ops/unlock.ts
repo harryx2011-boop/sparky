@@ -8,7 +8,6 @@ import { eachFile, needGhostscript, pdfFilesField, pdfOp } from './common'
 
 const input = z.object({
   files: pdfFilesField,
-  /** The password that opens the PDF. A PDF that only limits printing or copying opens without one. */
   password: z.string().min(1).optional().meta(PDF_TEXT.fields.password),
 })
 

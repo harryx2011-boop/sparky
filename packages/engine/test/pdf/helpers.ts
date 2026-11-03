@@ -10,7 +10,6 @@ import { createEngine, type Engine } from '../../src'
 
 export const BIN = process.env.SPARKY_TEST_BIN
 
-// libvips keeps files it has read open in its cache, which stops Windows deleting the temp folder.
 sharp.cache(false)
 
 export interface Rig {
@@ -46,7 +45,6 @@ export async function rig(): Promise<Rig> {
   }
 }
 
-/** A PDF whose page n is (100 + 10n) by (200 + 10n) points and says "Page n". */
 export async function makePdf(file: string, pages: number): Promise<string> {
   const doc = await PDFDocument.create()
   const font = await doc.embedFont(StandardFonts.Helvetica)

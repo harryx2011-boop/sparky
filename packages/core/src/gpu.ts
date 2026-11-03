@@ -10,7 +10,6 @@ export const GPU_VENDOR_LABELS: Record<GpuVendor, string> = {
   intel: 'Intel',
 }
 
-/** FFmpeg encoder names per vendor and codec. */
 export const GPU_ENCODERS: Record<GpuVendor, Record<VideoCodec, string>> = {
   nvidia: { h264: 'h264_nvenc', hevc: 'hevc_nvenc', av1: 'av1_nvenc' },
   amd: { h264: 'h264_amf', hevc: 'hevc_amf', av1: 'av1_amf' },
@@ -29,15 +28,12 @@ export const CODEC_LABELS: Record<VideoCodec, string> = {
   av1: 'Newest (AV1) · smallest files, needs recent devices',
 }
 
-/** Hardware encoders that were found and actually worked on this PC. */
 export interface GpuInfo {
-  /** e.g. ["h264_nvenc", "hevc_nvenc"] */
   encoders: string[]
 }
 
 export const NO_GPU: GpuInfo = { encoders: [] }
 
-/** Parses `ffmpeg -hide_banner -encoders` and returns the hardware encoders it was built with. */
 export function parseEncoderList(output: string): string[] {
   const known = new Set(Object.values(GPU_ENCODERS).flatMap((c) => Object.values(c)))
   const found: string[] = []
@@ -67,15 +63,12 @@ export function describeGpu(gpu: GpuInfo): string {
 export interface ResolutionOption {
   value: Resolution
   label: string
-  /** Hidden options are above the source size. Sparky never upscales. */
   hidden: boolean
   locked: boolean
-  /** Why it is locked, in plain words. Shown as a tooltip. */
   reason?: string
 }
 
 export interface ResolutionContext {
-  /** Height of the source in pixels, if known. */
   sourceHeight?: number
   performance: PerformanceLevel
   gpu: GpuInfo
@@ -98,7 +91,6 @@ export function resolutionOptions(ctx: ResolutionContext): ResolutionOption[] {
   })
 }
 
-/** Clamps a wanted resolution to the best one that is actually available. */
 export function clampResolution(wanted: Resolution | null, options: ResolutionOption[]): Resolution | null {
   if (wanted === null) return null
   const usable = options.filter((o) => !o.hidden && !o.locked).map((o) => o.value)

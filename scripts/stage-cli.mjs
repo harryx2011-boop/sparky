@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 // Builds the CLI bundle and copies it into the desktop app's resources, so the installer ships it as
-// resources\cli\lib\sparky.js, run by the resources\cli\sparky(.cmd) shims. Building every time means a
-// package run can never ship a stale bundle. The bundle is built output and never committed.
-//
-//   node scripts/stage-cli.mjs
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'

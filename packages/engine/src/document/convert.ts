@@ -77,7 +77,6 @@ function fromPdfText(text: string, to: DocFormat, title: string): Output {
   throw new Error(`A PDF can only become text, Markdown or HTML, not ${label(to)}.`)
 }
 
-/** Converts the document at `input` to `to` and writes it to `output`. Progress runs 0 to 100. */
 export async function convertDocument(
   input: string,
   output: string,

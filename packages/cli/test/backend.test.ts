@@ -41,7 +41,6 @@ async function fake(handle: Handler): Promise<{ port: number; seen: Seen[] }> {
 
 const proof = (nonce: string, token = TOKEN) => createHmac('sha256', token).update(nonce).digest('hex')
 
-/** A Sparky that answers the challenge with `token`. */
 const sparky =
   (token: string, more: Handler = () => undefined): Handler =>
   (req, url) => {

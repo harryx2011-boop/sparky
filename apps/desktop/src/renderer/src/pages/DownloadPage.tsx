@@ -63,7 +63,6 @@ export function DownloadPage() {
       setState({ kind: 'ready', info })
     } catch (e) {
       const err = e as Error & { suggestUpdate?: boolean }
-      // Errors thrown in the main process lose custom fields over IPC, so read the hint from the text too.
       const message = err.message.replace(/^Error invoking remote method '[^']+': (Error: )?/, '')
       setState({ kind: 'error', message, suggestUpdate: err.suggestUpdate ?? /Updating|isn't supported|site changed/i.test(message) })
     }
@@ -89,7 +88,6 @@ export function DownloadPage() {
   const target = mode === 'audio' ? audioFormat : convertTo === NONE ? null : convertTo
   const showCompression = mode === 'audio' ? !['wav', 'flac'].includes(audioFormat) : target !== null
   const count = info?.kind === 'playlist' ? selected.size : 1
-  // The site behind whatever is typed so far, so its mark shows before Preview is pressed.
   const typedLink = asLink(url)
   const typedSite = typedLink ? siteFor(typedLink) : undefined
   const previewSite = info ? siteFor(info.url) : undefined
@@ -155,7 +153,6 @@ export function DownloadPage() {
         >
           <ClipboardPaste size={14} /> Paste
         </Button>
-        {/* Preview is the main action until a preview is up; then Download takes the accent. */}
         <Button type="submit" size="lg" variant={info ? 'secondary' : 'default'} className="h-10" disabled={!url.trim() || state.kind === 'loading'}>
           {state.kind === 'loading' ? <Loader2 size={14} className="animate-spin" /> : null}
           Preview

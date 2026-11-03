@@ -1,0 +1,223 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/types.ts",
+  "description": "The op contract: every capability the app, the HTTP API, the MCP server and the CLI offer is one of these.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Capability",
+      "line": 8,
+      "offset": 0,
+      "text": "A tool Sparky finds on disk, or something only the running app lends ('print', 'trash').",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "OpTarget.requires",
+      "line": 14,
+      "offset": 0,
+      "text": "What this target needs beyond the op itself: docx → pdf needs 'print', xls → pdf needs 'libreoffice'.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "OpProgress.fraction",
+      "line": 18,
+      "offset": 0,
+      "text": "0–1, or null when it can't be measured. Leave it out to keep the current value.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "OpProgress.eta",
+      "line": 20,
+      "offset": 0,
+      "text": "Seconds left.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "OpContext.tempDir",
+      "line": 31,
+      "offset": 0,
+      "text": "This process's own scratch folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "OpContext.dataDir",
+      "line": 32,
+      "offset": 0,
+      "text": "The app's data folder, for caches that outlive a job.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "OpContext.signal",
+      "line": 33,
+      "offset": 0,
+      "text": "Aborted on cancel or pause; long steps check it and throw CanceledError.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "OpContext.out",
+      "line": 35,
+      "offset": 0,
+      "text": "The caller's output file or folder, when one was given.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "OpContext.output",
+      "line": 36,
+      "offset": 0,
+      "text": "Where a result goes: the caller's `out`, else beside the source for originals \"replace\", else the output root.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "OpResult.warnings",
+      "line": 43,
+      "offset": 0,
+      "text": "Shown on the finished job, joined into one note.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "OpJobFields",
+      "line": 46,
+      "offset": 0,
+      "text": "The queue row a job shows. `convert`/`download` keep the app's History and rerun working for those two ops.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "Op.id",
+      "line": 49,
+      "offset": 0,
+      "text": "'convert', 'pdf.merge', 'image.resize', 'ocr'.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "Op.label",
+      "line": 50,
+      "offset": 0,
+      "text": "Plain language, for the app and the CLI help. From core.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "Op.doneLabel",
+      "line": 51,
+      "offset": 0,
+      "text": "Past tense for the finished notification, e.g. \"Converted\". From core.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "Op.kind",
+      "line": 53,
+      "offset": 0,
+      "text": "The app's bucket: queue icon and History filter.",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "Op.arity",
+      "line": 54,
+      "offset": 0,
+      "text": "'each': one job per item of the first positional field; 'all': one job for the whole input.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "Op.positional",
+      "line": 55,
+      "offset": 0,
+      "text": "Input fields a CLI takes as bare arguments, in order.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "Op.resumable",
+      "line": 56,
+      "offset": 0,
+      "text": "A paused job picks up where it stopped instead of starting over.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "Op.input",
+      "line": 57,
+      "offset": 0,
+      "text": "Flat, transform-free zod/v4 object. The engine adds `out`; never declare it here.",
+      "kind": "doc"
+    },
+    {
+      "id": "n20",
+      "symbol": "Op.secret",
+      "line": 58,
+      "offset": 0,
+      "text": "Input fields that must never be stored or shown: they stay out of the job, the queue snapshot and History, so a rerun asks for them again.",
+      "kind": "doc"
+    },
+    {
+      "id": "n21",
+      "symbol": "Op.paths",
+      "line": 59,
+      "offset": 0,
+      "text": "Input fields holding local paths; the engine makes them absolute so a rerun, or another process, finds the same files.",
+      "kind": "doc"
+    },
+    {
+      "id": "n22",
+      "symbol": "Op.accepts",
+      "line": 60,
+      "offset": 0,
+      "text": "Which sources this op takes.",
+      "kind": "doc"
+    },
+    {
+      "id": "n23",
+      "symbol": "Op.requires",
+      "line": 62,
+      "offset": 0,
+      "text": "Hides the whole op when any is missing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n24",
+      "symbol": "Op.needs",
+      "line": 63,
+      "offset": 0,
+      "text": "What these particular args need, checked before the job is queued.",
+      "kind": "doc"
+    },
+    {
+      "id": "n25",
+      "symbol": "Op.many",
+      "line": 64,
+      "offset": 0,
+      "text": "These args make more than one file, so `out` can't name a single file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n26",
+      "symbol": "Op.fromHistory",
+      "line": 66,
+      "offset": 0,
+      "text": "Rebuilds the input from a History row written before ops existed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n27",
+      "symbol": "OpInputError",
+      "line": 72,
+      "offset": 0,
+      "text": "Raised by startOp before anything is queued. `field` is the input path that's wrong, when there is one.",
+      "kind": "doc"
+    }
+  ]
+}

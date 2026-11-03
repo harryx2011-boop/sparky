@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/MarkSvg.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "MarkSvgProps.label",
+      "line": 7,
+      "offset": 0,
+      "text": "Accessible name; the mark is decorative without one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "MarkSvg",
+      "line": 10,
+      "offset": 0,
+      "text": "One bundled brand mark, drawn inline so it paints offline. `mark.body` is our own generated markup, never user input.",
+      "kind": "doc"
+    }
+  ]
+}

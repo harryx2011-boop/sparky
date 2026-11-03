@@ -7,7 +7,6 @@ import { editPdf, eachFile, pagesField, pdfFilesField, pdfOp } from './common'
 
 const removeInput = z.object({
   files: pdfFilesField,
-  /** The pages to take out. */
   pages: pagesField.min(1).meta(PDF_TEXT.fields.removePages),
 })
 
@@ -20,7 +19,6 @@ export const removePagesOp: Op<typeof removeInput> = {
         const total = doc.getPageCount()
         const gone = parsePageRanges(a.pages, total).sort((x, y) => y - x)
         if (gone.length >= total) throw new Error(PDF_TEXT.removeAll)
-        // Last first, so the earlier page numbers still point at the same pages.
         for (const [i, n] of gone.entries()) {
           throwIfAborted(ctx.signal)
           doc.removePage(n - 1)

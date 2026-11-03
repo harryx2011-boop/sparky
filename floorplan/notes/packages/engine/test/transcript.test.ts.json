@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/transcript.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "fake",
+      "line": 8,
+      "offset": 0,
+      "text": "A stand-in for yt-dlp: the real engine runs the op, but the process runner answers for this one file.\nLinks name the case: \"nocaps\" saves nothing, \"broken\" fails, anything else saves \"Talk <id>.en.vtt\".",
+      "kind": "what"
+    }
+  ]
+}

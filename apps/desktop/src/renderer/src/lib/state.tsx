@@ -10,12 +10,10 @@ interface AppState {
   system: SystemInfo | null
   refreshSystem: () => Promise<void>
   jobs: Job[]
-  /** Files waiting on the Convert page, kept when switching sections. */
   files: ProbeResult[]
   addFiles: (paths: string[]) => Promise<void>
   removeFile: (path: string) => void
   clearFiles: () => void
-  /** A link handed over by the tray or the clipboard chip. */
   pendingLink: string | null
   setPendingLink: (url: string | null) => void
 }
@@ -89,7 +87,6 @@ export function useApp(): AppState {
   return v
 }
 
-/** Dark until the saved choice arrives (index.html starts dark); "Match Windows" follows the system from then on. */
 export function useTheme(theme: Settings['theme'] | undefined): void {
   useEffect(() => {
     if (!theme) return

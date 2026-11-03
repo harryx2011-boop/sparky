@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "scripts/fetch-fonts.mjs",
+  "description": "Downloads Satoshi (Indian Type Foundry, free via Fontshare) into the site and the app.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 3,
+      "offset": null,
+      "text": "The font files aren't committed; the Vercel build and the Release workflow run this before building.\nWithout it, both fall back to the next fonts in the stack.\n\n  node scripts/fetch-fonts.mjs",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 27,
+      "offset": null,
+      "text": "npm drops the execute bit on Linux (Vercel's build container), so 7za fails with EACCES without this.",
+      "kind": "what"
+    }
+  ]
+}

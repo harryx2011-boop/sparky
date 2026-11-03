@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/FlowingTrack.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SPARKS",
+      "line": 4,
+      "offset": 0,
+      "text": "Fixed, not random, so the sparks never jump between renders. x/y in % of the track, t = cycle in seconds.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FlowingTrack",
+      "line": 15,
+      "offset": 0,
+      "text": "The pill track and its lime fill; the fill carries a slow sheen and drifting sparks, both clipped to it.",
+      "kind": "doc"
+    }
+  ]
+}

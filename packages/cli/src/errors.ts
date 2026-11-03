@@ -10,7 +10,6 @@ export const EXIT = {
 
 export type ExitCode = (typeof EXIT)[keyof typeof EXIT]
 
-/** A problem the command line itself can name: exits with `code`, prints only the message. */
 export class CliError extends Error {
   constructor(
     message: string,
@@ -28,7 +27,6 @@ export class UsageError extends CliError {
   }
 }
 
-/** What the engine or the HTTP API refused, with its code: 'invalid_input', 'unknown_op', 'unavailable', 'not_found', … */
 export class BackendError extends Error {
   constructor(
     public readonly code: string,

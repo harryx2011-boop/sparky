@@ -32,7 +32,6 @@ function Shell() {
   const { section, go, settings } = useApp()
   useTheme(settings?.theme)
 
-  // Ctrl+1…6 switches sections.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!e.ctrlKey || e.altKey || e.shiftKey) return
@@ -46,7 +45,6 @@ function Shell() {
     return () => window.removeEventListener('keydown', onKey)
   }, [go])
 
-  // In-app toast when a job fails while the window is in front.
   useEffect(
     () =>
       api.queue.onFinished((job) => {

@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/ui.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Reveal",
+      "line": 22,
+      "offset": 0,
+      "text": "Fades and lifts content in as it scrolls into view.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Heading",
+      "line": 37,
+      "offset": 0,
+      "text": "Section heading. Each line's words rise into place when it scrolls into view.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "Sparks",
+      "line": 58,
+      "offset": 0,
+      "text": "Twinkling dots scattered over a section. Positions are in percent.",
+      "kind": "doc"
+    }
+  ]
+}

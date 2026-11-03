@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/document/write.ts",
+  "description": "Writers: turn rows or text into a document's bytes.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "writePdf",
+      "line": 137,
+      "offset": 0,
+      "text": "Text to PDF, laid out by hand: pdf-lib draws strings at coordinates and has no text flow,\nso wrapping, pagination and the baseline walk happen here. Standard Helvetica only.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "writePdf",
+      "line": 148,
+      "offset": 11,
+      "text": "pdf-lib throws on the first character WinAnsi cannot encode; swap those so one emoji cannot fail the file.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "writePdf",
+      "line": 153,
+      "offset": 16,
+      "text": "Longest prefix that fits one line, found by search so a huge token never measures itself whole.",
+      "kind": "why"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/scripts/build.mjs",
+  "description": "Bundles the CLI into one file, dist/sparky.js. Native modules and the packages the app also leaves out stay outside,",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "loaded through require() so NODE_PATH works: the installer's shim runs this file under Electron's Node with\nNODE_PATH at the app's node_modules, and an ESM import would ignore NODE_PATH.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "rootPkg",
+      "line": 8,
+      "offset": 0,
+      "text": "The version is Sparky's, from the root manifest: one number for the app and the CLI.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "EXTERNAL",
+      "line": 10,
+      "offset": 0,
+      "text": "Installed beside the bundle (they are dependencies in package.json), never inlined.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "viaRequire",
+      "line": 15,
+      "offset": 0,
+      "text": "`import x from 'sharp'` and `await import('sharp')` both become require('sharp'), resolved at run time.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "viaRequire.setup",
+      "line": 18,
+      "offset": 1,
+      "text": "The '#cjs' suffix keeps esbuild from reading a '.mjs' name as an ES module.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": null,
+      "line": 51,
+      "offset": null,
+      "text": "Marks the bundle as ESM wherever the dist folder is copied (the installer ships it outside this package).",
+      "kind": "what"
+    }
+  ]
+}

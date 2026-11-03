@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/lib/legal.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "privacy",
+      "line": 18,
+      "offset": 0,
+      "text": "The app's privacy text is the docs page, not a copy: this policy renders its sections as they are.",
+      "kind": "doc"
+    }
+  ]
+}

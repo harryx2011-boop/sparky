@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/index.ts",
+  "description": "The `sparky` entry point: route argv to a command or an op, print what went wrong, exit with its code.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "isEntry",
+      "line": 19,
+      "offset": 0,
+      "text": "True when this module is the program being run; `file://${argv[1]}` breaks on Windows paths, so compare real URLs.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 33,
+      "offset": null,
+      "text": "Let stdout drain before exiting; a pipe on Windows can lose the tail otherwise.",
+      "kind": "why"
+    }
+  ]
+}

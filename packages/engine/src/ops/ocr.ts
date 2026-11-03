@@ -15,9 +15,7 @@ const F = OCR_TEXT.ocr.fields
 const input = z.object({
   files: z.array(z.string().min(1)).min(1).meta(F.files),
   output: z.enum(['txt', 'pdf', 'both']).optional().meta(F.output),
-  /** Dots per inch PDF pages are drawn at; 300 when left out. */
   dpi: z.number().min(1).optional().meta(F.dpi),
-  // Letters and underscores only, so a code can never point outside the language folders.
   language: z
     .string()
     .regex(/^[A-Za-z_]+(?:\+[A-Za-z_]+)*$/)
@@ -25,7 +23,6 @@ const input = z.object({
     .meta(F.language),
 })
 
-/** The app's data folder; the engine adds it to every op's context. Tests without one keep languages in scratch. */
 const dataDirOf = (ctx: OpContext) => ctx.dataDir ?? ctx.tempDir
 
 async function open(ctx: OpContext, language: string): Promise<OcrReader> {

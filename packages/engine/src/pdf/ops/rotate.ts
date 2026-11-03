@@ -8,9 +8,7 @@ import { editPdf, eachFile, pagesField, pdfFilesField, pdfOp } from './common'
 
 const rotateInput = z.object({
   files: pdfFilesField,
-  /** Clockwise, added to each page's current turn; 90 when left out. */
   angle: z.union([z.literal(90), z.literal(180), z.literal(270)]).optional().meta(PDF_TEXT.fields.angle),
-  /** Which pages turn; every page when left out. Takes "odd" and "even" too. */
   pages: pagesField.optional().meta(PDF_TEXT.fields.rotatePages),
 })
 

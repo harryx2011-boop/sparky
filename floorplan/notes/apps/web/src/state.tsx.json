@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/state.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "DEMO_GPU",
+      "line": 4,
+      "offset": 0,
+      "text": "The demo pretends the visitor has a 4K clip and an NVIDIA card,\nso Max unlocks 1440p and 4K just like it would in the app.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "DemoState.effectiveResolution",
+      "line": 14,
+      "offset": 0,
+      "text": "Resolution after the lock rules are applied.",
+      "kind": "doc"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/file-icons/registry.ts",
+  "description": "Extension → vendored vscode-icons SVG. Self-contained (no Sparky imports) so another app can copy this folder.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FAMILY_ICONS",
+      "line": 8,
+      "offset": 0,
+      "text": "The icon for a file whose own format has no specific one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "EXT_ICONS",
+      "line": 18,
+      "offset": 0,
+      "text": "One row per extension, lower case without the dot.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "PACK_ONLY_EXTS",
+      "line": 46,
+      "offset": 0,
+      "text": "Extensions whose Windows association usually names a different format (.ts is TypeScript to VS Code, a video stream here), so the pack icon always wins.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "extOf",
+      "line": 48,
+      "offset": 0,
+      "text": "\"C:\\\\a\\\\Clip.MP4\", \".mp4\" and \"mp4\" all give \"mp4\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "fileIconName",
+      "line": 53,
+      "offset": 0,
+      "text": "The icon for an extension: its own, else its family's (when the caller knows it), else a plain page.",
+      "kind": "doc"
+    }
+  ]
+}

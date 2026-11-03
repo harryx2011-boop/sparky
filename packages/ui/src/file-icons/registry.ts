@@ -5,7 +5,6 @@ export type { FileIconName }
 
 export type FileFamily = 'video' | 'audio' | 'image' | 'document' | 'archive'
 
-/** The icon for a file whose own format has no specific one. */
 export const FAMILY_ICONS: Record<FileFamily, FileIconName> = {
   video: 'video',
   audio: 'audio',
@@ -16,7 +15,6 @@ export const FAMILY_ICONS: Record<FileFamily, FileIconName> = {
 
 const F = FAMILY_ICONS
 
-/** One row per extension, lower case without the dot. */
 export const EXT_ICONS: Readonly<Record<string, FileIconName>> = {
   mp4: F.video, m4v: F.video, webm: F.video, mkv: F.video, mov: F.video, avi: F.video, flv: F.video,
   wmv: F.video, ts: F.video, mts: F.video, m2ts: F.video, '3gp': F.video, mpg: F.video, mpeg: F.video,
@@ -45,16 +43,13 @@ export const EXT_ICONS: Readonly<Record<string, FileIconName>> = {
   folder: 'default_folder',
 }
 
-/** Extensions whose Windows association usually names a different format (.ts is TypeScript to VS Code, a video stream here), so the pack icon always wins. */
 export const PACK_ONLY_EXTS: ReadonlySet<string> = new Set(['ts', 'mts'])
 
-/** "C:\\a\\Clip.MP4", ".mp4" and "mp4" all give "mp4". */
 export function extOf(nameOrExt: string): string {
   const base = nameOrExt.slice(Math.max(nameOrExt.lastIndexOf('/'), nameOrExt.lastIndexOf('\\')) + 1)
   return base.slice(base.lastIndexOf('.') + 1).trim().toLowerCase()
 }
 
-/** The icon for an extension: its own, else its family's (when the caller knows it), else a plain page. */
 export function fileIconName(ext: string, family?: FileFamily): FileIconName {
   return EXT_ICONS[extOf(ext)] ?? (family ? FAMILY_ICONS[family] : 'default_file')
 }

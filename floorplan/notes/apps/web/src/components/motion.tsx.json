@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/motion.tsx",
+  "description": "Reusable motion pieces that make the page feel alive. All of them calm down for reduced motion.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SplitText",
+      "line": 15,
+      "offset": 0,
+      "text": "Words rise and un-blur one after another. Animates on mount, or when scrolled into view.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Magnetic",
+      "line": 40,
+      "offset": 0,
+      "text": "Pulls its child a little towards the pointer.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "TiltCard",
+      "line": 65,
+      "offset": 0,
+      "text": "A card that tilts a few degrees towards the pointer.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "ScrollProgress",
+      "line": 91,
+      "offset": 0,
+      "text": "Thin bar along the top that fills as you scroll.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "Marquee",
+      "line": 103,
+      "offset": 0,
+      "text": "An endless ticker. Speeds up a little while you scroll.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "CountUp",
+      "line": 126,
+      "offset": 0,
+      "text": "Counts up to a number when it scrolls into view.",
+      "kind": "doc"
+    }
+  ]
+}

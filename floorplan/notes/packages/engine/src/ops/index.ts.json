@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/index.ts",
+  "description": "The op registry. Adding an op = one file in this folder + one line in OPS (+ its words in core's OP_TEXT).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "allOps",
+      "line": 22,
+      "offset": 0,
+      "text": "Every op, as the registry declares it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "RESERVED_INPUTS",
+      "line": 26,
+      "offset": 0,
+      "text": "Input names the surfaces keep for themselves; no op may declare one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "fullInput",
+      "line": 30,
+      "offset": 0,
+      "text": "The op's input plus `out`, which the engine adds to every op: a file or a folder that wins over the output root.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "dropSafeIntBounds",
+      "line": 38,
+      "offset": 0,
+      "text": "`.int()` writes ±MAX_SAFE_INTEGER bounds that mean nothing to a caller.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "inputSchema",
+      "line": 50,
+      "offset": 0,
+      "text": "JSON Schema of what a caller sends (`io: 'input'`), for the MCP tool list, the HTTP API and the CLI.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "knownInputs",
+      "line": 60,
+      "offset": 0,
+      "text": "Every extension core knows how to read.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "OpDescriptor.secret",
+      "line": 73,
+      "offset": 0,
+      "text": "Fields to render as password inputs and never store.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "OpDescriptor.accepts",
+      "line": 74,
+      "offset": 0,
+      "text": "The extensions this op takes, from core's known inputs.",
+      "kind": "doc"
+    }
+  ]
+}

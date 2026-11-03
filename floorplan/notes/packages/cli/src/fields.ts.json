@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/fields.ts",
+  "description": "What the CLI help and the MCP tool list say about an op and its fields, read from the op descriptor alone.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "OUT_TEXT",
+      "line": 5,
+      "offset": 0,
+      "text": "Words for the field the engine adds to every op; ops describe their own fields.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "humanize",
+      "line": 24,
+      "offset": 0,
+      "text": "`videoKbps` → \"Video kbps\", for fields the registry gave no title.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "fieldsOf",
+      "line": 33,
+      "offset": 0,
+      "text": "Every input field, positional ones first, then required, then the rest in schema order; `out` last.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "choiceText",
+      "line": 56,
+      "offset": 0,
+      "text": "\"fit = Fit to picture, a4 = A4\" for a pick-one field, or the plain choices when no labels exist.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "acceptsText",
+      "line": 61,
+      "offset": 0,
+      "text": "The words for an op's source: file types, links, or \"many types\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "commandWords",
+      "line": 67,
+      "offset": 0,
+      "text": "\"pdf.merge\" → [\"pdf\", \"merge\"]; \"convert\" → [\"convert\"]. Underscores read as dashes on the command line.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "toolName",
+      "line": 75,
+      "offset": 0,
+      "text": "Tool names for agents: sparky_convert, sparky_pdf_merge, …",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "TOOL_NAMES",
+      "line": 79,
+      "offset": 0,
+      "text": "Program names for the CLI and agents; the app's own copy avoids them on purpose.",
+      "kind": "doc"
+    }
+  ]
+}

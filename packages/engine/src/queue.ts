@@ -6,13 +6,11 @@ import { CanceledError } from './process'
 
 export interface RunContext {
   signal: AbortSignal
-  /** Merge progress, speed, stage and so on into the job. */
   update(patch: Partial<Job>): void
 }
 
 export type Runner = (job: Job, ctx: RunContext) => Promise<Partial<Job> | void>
 
-/** A job before the queue gives it an id and a status. `op` defaults to the kind, the way rows from before ops read back. */
 export type NewJob = Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'createdAt' | 'op'> & Partial<Pick<Job, 'id' | 'op'>>
 
 const SETTLED = new Set<Job['status']>(['done', 'failed', 'canceled', 'paused'])
@@ -22,20 +20,12 @@ interface QueueEvents {
   finished: [job: Job]
 }
 
-/**
- * Runs up to `concurrency` jobs at once.
- * Pausing a running job stops its process; downloads pick up where they left off,
- * conversions start again from the beginning when resumed.
- */
 export class JobQueue extends EventEmitter<QueueEvents> {
   private jobs: Job[] = []
   private running = new Map<string, AbortController>()
   private settled = new Map<string, Promise<void>>()
-  /** Cancel pressed while a pause was still stopping the process. */
   private cancelAfterStop = new Set<string>()
-  /** Resume pressed while a pause was still stopping the process: go straight back to the line. */
   private resumeAfterStop = new Set<string>()
-  /** Callers waiting for a job to stop (done, failed, canceled or paused). */
   private waiters = new Map<string, ((job: Job | undefined) => void)[]>()
   private emitTimer: NodeJS.Timeout | undefined
   private lastEmit = 0
@@ -72,7 +62,6 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     const job = this.get(id)
     if (!job) return
     if (job.status === 'running') {
-      // The last press wins: a Pause after a Resume-while-stopping keeps it paused.
       this.resumeAfterStop.delete(id)
       this.running.get(id)?.abort('pause')
     } else if (job.status === 'queued') this.patch(job, { status: 'paused' })
@@ -140,14 +129,12 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     this.changed(true)
   }
 
-  /** Reorders jobs to match `ids`. Jobs not listed keep their relative order at the end. */
   reorder(ids: string[]): void {
     const pos = new Map(ids.map((id, i) => [id, i]))
     this.jobs = [...this.jobs].sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
     this.changed(true)
   }
 
-  /** Resolves with the job the next time it stops: done, failed, canceled or paused (or removed). Unknown ids resolve undefined. */
   whenSettled(id: string): Promise<Job | undefined> {
     const job = this.get(id)
     if (!job || SETTLED.has(job.status)) return Promise.resolve(job && { ...job })
@@ -165,7 +152,6 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     return this.running.size
   }
 
-  /** Stops everything and waits (up to `timeoutMs`) for jobs to clean up their partial files. */
   async shutdown(timeoutMs = 3000): Promise<void> {
     for (const c of this.running.values()) c.abort('cancel')
     const all = Promise.allSettled([...this.settled.values()])
@@ -227,7 +213,6 @@ export class JobQueue extends EventEmitter<QueueEvents> {
     if (SETTLED.has(job.status)) this.settle(job)
   }
 
-  /** Progress updates are throttled to ~10 per second; status changes go out right away. */
   private changed(immediate: boolean): void {
     const now = Date.now()
     if (immediate || now - this.lastEmit > 100) {

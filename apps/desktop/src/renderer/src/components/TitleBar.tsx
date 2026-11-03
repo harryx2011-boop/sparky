@@ -3,7 +3,6 @@ import { Copy, Minus, Square, X } from '../../../components/icons/lucide';
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 
-/** Frameless window title bar with Windows-style caption buttons. */
 export function TitleBar() {
   const [maximized, setMaximized] = useState(false)
   useEffect(() => {

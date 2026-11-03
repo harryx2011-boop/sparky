@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/rotate.ts",
+  "description": "pdf.rotate: turns the chosen pages clockwise.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "rotateInput.angle",
+      "line": 11,
+      "offset": 0,
+      "text": "Clockwise, added to each page's current turn; 90 when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "rotateInput.pages",
+      "line": 12,
+      "offset": 0,
+      "text": "Which pages turn; every page when left out. Takes \"odd\" and \"even\" too.",
+      "kind": "doc"
+    }
+  ]
+}

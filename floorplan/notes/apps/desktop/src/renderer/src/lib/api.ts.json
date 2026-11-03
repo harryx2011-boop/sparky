@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/lib/api.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "api",
+      "line": 10,
+      "offset": 0,
+      "text": "The real bridge inside Electron, or a mock when the UI runs in a plain browser.",
+      "kind": "doc"
+    }
+  ]
+}

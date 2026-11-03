@@ -41,11 +41,8 @@ import { runGhostscript } from './pdf/ghostscript'
 import { run, runOk, throwIfAborted } from './process'
 import type { Tools } from './tools'
 
-/** What the running app lends the engine. Outside the app both are missing, and the ops that need them say so before starting. */
 export interface EngineHost {
-  /** Renders an HTML file to PDF (Electron's printToPDF in the app). */
   printToPdf?(htmlPath: string, pdfPath: string): Promise<void>
-  /** Moves a file to the Recycle Bin. */
   trash?(filePath: string): Promise<void>
 }
 
@@ -56,7 +53,6 @@ export interface EngineEnv {
   settings: () => Settings
   host: EngineHost
   tempDir: string
-  /** The app's data folder, for files kept between runs such as downloaded OCR languages. */
   dataDir?: string
 }
 
@@ -75,7 +71,6 @@ export async function probe(env: EngineEnv, file: string): Promise<FfprobeInfo |
   }
 }
 
-/** A dropped folder means the files inside it (one level, hidden files skipped). An empty folder stays as one row. */
 async function expandFolders(paths: string[]): Promise<string[]> {
   const out: string[] = []
   for (const p of paths) {
@@ -114,15 +109,11 @@ export interface ConvertOutcome {
   note?: string
 }
 
-/** Where the finished file goes, and what to do with the original afterwards. */
 async function planConvertOutput(env: EngineEnv, input: string, settings: ConvertSettings, target?: string) {
   const ext = normalizeExt(settings.output)
-  // The folder follows what the file becomes: sound pulled from a video goes to Audio.
   const category = formatInfo(ext)?.category ?? categoryOf(input) ?? 'document'
   const sameFormat = isCompressOnly(input, ext)
   const replace = settings.originals === 'replace'
-  // Replacing in place keeps the original name; otherwise pick a free one ("clip (2).mp4").
-  // The name is claimed only once the file is ready, so a batch of same-named files can't collide.
   const plan = await planOutput(env.settings, { input, ext, category, replace, suffix: sameFormat && !replace ? ' (smaller)' : '', out: target })
   return { ...plan, ext, replace, sameFormat }
 }
@@ -139,13 +130,10 @@ export async function convertFile(
   const tools = env.tools
   const engine = engineFor(input, settings.output, { libreoffice: Boolean(tools.libreoffice) })
   if (!engine) {
-    // Some pairs (old Excel to PDF) only open up once LibreOffice is installed.
     if (engineFor(input, settings.output, { libreoffice: true })) throw new Error(opUnavailableError(OP_TEXT.convert.label, ['libreoffice']))
     throw new Error(`Sparky can’t turn ${normalizeExt(input).toUpperCase()} into ${normalizeExt(settings.output).toUpperCase()}.`)
   }
-  // An `out` naming the source itself is a swap in place: the original is set aside before the new file lands on its name.
   const intoSource = opts.out !== undefined && samePath(splitOut(opts.out).file, input)
-  // "Replace" means the original goes; with a destination of the caller's choosing that is the Recycle Bin, not a swap in place.
   if (opts.out && !intoSource && settings.originals === 'replace') settings = { ...settings, originals: 'trash' }
 
   const out = await planConvertOutput(env, input, settings, opts.out)
@@ -193,7 +181,6 @@ export async function convertFile(
     }
     throwIfAborted(ctx.signal)
 
-    // A compressed copy that came out bigger isn't worth keeping in place of the original.
     const sizeAfter = await dirSize(out.tmpPath)
     if (out.sameFormat && inPlace && sizeAfter >= stat.size) {
       await cleanup()
@@ -202,7 +189,6 @@ export async function convertFile(
 
     const finalPath = await out.claimFinal()
     try {
-      // Put the new file in place before touching the original, so a failure never loses both.
       if (inPlace) {
         const aside = path.join(out.dir, await freeName(out.dir, path.basename(input), normalizeExt(input), ' (original)'))
         await fs.rename(input, aside)
@@ -239,7 +225,6 @@ async function trashOriginal(env: EngineEnv, file: string, note: string | undefi
   }
 }
 
-/** Rename, falling back to copy + delete when the two paths are on different drives. */
 async function moveFile(from: string, to: string): Promise<void> {
   try {
     await fs.rename(from, to)
@@ -284,7 +269,6 @@ async function runFfmpeg(env: EngineEnv, input: string, output: string, settings
   let { res, plan } = await attempt(env.gpu)
   let note = plan.notes[0]
   if (res.code !== 0 && plan.usedGpu) {
-    // Some drivers refuse certain sizes or formats; the CPU always works.
     await fs.rm(output, { force: true })
     ;({ res, plan } = await attempt({ encoders: [] }))
     note = 'The graphics card couldn’t handle this one, so Sparky finished it with the processor instead.'
@@ -333,7 +317,6 @@ async function printToPdf(env: EngineEnv, input: string, output: string, signal:
       html = path.join(work, 'document.html')
       const args = pandocArgs(input, html, { title: path.parse(input).name })
       args.splice(args.indexOf('--'), 0, '--css', css)
-      // Let pandoc find images that sit next to the document.
       args.splice(args.indexOf('--'), 0, '--resource-path', path.dirname(input))
       await runOk(need(env.tools.pandoc, 'Pandoc'), args, { signal })
     }
@@ -348,10 +331,8 @@ async function runLibreOffice(env: EngineEnv, input: string, output: string, ext
   const work = path.join(env.tempDir, `soffice-${randomUUID()}`)
   await fs.mkdir(work, { recursive: true })
   try {
-    // A private profile avoids clashing with a LibreOffice window that is already open.
     const profile = `-env:UserInstallation=${pathToFileURL(path.join(work, 'profile')).href}`
     const args = libreOfficeArgs(input, work)
-    // The target extension alone is enough: LibreOffice picks the matching export filter (docx, xlsx, pdf).
     args[args.indexOf('--convert-to') + 1] = ext
     await runOk(need(env.tools.libreoffice, 'LibreOffice'), [profile, ...args], { signal, timeoutMs: 5 * 60_000 })
     await moveFile(path.join(work, `${path.parse(input).name}.${ext}`), output)
@@ -398,7 +379,6 @@ async function runArchive(env: EngineEnv, input: string, output: string, ext: st
     if (p !== undefined) ctx.update({ progress: twoSteps ? offset + p / 2 : p })
   }
   try {
-    // Only the full 7-Zip (7z.exe + 7z.dll) opens RAR; the standalone 7za and 7zz don't.
     const canOpenRar = path.parse(sevenZip).name.toLowerCase() === '7z'
     const res = await run(sevenZip, sevenZipExtractArgs(input, unpackTo), { signal: ctx.signal, onStdout: onProgress(0), lowPriority: settings.performance === 'low' })
     if (res.code !== 0) throw new Error(explainSevenZipError(res.stderr + res.stdout, normalizeExt(input), { canOpenRar, fallback: 'Sparky couldn’t open this archive.' }))

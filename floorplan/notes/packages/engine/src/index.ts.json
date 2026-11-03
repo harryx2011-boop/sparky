@@ -1,0 +1,159 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/index.ts",
+  "description": "The engine as one object: ops, queue, tools, history and settings. Knows nothing about Electron.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "EngineOptions.binDirs",
+      "line": 34,
+      "offset": 0,
+      "text": "Folders searched for bundled tools, most preferred first.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "EngineOptions.dataDir",
+      "line": 35,
+      "offset": 0,
+      "text": "Where the SQLite file lives.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "EngineOptions.tempDir",
+      "line": 36,
+      "offset": 0,
+      "text": "Scratch root; each process works in its own `<tempDir>/<pid>`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "EngineOptions.defaultRoot",
+      "line": 37,
+      "offset": 0,
+      "text": "Default output root, e.g. Downloads\\Sparky.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "EngineOptions.skipGpu",
+      "line": 40,
+      "offset": 0,
+      "text": "Skip the graphics card test (used by tests).",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "OpInfo.available",
+      "line": 44,
+      "offset": 0,
+      "text": "Everything the op itself requires is here.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "RunOpOptions.signal",
+      "line": 56,
+      "offset": 0,
+      "text": "Aborting cancels every job this call started.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "RunOpOptions.timeoutMs",
+      "line": 57,
+      "offset": 0,
+      "text": "Stop waiting after this long and return the jobs as they are; they keep running.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "Engine.targetsFor",
+      "line": 67,
+      "offset": 0,
+      "text": "What each file can become, across every op that takes it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "Engine.startOp",
+      "line": 68,
+      "offset": 0,
+      "text": "Validates, then queues one job per item for 'each' ops. Throws OpInputError before anything is queued.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "Engine.runOp",
+      "line": 69,
+      "offset": 0,
+      "text": "startOp, then waits until every job is done, failed, canceled or paused.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "Engine.rerun",
+      "line": 86,
+      "offset": 0,
+      "text": "Runs a History entry again, re-validated.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "defaultPaths",
+      "line": 105,
+      "offset": 0,
+      "text": "The same places the app uses, found without Electron, so a CLI shares its history, settings and tools.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "defaultPaths",
+      "line": 113,
+      "offset": 8,
+      "text": "yt-dlp's writable copy first, then the installed app's bundle.",
+      "kind": "what"
+    },
+    {
+      "id": "n15",
+      "symbol": "sweepTemp",
+      "line": 126,
+      "offset": 0,
+      "text": "Clears what crashed or force-quit processes left behind, never a live process's folder.",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "sweepTemp",
+      "line": 133,
+      "offset": 7,
+      "text": "a locked leftover waits for the next start; it must never stop this one",
+      "kind": "why"
+    },
+    {
+      "id": "n17",
+      "symbol": "createEngine",
+      "line": 159,
+      "offset": 22,
+      "text": "Secret fields (passwords) live only here, keyed by job id: never in the job, its snapshots or History.",
+      "kind": "why"
+    },
+    {
+      "id": "n18",
+      "symbol": "createEngine",
+      "line": 209,
+      "offset": 72,
+      "text": "Set before add: the queue may start the job inside add().",
+      "kind": "what"
+    },
+    {
+      "id": "n19",
+      "symbol": "createEngine",
+      "line": 254,
+      "offset": 117,
+      "text": "Node's typed emitter can't resolve its listener type for a generic event name.",
+      "kind": "what"
+    }
+  ]
+}

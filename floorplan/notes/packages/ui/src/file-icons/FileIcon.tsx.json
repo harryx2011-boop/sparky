@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/file-icons/FileIcon.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FileIconProps.ext",
+      "line": 5,
+      "offset": 0,
+      "text": "An extension or a file name/path.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FileIconProps.src",
+      "line": 7,
+      "offset": 0,
+      "text": "An image to show instead, such as the icon Windows gives the extension.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "FileIconProps.family",
+      "line": 8,
+      "offset": 0,
+      "text": "Used when the extension has no icon of its own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "FileIconProps.label",
+      "line": 9,
+      "offset": 0,
+      "text": "Omit for a decorative icon beside the file name.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "scopeIds",
+      "line": 14,
+      "offset": 0,
+      "text": "Several copies of one icon share gradient ids, so each copy gets its own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "FileIcon",
+      "line": 19,
+      "offset": 0,
+      "text": "A file-type icon: `src` when given, else the vendored vscode-icons SVG inline, so it paints offline.",
+      "kind": "doc"
+    }
+  ]
+}

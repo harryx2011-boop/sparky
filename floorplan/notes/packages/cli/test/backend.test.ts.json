@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/test/backend.test.ts",
+  "description": "RemoteBackend against fake listeners: the health challenge before the token leaves, and jobs that leave the queue mid-wait.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "sparky",
+      "line": 44,
+      "offset": 0,
+      "text": "A Sparky that answers the challenge with `token`.",
+      "kind": "doc"
+    }
+  ]
+}

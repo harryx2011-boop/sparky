@@ -1,0 +1,207 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/media/filters.ts",
+  "description": "Pure FFmpeg argv builders for the media ops: the edit filter graph, trims, and the encoder section borrowed from convert's plan.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "EditSpec.volume",
+      "line": 17,
+      "offset": 0,
+      "text": "Percent; 100 leaves the level alone.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "num",
+      "line": 27,
+      "offset": 0,
+      "text": "Short decimal text: ffmpeg reads \"1e-7\" poorly and nobody needs more than a millisecond.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "even",
+      "line": 29,
+      "offset": 0,
+      "text": "yuv420p, what most players expect, needs even sizes.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "hasVideoEdits",
+      "line": 35,
+      "offset": 0,
+      "text": "True when the edit asks for something only a picture can take.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "editedLength",
+      "line": 39,
+      "offset": 0,
+      "text": "Seconds the result lasts, or undefined when the source length is unknown and no trim end was given.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "trimInput",
+      "line": 45,
+      "offset": 0,
+      "text": "Input options: seek and read only the kept stretch, so speed and reverse see just that.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "atempoChain",
+      "line": 52,
+      "offset": 0,
+      "text": "atempo takes 0.5–2 per step on older builds, so larger changes are chained.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "cropFilter",
+      "line": 70,
+      "offset": 3,
+      "text": "Without a position ffmpeg centres the crop.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "videoFilters",
+      "line": 74,
+      "offset": 0,
+      "text": "Crop in source pixels, then flip and turn, then size (so width means the finished width), then timing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "encoderSection",
+      "line": 103,
+      "offset": 0,
+      "text": "The encoder part of a convert plan (codec, quality, threads, audio, container flags): everything between the\ninput and `-progress`, minus the plan's own trim and resize, which the media ops set themselves.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "dropOptions",
+      "line": 116,
+      "offset": 0,
+      "text": "An encoder section without the named options and their values.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "CONTAINER_OPTS",
+      "line": 126,
+      "offset": 0,
+      "text": "The null muxer of a first pass has no use for MP4's flags.",
+      "kind": "what"
+    },
+    {
+      "id": "n13",
+      "symbol": "withoutAudio",
+      "line": 128,
+      "offset": 0,
+      "text": "An encoder section with the sound settings taken out, for `-an`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "EditArgsInput.encode",
+      "line": 134,
+      "offset": 0,
+      "text": "From encoderSection.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "EditArgsInput.video",
+      "line": 135,
+      "offset": 0,
+      "text": "The picture is kept (the source has one and the target is a video).",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "EditArgsInput.audio",
+      "line": 136,
+      "offset": 0,
+      "text": "The sound is kept (the source has some and it isn't stripped).",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "EditArgsInput.length",
+      "line": 137,
+      "offset": 0,
+      "text": "Seconds the result lasts, for fade out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "targetBytes",
+      "line": 159,
+      "offset": 0,
+      "text": "Bytes to aim for: a size in MB wins over a preset; null means the preset is quality-led.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "audioBpsFor",
+      "line": 164,
+      "offset": 0,
+      "text": "Sound for a sized video: less of the budget goes to sound as the budget shrinks.",
+      "kind": "doc"
+    },
+    {
+      "id": "n20",
+      "symbol": "audioOnlyBps",
+      "line": 169,
+      "offset": 0,
+      "text": "A sound file's own rate to land a size, with 6% held back for the container. Null when it can't sound like anything.",
+      "kind": "doc"
+    },
+    {
+      "id": "n21",
+      "symbol": "TWO_PASS_ENCODERS",
+      "line": 174,
+      "offset": 0,
+      "text": "Encoders whose -pass 1/-pass 2 FFmpeg drives directly.",
+      "kind": "doc"
+    },
+    {
+      "id": "n22",
+      "symbol": "NULL_OUTPUT",
+      "line": 176,
+      "offset": 0,
+      "text": "The null output for a first pass.",
+      "kind": "doc"
+    },
+    {
+      "id": "n23",
+      "symbol": "twoPassArgs",
+      "line": 178,
+      "offset": 0,
+      "text": "Two passes to land a size: the first only measures, so it drops the sound and writes nowhere.",
+      "kind": "doc"
+    },
+    {
+      "id": "n24",
+      "symbol": "cappedRateArgs",
+      "line": 187,
+      "offset": 0,
+      "text": "One pass at a rate, held to it with a cap so a GPU encoder doesn't drift over the size.",
+      "kind": "doc"
+    },
+    {
+      "id": "n25",
+      "symbol": "plainArgs",
+      "line": 191,
+      "offset": 0,
+      "text": "One pass with a convert plan's encoder section as is.",
+      "kind": "doc"
+    }
+  ]
+}

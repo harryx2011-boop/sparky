@@ -1,0 +1,79 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/engine.test.ts",
+  "description": "End-to-end conversions with the real tools.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Point SPARKY_TEST_BIN at a folder with ffmpeg, ffprobe, pandoc, 7z/7za (and optionally yt-dlp).\nWithout it, these tests are skipped.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 14,
+      "offset": null,
+      "text": "A skip must never pass for green in CI.",
+      "kind": "why"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 63,
+      "offset": null,
+      "text": "A 3-second 720p test clip with a tone.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": null,
+      "line": 64,
+      "offset": null,
+      "text": "A longer one so progress has time to be reported mid-way.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": null,
+      "line": 98,
+      "offset": null,
+      "text": "Originals are kept by default.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": null,
+      "line": 107,
+      "offset": null,
+      "text": "Tiny halves the size",
+      "kind": "what"
+    },
+    {
+      "id": "n7",
+      "symbol": null,
+      "line": 140,
+      "offset": null,
+      "text": "The new file is in place first; the original is set aside, then recycled.",
+      "kind": "what"
+    },
+    {
+      "id": "n8",
+      "symbol": null,
+      "line": 154,
+      "offset": null,
+      "text": "Only the set-aside original may go to the Recycle Bin, never the result.",
+      "kind": "why"
+    },
+    {
+      "id": "n9",
+      "symbol": null,
+      "line": 194,
+      "offset": null,
+      "text": "yt-dlp's generic extractor handles a direct video link served locally.",
+      "kind": "what"
+    }
+  ]
+}

@@ -7,7 +7,6 @@ import { savable, saveFiles } from '@/lib/save'
 import { useApp } from '@/lib/state'
 import { JobRow } from './JobRow'
 
-/** The live queue, always visible at the bottom. Drag its top edge to resize. */
 export function QueueDock() {
   const { jobs, settings, updateSettings, go } = useApp()
   const height = settings?.dockHeight ?? 168
@@ -15,7 +14,6 @@ export function QueueDock() {
   const running = jobs.filter((j) => j.status === 'running').length
   const paused = jobs.filter((j) => j.status === 'paused').length
   const saveable = savable(jobs)
-  // Newest active work first, then recently finished.
   const order = { running: 0, queued: 1, paused: 2, failed: 3, done: 4, canceled: 5 } as const
   const shown = [...jobs].sort((a, b) => order[a.status] - order[b.status] || b.createdAt - a.createdAt)
 

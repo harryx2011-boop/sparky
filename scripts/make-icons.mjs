@@ -1,5 +1,4 @@
 // Renders the Sparky bolt into the icons the app and installer use, plus the installer's side and header images.
-// Run with: node scripts/make-icons.mjs (uses the sharp dependency from apps/desktop).
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -15,7 +14,6 @@ const tile = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">${mark
 
 const png = (size) => sharp(Buffer.from(tile), { density: Math.ceil((72 * size) / 64) * 2 }).resize(size, size).png().toBuffer()
 
-// An ICO holding PNG images, one per size; Windows picks the closest for each place it shows the icon.
 async function ico(sizes) {
   const images = await Promise.all(sizes.map(png))
   const header = Buffer.alloc(6 + 16 * sizes.length)
@@ -35,7 +33,6 @@ async function ico(sizes) {
   return Buffer.concat([header, ...images])
 }
 
-// NSIS only reads 24-bit BMP files.
 async function bmp(svg, width, height) {
   const { data } = await sharp(Buffer.from(svg)).resize(width, height).flatten({ background: '#ffffff' }).raw().toBuffer({ resolveWithObject: true })
   const stride = Math.ceil((width * 3) / 4) * 4

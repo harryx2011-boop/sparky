@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/vite.config.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "rewriteDocs",
+      "line": 8,
+      "offset": 0,
+      "text": "/docs and /docs/<page> are one entry (docs.html) that reads its page from the path; vercel.json does the same rewrite.\n/privacy and /terms are one entry each (privacy.html, terms.html).",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 20,
+      "offset": null,
+      "text": "BASE_PATH serves the site from a subfolder (e.g. \"/sparky/\"); Vercel serves it from the root.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/fields.ts",
+  "description": "Input fields and helpers more than one op shares.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "defined",
+      "line": 11,
+      "offset": 0,
+      "text": "Drops keys whose value is undefined, so stored input stays small and spreads never clear a default.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "progressPatch",
+      "line": 15,
+      "offset": 0,
+      "text": "An op's progress as a job patch. A key given as undefined clears that field.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "legacyRun",
+      "line": 25,
+      "offset": 0,
+      "text": "convertFile and downloadLink still report as job patches; this routes them through ctx.progress.",
+      "kind": "doc"
+    }
+  ]
+}

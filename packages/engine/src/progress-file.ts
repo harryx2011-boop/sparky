@@ -1,7 +1,4 @@
 // Mirrors running jobs into ~/.claude/state/progress/<id>.json so the QoL VS Code progress bar can show them.
-// Best effort: every write swallows its errors, so a progress bar never fails a job. Writes are synchronous (a few hundred
-// bytes, a few a second) so the last one lands even when a CLI run exits right after its job.
-// Off with SPARKY_PROGRESS_FILE=0; SPARKY_PROGRESS_DIR overrides the folder.
 import type { Job } from "@sparky/core";
 import fs from "node:fs";
 import os from "node:os";
@@ -40,7 +37,6 @@ export function createProgressWriter({
   intervalMs = 250,
   enabled = process.env.SPARKY_PROGRESS_FILE !== "0",
 }: ProgressWriterOptions = {}) {
-  // Under a test run a writer with no injected folder stays silent, so tests never touch the real one.
   if (!enabled || (!dir && process.env.NODE_ENV === "test"))
     return (_jobs: readonly Job[]) => {};
   const folder = dir ?? defaultDir();
@@ -90,7 +86,6 @@ export function createProgressWriter({
       const live = new Set(jobs.map((j) => j.id));
       for (const id of seen.keys()) if (!live.has(id)) seen.delete(id);
     } catch {
-      /* never fail a job over a progress file */
     }
   };
 }
@@ -102,7 +97,6 @@ function write(folder: string, id: string, body: object): void {
     fs.writeFileSync(`${file}.tmp`, JSON.stringify(body, null, 2));
     fs.renameSync(`${file}.tmp`, file);
   } catch {
-    /* best effort */
   }
 }
 
@@ -110,6 +104,5 @@ function remove(folder: string, id: string): void {
   try {
     fs.rmSync(path.join(folder, `${id}.json`), { force: true });
   } catch {
-    /* best effort */
   }
 }

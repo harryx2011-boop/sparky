@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Download.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Download",
+      "line": 27,
+      "offset": 2,
+      "text": "The link is simply there once the card is in view; the preview below follows it in.",
+      "kind": "what"
+    }
+  ]
+}

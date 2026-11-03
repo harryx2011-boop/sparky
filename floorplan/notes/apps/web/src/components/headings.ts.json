@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/headings.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "titleCase",
+      "line": 6,
+      "offset": 0,
+      "text": "Title Case for a legal heading: every word capitalized except small words in the middle.",
+      "kind": "doc"
+    }
+  ]
+}

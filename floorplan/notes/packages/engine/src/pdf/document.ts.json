@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/document.ts",
+  "description": "Opening and saving PDFs with pdf-lib, with failures in plain words.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "explainPdfError",
+      "line": 14,
+      "offset": 0,
+      "text": "A pdf-lib parse failure as a sentence: password protected, or damaged.",
+      "kind": "doc"
+    }
+  ]
+}

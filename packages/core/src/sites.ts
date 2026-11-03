@@ -1,5 +1,4 @@
 // Sites Sparky recognises by name. One row per site; the UI keeps each one's mark under the same id.
-// Any other link can still be pasted by hand.
 
 export type SiteId =
   | 'youtube'
@@ -35,7 +34,6 @@ export type SiteId =
 export interface Site {
   id: SiteId
   name: string
-  /** Bare hosts; subdomains such as www., m. and music. match too. */
   hosts: readonly string[]
 }
 
@@ -71,7 +69,6 @@ export const SITES: readonly Site[] = [
   { id: 'loom', name: 'Loom', hosts: ['loom.com'] },
 ]
 
-/** The site a full http(s) link points at, if Sparky knows it by name. */
 export function siteFor(url: string): Site | undefined {
   let host: string
   try {

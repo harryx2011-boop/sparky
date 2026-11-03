@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/images.ts",
+  "description": "Pictures onto PDF pages. JPGs go in untouched; everything else is decoded with sharp and embedded as PNG.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PICTURE_INPUTS",
+      "line": 8,
+      "offset": 0,
+      "text": "What sharp reads here (no BMP or iPhone HEIC in its build).",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "readPicture",
+      "line": 25,
+      "offset": 8,
+      "text": "A plain RGB or grey JPG the right way up can be embedded byte for byte.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "readPicture",
+      "line": 36,
+      "offset": 19,
+      "text": "pdf-lib reads the whole ArrayBuffer behind a view, so it gets a buffer of its own.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": "addPicturePage",
+      "line": 39,
+      "offset": 0,
+      "text": "Adds one page to `doc` holding the picture in `file`.",
+      "kind": "doc"
+    }
+  ]
+}

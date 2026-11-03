@@ -5,7 +5,6 @@ export type PageSize = 'fit' | 'a4' | 'a3' | 'letter' | 'legal'
 export type Orientation = 'auto' | 'portrait' | 'landscape'
 export type Fit = 'contain' | 'cover'
 
-/** Portrait width and height. */
 export const PAGE_SIZES: Record<Exclude<PageSize, 'fit'>, [number, number]> = {
   a4: [595.28, 841.89],
   a3: [841.89, 1190.55],
@@ -22,7 +21,6 @@ export interface Placement {
   y: number
   width: number
   height: number
-  /** The picture overflows its box (cover), so it is clipped to it. */
   clip?: { x: number; y: number; width: number; height: number }
 }
 
@@ -33,7 +31,6 @@ export interface LayoutOptions {
   fit: Fit
 }
 
-/** `fit` makes the page the picture's own size at its DPI (plus margins); a paper size centres it inside the margins. */
 export function placeImage(pxWidth: number, pxHeight: number, dpi: number, o: LayoutOptions): Placement {
   const m = mmToPt(o.marginMm)
   const w = (pxWidth * 72) / dpi

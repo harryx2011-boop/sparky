@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/ocr.ts",
+  "description": "ocr: the text in a picture or PDF, as plain text, a searchable PDF (the pages as pictures with an invisible text layer), or both.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.dpi",
+      "line": 18,
+      "offset": 0,
+      "text": "Dots per inch PDF pages are drawn at; 300 when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.language",
+      "line": 19,
+      "offset": 0,
+      "text": "Letters and underscores only, so a code can never point outside the language folders.",
+      "kind": "why"
+    },
+    {
+      "id": "n3",
+      "symbol": "dataDirOf",
+      "line": 26,
+      "offset": 0,
+      "text": "The app's data folder; the engine adds it to every op's context. Tests without one keep languages in scratch.",
+      "kind": "doc"
+    }
+  ]
+}

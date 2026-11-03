@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/DeviceLaptop.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "DeviceLaptop",
+      "line": 3,
+      "offset": 0,
+      "text": "A laptop frame for the app mock. The screen renders its children at a fixed\ndesign viewport and scales them to the lid's width with container units, so\nthe desktop layout never reflows on a phone. No JS. The caller owns role and\nlabel. Hardware tokens are in index.css and stay dark.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "DeviceLaptop",
+      "line": 10,
+      "offset": 7,
+      "text": "tan(atan2(a, b)) is the unitless a / b: the scale from the design width to the screen's.",
+      "kind": "what"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/bmp.ts",
+  "description": "A 24-bit BMP written by hand, since sharp has no BMP writer.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "encodeBmp",
+      "line": 3,
+      "offset": 0,
+      "text": "`rgb` is packed 3-channel pixels, top row first.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "encodeBmp",
+      "line": 17,
+      "offset": 14,
+      "text": "2835 pixels per metre is 72 dpi.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "encodeBmp",
+      "line": 20,
+      "offset": 17,
+      "text": "Rows are stored bottom-up, pixels as BGR.",
+      "kind": "what"
+    }
+  ]
+}

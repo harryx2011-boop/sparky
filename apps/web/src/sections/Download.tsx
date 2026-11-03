@@ -24,7 +24,6 @@ const EXTRA_SUMMARY: Record<(typeof EXTRAS)[number], string> = {
 
 export function Download() {
   const cardRef = useRef<HTMLDivElement>(null)
-  // The link is simply there once the card is in view; the preview below follows it in.
   const done = useInView(cardRef, { once: true, amount: 0.4 })
   const [checks, setChecks] = useState([true, true, false, true, true])
   const [extras, setExtras] = useState<Record<string, boolean>>({ 'Cover art': true, 'Song names and artist': true, 'Skip sponsor segments': true })

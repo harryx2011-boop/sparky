@@ -28,7 +28,6 @@ function wrap(text: string, indent: number, width = WIDTH): string[] {
   return lines
 }
 
-/** Two columns: a left cell, then wrapped text aligned after it. */
 function rows(items: readonly [string, string][], pad = 2): string[] {
   const col = Math.min(30, Math.max(...items.map(([l]) => l.length)) + 2)
   const out: string[] = []
@@ -67,7 +66,6 @@ function fieldText(f: FieldInfo): string {
   return parts.join(' ')
 }
 
-/** `sparky pdf merge --help`. */
 export function opHelp(op: OpDescriptor): string {
   const fields = fieldsOf(op)
   const pos = fields.filter((f) => f.positional)
@@ -94,7 +92,6 @@ export function opHelp(op: OpDescriptor): string {
   return lines.join('\n')
 }
 
-/** Ops grouped by the first word of their id: `pdf` → pdf.merge, pdf.split, … */
 export function groups(ops: readonly OpDescriptor[]): Map<string, OpDescriptor[]> {
   const out = new Map<string, OpDescriptor[]>()
   for (const op of ops) {
@@ -105,7 +102,6 @@ export function groups(ops: readonly OpDescriptor[]): Map<string, OpDescriptor[]
   return out
 }
 
-/** `sparky pdf --help`. */
 export function groupHelp(group: string, ops: readonly OpDescriptor[]): string {
   const lines = [`sparky ${group}: ${ops.length} tools`, '', `Usage: sparky ${group} <tool> [files...] [options]`, '', 'Tools:']
   lines.push(...rows(ops.map((o) => [commandWords(o.id).slice(1).join(' '), o.label])))
@@ -118,7 +114,6 @@ export interface CommandSummary {
   summary: string
 }
 
-/** `sparky --help`. */
 export function mainHelp(ops: readonly OpDescriptor[], commands: readonly CommandSummary[]): string {
   const g = groups(ops)
   const lines = [`Sparky ${VERSION}: convert files, run PDF, video and image tools, and download from links, on this PC.`, '', 'Usage: sparky <command> [arguments] [options]', '', 'Tools:']

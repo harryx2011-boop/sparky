@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/errors.ts",
+  "description": "Exit codes and the two error kinds every command can throw.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "CliError",
+      "line": 13,
+      "offset": 0,
+      "text": "A problem the command line itself can name: exits with `code`, prints only the message.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "BackendError",
+      "line": 30,
+      "offset": 0,
+      "text": "What the engine or the HTTP API refused, with its code: 'invalid_input', 'unknown_op', 'unavailable', 'not_found', …",
+      "kind": "doc"
+    }
+  ]
+}

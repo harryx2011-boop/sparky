@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "scripts/stage-cli.mjs",
+  "description": "Builds the CLI bundle and copies it into the desktop app's resources, so the installer ships it as",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 3,
+      "offset": null,
+      "text": "resources\\cli\\lib\\sparky.js, run by the resources\\cli\\sparky(.cmd) shims. Building every time means a\npackage run can never ship a stale bundle. The bundle is built output and never committed.\n\n  node scripts/stage-cli.mjs",
+      "kind": "why"
+    }
+  ]
+}

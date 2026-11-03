@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/brands.tsx",
+  "description": "Real marks for the sites Sparky names, one row per site, drawn inline so they paint offline.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "One-colour brands come from Simple Icons, multicolor ones from the bundled Iconify drawings in\nbrand-marks.generated.ts; the ids match SITES in @sparky/core.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "BUNDLED",
+      "line": 41,
+      "offset": 0,
+      "text": "Sites whose real mark has several colours or a white knockout use the bundled drawing, not the one-path Simple Icons shape.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "BRAND_MARKS",
+      "line": 51,
+      "offset": 0,
+      "text": "Sites without a mark in Simple Icons fall back to the generic link glyph.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "fillFor",
+      "line": 81,
+      "offset": 0,
+      "text": "Brands whose official colour is black (X, TikTok, Threads) take the text colour, so they show on a dark page too.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "BrandMarkProps.labelled",
+      "line": 90,
+      "offset": 0,
+      "text": "Adds the site's name for screen readers; decorative otherwise.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "BrandMark",
+      "line": 93,
+      "offset": 0,
+      "text": "One site's mark in its official colour. Renders nothing for a site without a mark.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "LinkMark",
+      "line": 117,
+      "offset": 0,
+      "text": "The mark for whatever site a link points at, or nothing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "hasMark",
+      "line": 122,
+      "offset": 0,
+      "text": "True when a link points at a site with a mark, so callers can swap out a generic icon.",
+      "kind": "doc"
+    }
+  ]
+}

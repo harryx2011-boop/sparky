@@ -6,10 +6,8 @@ import sharp from 'sharp'
 import { createEngine, type Engine } from '../../src'
 
 export const BIN = process.env.SPARKY_TEST_BIN
-// A skip must never pass for green in CI.
 if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 
-// The tests open fixtures and results by path; libvips' cache would hold them open and block removing the folder on Windows.
 sharp.cache(false)
 
 export interface Harness {

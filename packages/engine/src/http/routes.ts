@@ -11,7 +11,6 @@ export interface RouteContext {
   engine: Engine
   version: string
   host: ApiHost
-  /** The server's own token, for the hello proof. */
   token: string
   params: Record<string, string>
   query: Record<string, string | undefined>
@@ -26,7 +25,6 @@ export interface RouteResult {
 export interface Route {
   method: 'GET' | 'POST' | 'DELETE'
   url: string
-  /** Answered without the token. Only /v1/hello, which proves the server holds the token without asking for it. */
   public?: boolean
   handle(ctx: RouteContext): RouteResult | Promise<RouteResult>
 }
@@ -66,7 +64,6 @@ export const ROUTES: readonly Route[] = [
     method: 'GET',
     url: '/v1/hello',
     public: true,
-    // A client checks the proof before sending its token, so an impostor on the port never receives it.
     handle({ version, host, token, query }) {
       const nonce = query.nonce ?? ''
       if (!NONCE.test(nonce)) throw new ApiError(400, 'invalid_request', API_BAD_NONCE, 'nonce')
@@ -90,7 +87,6 @@ export const ROUTES: readonly Route[] = [
     url: '/v1/jobs',
     async handle({ engine, body }) {
       const { op, args, wait, timeoutMs } = parse(JobsBody, body)
-      // No abort signal: a client that hangs up leaves its jobs running, as closing the app window does.
       if (wait) return { body: { jobs: await engine.runOp(op, args ?? {}, { timeoutMs }) } }
       return { status: 202, body: { jobs: engine.startOp(op, args ?? {}) } }
     },

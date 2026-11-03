@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ops-text/image.ts",
+  "description": "Labels and messages for the image ops. Every user-facing string for them lives here.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FieldText",
+      "line": 4,
+      "offset": 0,
+      "text": "A field's label (`title`) and help text (`description`) on the Tools page, the CLI help and the MCP schema.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FieldText.labels",
+      "line": 7,
+      "offset": 0,
+      "text": "Words for each choice of a pick-one field, keyed by the value sent.",
+      "kind": "doc"
+    }
+  ]
+}

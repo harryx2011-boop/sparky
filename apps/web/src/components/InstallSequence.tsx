@@ -177,7 +177,6 @@ function App({ beat }: { beat: Beat }) {
   )
 }
 
-/** Sparky's installer arrives, installs, and Sparky opens to convert a file. Plays once in view and holds the last frame. */
 export function InstallSequence({ className }: { className?: string }) {
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)

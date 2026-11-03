@@ -1,0 +1,167 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/args.ts",
+  "description": "The argv parser, and the typing of flags against an op's JSON schema.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RawArgs.flags",
+      "line": 8,
+      "offset": 0,
+      "text": "Keyed by the name as typed after `--`; each use appends. `--no-x` stores false under `x`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "ParseSpec.booleans",
+      "line": 12,
+      "offset": 0,
+      "text": "Flags that never take the next word as their value.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "parseArgv",
+      "line": 23,
+      "offset": 0,
+      "text": "`--flag`, `--flag v`, `--flag=v`, `--no-flag`, repeats → arrays, `--` ends flags.\nA value may start with a single dash (`--volume -3`); a word starting with `--` never is one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "JsonSchema",
+      "line": 66,
+      "offset": 0,
+      "text": "── JSON schema typing ──────────────────────────────────────────────────────────────────────────",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "kebab",
+      "line": 90,
+      "offset": 0,
+      "text": "camelCase field → kebab-case flag.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "choicesOf",
+      "line": 103,
+      "offset": 0,
+      "text": "The values a pick-one field takes, when it is one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "coerceValue",
+      "line": 113,
+      "offset": 0,
+      "text": "One raw value typed by its schema. `label` names the flag in messages.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "coerceValue",
+      "line": 136,
+      "offset": 23,
+      "text": "next branch",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "coerceArray",
+      "line": 153,
+      "offset": 0,
+      "text": "Every raw value of an array field: repeats, and commas between numbers (`--sizes 16,32,48`).",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "BindSpec.positional",
+      "line": 162,
+      "offset": 0,
+      "text": "Fields that take bare words, in order; an array field takes every word left.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "BindSpec.aliases",
+      "line": 163,
+      "offset": 0,
+      "text": "`--to` → `output`: extra spellings, used only when the target field exists.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "BindSpec.reserved",
+      "line": 164,
+      "offset": 0,
+      "text": "Flags the surface keeps for itself (`json`, `wait`, …), typed as booleans.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "BindSpec.command",
+      "line": 165,
+      "offset": 0,
+      "text": "Names the command in messages, e.g. \"sparky pdf merge\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "Bound.reserved",
+      "line": 170,
+      "offset": 0,
+      "text": "Reserved flags as given.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "distance",
+      "line": 179,
+      "offset": 6,
+      "text": "Two letters swapped count as one typo.",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": "suggest",
+      "line": 184,
+      "offset": 0,
+      "text": "The closest of `names` to `wrong`, when one is close enough to be a typo.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "booleanFlags",
+      "line": 194,
+      "offset": 0,
+      "text": "The flag names a schema's boolean fields and the reserved flags use, for parseArgv.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "bindArgs",
+      "line": 200,
+      "offset": 0,
+      "text": "argv → validated-shape args for an op: flags by kebab or camel name, positionals by `positional`, values typed by the schema.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "bindArgs",
+      "line": 229,
+      "offset": 29,
+      "text": "Bare words fill the positional fields in order; an array field takes the rest.",
+      "kind": "what"
+    },
+    {
+      "id": "n20",
+      "symbol": "missingRequired",
+      "line": 251,
+      "offset": 0,
+      "text": "Required fields the args don't have, as flags (`--output`) or argument names (`<files>`).",
+      "kind": "doc"
+    }
+  ]
+}

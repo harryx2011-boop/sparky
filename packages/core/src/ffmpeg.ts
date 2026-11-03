@@ -8,7 +8,6 @@ export interface FfmpegPlanInput {
   input: string
   output: string
   settings: ConvertSettings
-  /** Codec picked in Settings, used unless Advanced overrides it. */
   defaultCodec: VideoCodec
   gpu: GpuInfo
   cores: number
@@ -17,15 +16,12 @@ export interface FfmpegPlanInput {
 
 export interface FfmpegPlan {
   args: string[]
-  /** Video encoder in use, if any. */
   encoder?: string
   usedGpu: boolean
-  /** Plain-language notes for the job card, e.g. why Max fell back to the CPU. */
   notes: string[]
   lowPriority: boolean
 }
 
-/** Per-codec quality numbers for each compression level (lower is better). */
 const QUALITY: Record<'h264' | 'hevc' | 'av1' | 'vp9', readonly number[]> = {
   h264: [16, 20, 23, 28, 32],
   hevc: [18, 22, 26, 30, 34],
@@ -53,7 +49,6 @@ function scaleFilter(o: { resolution: number | null; scaleCap?: number; width?: 
   if (o.width || o.height) return `scale=${o.width ?? -2}:${o.height ?? -2}`
   if (o.resolution === null && !o.scaleCap) return undefined
   if (!o.scaleCap && o.resolution !== null && o.sourceHeight !== undefined && o.sourceHeight <= o.resolution) return undefined
-  // Never taller than the source, and always an even number of pixels.
   let h = o.scaleCap ? `ih*${o.scaleCap}` : 'ih'
   if (o.resolution !== null) h = `min(${o.resolution},${h})`
   return `scale=-2:'trunc(${h}/2)*2'`
@@ -186,7 +181,6 @@ export interface FfprobeInfo {
 
 export const FFPROBE_ARGS = ['-v', 'error', '-print_format', 'json', '-show_format', '-show_streams']
 
-/** Reads `ffprobe -print_format json -show_format -show_streams` output. */
 export function parseFfprobe(json: string): FfprobeInfo {
   const data = JSON.parse(json) as {
     format?: { duration?: string }
@@ -205,17 +199,12 @@ export function parseFfprobe(json: string): FfprobeInfo {
 }
 
 export interface ProgressUpdate {
-  /** 0–1, or -1 when the total length is unknown. */
   progress: number
   speed?: string
   eta?: number
   done: boolean
 }
 
-/**
- * Parses the key=value stream from `-progress pipe:1`.
- * Feed it raw stdout chunks; it returns an update after each complete block.
- */
 export function createFfmpegProgressParser(totalSeconds?: number) {
   let buffer = ''
   let block: Record<string, string> = {}
@@ -257,7 +246,6 @@ export function createFfmpegProgressParser(totalSeconds?: number) {
   }
 }
 
-/** Test encode used to confirm a hardware encoder really works on this PC. */
 export function gpuTestArgs(encoder: string): string[] {
   return ['-hide_banner', '-nostdin', '-f', 'lavfi', '-i', 'color=c=black:s=256x256:d=0.1', '-frames:v', '1', '-c:v', encoder, '-f', 'null', '-']
 }

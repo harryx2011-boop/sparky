@@ -9,7 +9,6 @@ import { createEngine, OpInputError, type Engine } from '../../src'
 import { run } from '../../src/process'
 
 const BIN = process.env.SPARKY_TEST_BIN
-// A skip must never pass for green in CI.
 if (process.env.CI && !BIN) throw new Error('Set SPARKY_TEST_BIN in CI so the real-tool tests run.')
 
 interface Stream {
@@ -59,7 +58,6 @@ describe.skipIf(!BIN)('media ops with real FFmpeg', () => {
     const ffmpeg = path.join(BIN!, 'ffmpeg')
     const tone = (d: number) => ['-f', 'lavfi', '-i', `sine=frequency=440:duration=${d}`]
     const pic = (d: number) => ['-f', 'lavfi', '-i', `testsrc2=size=1280x720:rate=30:duration=${d}`]
-    // A 3-second 720p clip with a tone, the same clip as MP4, a 12-second one for sizes and cancel, and a sound file.
     await run(ffmpeg, ['-y', ...pic(3), ...tone(3), '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', src('clip.mov')])
     await run(ffmpeg, ['-y', ...pic(3), ...tone(3), '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', src('clip.mp4')])
     await run(ffmpeg, ['-y', ...pic(12), ...tone(12), '-c:v', 'libx264', '-crf', '12', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', src('long.mp4')])

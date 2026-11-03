@@ -6,7 +6,6 @@ import type { OutputRequest } from '../output'
 import { throwIfAborted } from '../process'
 import type { OpContext } from '../ops/types'
 
-/** Runs `write` against a temporary path and returns where the finished file or folder ended up. */
 export async function deliver(ctx: OpContext, req: OutputRequest, write: (tmpPath: string) => Promise<void>): Promise<string> {
   const plan = await ctx.output(req)
   const cleanup = () => fs.rm(plan.tmpPath, { recursive: true, force: true }).catch(() => undefined)
@@ -28,7 +27,6 @@ export async function deliver(ctx: OpContext, req: OutputRequest, write: (tmpPat
   }
 }
 
-/** The source's name without its extension, for the files a folder output holds. */
 export function baseName(file: string): string {
   return path.parse(file).name
 }
@@ -41,5 +39,4 @@ export async function writeFile(file: string, data: Uint8Array | Buffer): Promis
   }
 }
 
-/** Lets timers and I/O run between pages, so a cancel sent from outside gets through a long, mostly synchronous job. */
 export const breathe = () => new Promise<void>((resolve) => setImmediate(resolve))

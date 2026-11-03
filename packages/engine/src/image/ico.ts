@@ -1,7 +1,6 @@
 // A multi-size Windows .ico written by hand: ICONDIR, one ICONDIRENTRY per size, then each frame as a PNG (Windows Vista and later read PNG frames).
 
 export interface IcoFrame {
-  /** Square edge in pixels. */
   size: number
   png: Buffer
 }
@@ -17,7 +16,6 @@ export function encodeIco(frames: readonly IcoFrame[]): Buffer {
   let offset = header.length
   frames.forEach((f, i) => {
     const at = DIR_BYTES + ENTRY_BYTES * i
-    // One byte per edge; 0 means 256 or more, and the PNG inside carries the real size.
     const edge = f.size >= 256 ? 0 : f.size
     header.writeUInt8(edge, at)
     header.writeUInt8(edge, at + 1)

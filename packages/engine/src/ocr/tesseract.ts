@@ -6,11 +6,8 @@ import { gunzipSync } from 'node:zlib'
 import { CanceledError } from '../process'
 
 export interface OcrSetup {
-  /** Tesseract language code(s), e.g. "eng" or "eng+fra". */
   language: string
-  /** The bundled `tessdata` folder, when there is one. */
   bundled?: string
-  /** Where languages are kept, uncompressed, for tesseract.js to read. */
   cachePath: string
 }
 
@@ -24,15 +21,10 @@ export interface OcrReader {
   close(): Promise<void>
 }
 
-/** A path inside app.asar, moved to the same place in app.asar.unpacked. Either separator. */
 export function unpackedPath(p: string): string {
   return p.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1')
 }
 
-/**
- * tesseract.js starts its worker from a file inside its own package. Packaged, that package sits in
- * app.asar.unpacked (asarUnpack), because a worker thread can't start from inside the archive.
- */
 function workerPath(): string | undefined {
   try {
     return unpackedPath(createRequire(import.meta.url).resolve('tesseract.js/src/worker-script/node/index.js'))
@@ -41,17 +33,14 @@ function workerPath(): string | undefined {
   }
 }
 
-/** Where tesseract.js itself downloads a language for its LSTM engine. */
 const cdnUrl = (lang: string) => `https://cdn.jsdelivr.net/npm/@tesseract.js-data/${lang}/4.0.0_best_int/${lang}.traineddata.gz`
 
-/** Written under a temporary name first, so a half-written language never looks usable. */
 function writeWhole(file: string, data: Buffer): void {
   const tmp = `${file}.${process.pid}.part`
   fs.writeFileSync(tmp, data)
   fs.renameSync(tmp, file)
 }
 
-/** A gzip file's last four bytes hold its unpacked size. */
 function unpackedSize(gz: string): number {
   const fd = fs.openSync(gz, 'r')
   try {
@@ -63,11 +52,6 @@ function unpackedSize(gz: string): number {
   }
 }
 
-/**
- * Puts `<lang>.traineddata` in the cache before any worker starts: from the bundle when it has the language,
- * else downloaded once. tesseract.js reads the cache first, and a language it fails to load itself
- * leaves createWorker waiting forever, so every download and its failure happen here instead.
- */
 async function stageLanguage(lang: string, setup: OcrSetup, signal: AbortSignal): Promise<void> {
   const cached = path.join(setup.cachePath, `${lang}.traineddata`)
   const size = fs.statSync(cached, { throwIfNoEntry: false })?.size
@@ -94,12 +78,6 @@ interface MessageSource {
   on(event: 'message', listener: (m: unknown) => void): unknown
 }
 
-/**
- * tesseract.js's worker answers a failed initialize twice: a reject, then a resolve for the same job
- * (its initialize has no return after `res.reject`). The second answer finds no pending job and throws
- * a TypeError inside the thread's message listener, an uncaught exception. Answers after the first for
- * a job are dropped here; a job's first answer, progress and every other job's messages pass untouched.
- */
 export function dropRepeatAnswers(thread: MessageSource): void {
   const answered = new Set<string>()
   for (const listener of thread.listeners('message')) {
@@ -116,7 +94,6 @@ export function dropRepeatAnswers(thread: MessageSource): void {
   }
 }
 
-/** Rejects when the signal fires, so a job never waits on a worker that was stopped. */
 function whenAborted(signal: AbortSignal): Promise<never> {
   return new Promise((_, reject) => {
     const stop = () => reject(new CanceledError(signal.reason === 'pause' ? 'pause' : 'cancel'))
@@ -135,9 +112,7 @@ export async function openReader(setup: OcrSetup, signal: AbortSignal): Promise<
   const script = workerPath()
   const aborted = whenAborted(signal)
   aborted.catch(() => undefined)
-  // Started on English, which was just checked against the bundle: createWorker only reports failures of its first step.
   const starting = createWorker('eng', OEM.LSTM_ONLY, {
-    // Everything is staged in the cache, so the language path is the cache too and nothing is fetched from here on.
     langPath: setup.cachePath,
     cachePath: setup.cachePath,
     gzip: false,
@@ -145,7 +120,6 @@ export async function openReader(setup: OcrSetup, signal: AbortSignal): Promise<
     logger: (m) => {
       if (m.status === 'recognizing text') onProgress(m.progress)
     },
-    // Without a handler, a failed job also throws inside tesseract.js's message listener, which would crash the process.
     errorHandler: () => undefined,
   })
   starting.catch(() => undefined)
@@ -153,14 +127,12 @@ export async function openReader(setup: OcrSetup, signal: AbortSignal): Promise<
     void starting.then((w) => w.terminate()).catch(() => undefined)
     throw e
   })
-  // The worker thread tesseract.js listens on; not in its typings.
   const thread = (worker as unknown as { worker?: MessageSource }).worker
   if (thread) dropRepeatAnswers(thread)
   const stop = () => void worker.terminate()
   signal.addEventListener('abort', stop, { once: true })
 
   try {
-    // reinitialize's promise does reject when a language fails to load, unlike createWorker's.
     if (setup.language !== 'eng') {
       const switching = worker.reinitialize(setup.language, OEM.LSTM_ONLY)
       switching.catch(() => undefined)

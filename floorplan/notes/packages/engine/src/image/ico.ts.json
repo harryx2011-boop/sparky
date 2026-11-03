@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/ico.ts",
+  "description": "A multi-size Windows .ico written by hand: ICONDIR, one ICONDIRENTRY per size, then each frame as a PNG (Windows Vista and later read PNG frames).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "IcoFrame.size",
+      "line": 4,
+      "offset": 0,
+      "text": "Square edge in pixels.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "encodeIco",
+      "line": 19,
+      "offset": 8,
+      "text": "One byte per edge; 0 means 256 or more, and the PNG inside carries the real size.",
+      "kind": "what"
+    }
+  ]
+}

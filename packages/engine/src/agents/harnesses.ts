@@ -1,5 +1,4 @@
 // The agent clients Sparky can add itself to: one object each, found by its markers, written without touching other entries.
-// Shared by `sparky init` and the app's Settings, so both write exactly the same entry the same way.
 import { configInlineEntryError, configInlineEnvError, configNotJsonError, configNotObjectError, unknownAgentClientError } from '@sparky/core'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -9,14 +8,9 @@ export const SERVER_NAME = 'sparky'
 export interface McpEntry {
   command: string
   args: string[]
-  /** Variables the client sets for the server. Merged into an existing entry's env, never replacing the user's own. */
   env?: Record<string, string>
 }
 
-/**
- * How a client should start `sparky mcp`. On Windows `sparky` is a .cmd shim, which a client spawning
- * without a shell can't start, so the entry goes through cmd /c (what Claude Code's docs ask for npx too).
- */
 export function mcpEntry(platform: NodeJS.Platform = process.platform): McpEntry {
   return platform === 'win32' ? { command: 'cmd', args: ['/c', 'sparky', 'mcp'] } : { command: 'sparky', args: ['mcp'] }
 }
@@ -32,7 +26,6 @@ export type HarnessEnv = Record<string, string | undefined>
 
 export type HarnessErrorCode = 'unknown_client' | 'invalid_config'
 
-/** A config Sparky refused to touch, or a client it doesn't know. The message says what to do. */
 export class HarnessError extends Error {
   constructor(
     public readonly code: HarnessErrorCode,
@@ -46,14 +39,10 @@ export class HarnessError extends Error {
 export interface Harness {
   id: string
   label: string
-  /** Absolute paths whose presence means the client is installed. */
   markers(home: string, env: HarnessEnv): string[]
   configPath(home: string, env: HarnessEnv): string
-  /** Plans the file's new text; `applyWrite` writes it. */
   plan(home: string, env: HarnessEnv, entry: McpEntry): WriteResult
-  /** The config already names a "sparky" server, however it starts it. Never throws. */
   listed(home: string, env: HarnessEnv): boolean
-  /** A line the user could run instead, when the client has its own command for it. */
   equivalent?(entry: McpEntry): string
 }
 
@@ -76,10 +65,8 @@ function readQuiet(file: string): string {
   }
 }
 
-/** Writes through a temp file and a rename, so a client reading the file never sees half of it. */
 export function applyWrite(r: WriteResult): void {
   if (!r.changed) return
-  // A symlinked config (dotfiles) is written where it points, so the link survives; the file keeps its mode.
   const target = fs.existsSync(r.file) ? fs.realpathSync(r.file) : r.file
   const mode = fs.existsSync(target) ? fs.statSync(target).mode & 0o777 : 0o600
   fs.mkdirSync(path.dirname(target), { recursive: true })
@@ -97,7 +84,6 @@ export function applyWrite(r: WriteResult): void {
 const isObject = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === 'object' && !Array.isArray(v)
 const hasKeys = (v: unknown): v is Record<string, unknown> => isObject(v) && Object.keys(v).length > 0
 
-/** Sets `<key>.sparky` in a JSON file, keeping every other key, the BOM and the trailing newline as they were. */
 export function upsertJson(file: string, key: string, value: Record<string, unknown>): WriteResult {
   const before = readText(file)
   const bom = before.startsWith(BOM)
@@ -111,7 +97,6 @@ export function upsertJson(file: string, key: string, value: Record<string, unkn
   if (!isObject(data)) throw new HarnessError('invalid_config', configNotObjectError(file))
   const servers = (data[key] && typeof data[key] === 'object' ? data[key] : {}) as Record<string, unknown>
   const old = servers[SERVER_NAME]
-  // An existing entry keeps the user's own keys (env, timeouts); only how to start Sparky is ours.
   const merged = isObject(old)
     ? { ...old, command: value.command, args: value.args, ...(hasKeys(value.env) ? { env: { ...(isObject(old.env) ? old.env : {}), ...value.env } } : {}) }
     : value
@@ -143,16 +128,11 @@ const sparkyName = `(?:${SERVER_NAME}|"${SERVER_NAME}")`
 const sparkyTable = (esc: string) => tableHeader(`${esc}\\.${sparkyName}`)
 const sparkyEnvTable = (esc: string) => tableHeader(`${esc}\\.${sparkyName}\\.(?:env|"env")`)
 
-/** How far '[' outnumbers ']' outside strings, for a value that runs over several lines. */
 function openBrackets(l: string): number {
   const bare = l.replace(/"(?:[^"\\]|\\.)*"|'[^']*'/g, '').replace(/#.*/, '')
   return (bare.match(/\[/g)?.length ?? 0) - (bare.match(/\]/g)?.length ?? 0)
 }
 
-/**
- * The line defining sparky other than as its own `[<table>.sparky]` table: `sparky = { … }` or `sparky.command = …`
- * under `[<table>]`, or `<table>.sparky.… = …` in the root table. Adding a table beside either makes the file invalid.
- */
 function definedElsewhere(lines: string[], table: string): number {
   const esc = escapeKey(table)
   const underParent = new RegExp(`^\\s*"?${SERVER_NAME}"?\\s*[.=]`)
@@ -164,7 +144,6 @@ function definedElsewhere(lines: string[], table: string): number {
   return -1
 }
 
-/** Sets each env pair in `[<table>.sparky.env]`, keeping the user's other keys; adds the table after sparky's own. */
 function upsertEnvTable(lines: string[], table: string, pairs: [string, string][]): string[] {
   const esc = escapeKey(table)
   const line = (k: string, v: string) => `${k} = ${tomlString(v)}`
@@ -194,10 +173,6 @@ function upsertEnvTable(lines: string[], table: string, pairs: [string, string][
   return next
 }
 
-/**
- * Sets `command`, `args` and any `env` pairs in the `[<table>.sparky]` table of a TOML file, keeping its other keys
- * and sub-tables. Sparky defined inline or with dotted keys is left alone: a second definition would make the file invalid.
- */
 export function upsertToml(file: string, table: string, entry: McpEntry): WriteResult {
   const before = readText(file)
   const eol = before.includes('\r\n') ? '\r\n' : '\n'
@@ -308,16 +283,12 @@ export function harnessById(id: string): Harness | undefined {
 export interface HarnessStatus {
   id: string
   label: string
-  /** The client is installed on this PC. */
   found: boolean
-  /** Its config already names a "sparky" server. */
   installed: boolean
-  /** Installed, and it starts Sparky exactly the way `entry` would (command, args and env); without an entry, same as installed. */
   current: boolean
   configPath: string
 }
 
-/** Every known client, whether it is installed, and whether it already lists Sparky. Never throws on a broken config. */
 export function detectHarnesses(home: string, env: HarnessEnv = process.env, entry?: McpEntry | null): HarnessStatus[] {
   return HARNESSES.map((h) => {
     const installed = h.listed(home, env)
@@ -342,9 +313,7 @@ export function detectHarnesses(home: string, env: HarnessEnv = process.env, ent
 
 export interface InstallOptions extends McpEntry {
   home: string
-  /** The environment the client's config location is read from (CODEX_HOME, CLAUDE_CONFIG_DIR); `env` is the server's own. */
   vars?: HarnessEnv
-  /** Plan the change without writing it. */
   dryRun?: boolean
 }
 
@@ -353,10 +322,6 @@ export interface InstallResult extends WriteResult {
   label: string
 }
 
-/**
- * Adds (or updates) the "sparky" server in one client's config. Only `command`, `args` and Sparky's own `env` keys of
- * an existing entry change. Throws HarnessError for an unknown client or a config Sparky won't touch, before anything is written.
- */
 export function installHarness(id: string, opts: InstallOptions): InstallResult {
   const h = harnessById(id)
   if (!h) throw new HarnessError('unknown_client', unknownAgentClientError(id, HARNESSES.map((x) => x.id)))
@@ -366,7 +331,6 @@ export function installHarness(id: string, opts: InstallOptions): InstallResult 
   return { ...r, id: h.id, label: h.label }
 }
 
-/** The changed lines with two lines of context: common head and tail trimmed, the middle shown as -/+. */
 export function configDiff(r: WriteResult): string {
   const a = r.before.replace(/^﻿/, '').split(/\r?\n/)
   const b = r.after.replace(/^﻿/, '').split(/\r?\n/)

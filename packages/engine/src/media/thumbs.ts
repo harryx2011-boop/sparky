@@ -23,11 +23,9 @@ export type ThumbsArgs = z.infer<typeof input>
 
 const round = (n: number) => Number(n.toFixed(3))
 
-/** The options thumbsArgs takes, with the defaults filled in from what the probe found. */
 export function thumbsOptions(a: Omit<ThumbsArgs, 'files' | 'performance'>, info: { duration?: number; width?: number }): ThumbsOptions {
   const mode = a.mode ?? 'poster'
   const dur = info.duration
-  // Past the end there is no frame to take; the last half second always has one.
   const start = a.at ?? (dur ? dur * 0.1 : 0)
   const at = round(dur ? Math.min(start, Math.max(0, dur - 0.5)) : start)
   if (mode === 'poster') return { mode, width: a.width ?? info.width ?? 1280, at }
@@ -45,7 +43,6 @@ async function thumbsOne(ctx: OpContext, file: string, a: ThumbsArgs): Promise<F
   const o = thumbsOptions(a, info)
   const ext = o.mode === 'preview' ? 'webp' : 'png'
   const lowPriority = (a.performance ?? ctx.settings().performance) === 'low'
-  // A poster is one frame, so there is nothing to measure; a sheet reads the whole video; a preview only its stretch.
   const total = o.mode === 'sprite' ? info.duration : o.mode === 'preview' ? Math.min(o.durationSec!, (info.duration ?? Infinity) - (o.at ?? 0)) : undefined
   const saved = await saveOutput(ctx, { input: file, ext, category: 'image', suffix: MEDIA_TEXT.thumbs.suffix[o.mode] }, (tmp) =>
     ffmpegOk(ctx, thumbsArgs(file, tmp, o, info.duration ?? 0), { total, lowPriority }),

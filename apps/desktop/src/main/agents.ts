@@ -6,7 +6,6 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
-/** How a client should start this copy of Sparky, or null when it is not an installed one (the dev tree). */
 function entryForThisPc(): McpEntry | null {
   return installedEntry({
     platform: process.platform,

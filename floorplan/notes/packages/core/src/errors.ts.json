@@ -1,0 +1,239 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/errors.ts",
+  "description": "Turns tool output and file-system errors into sentences that say what happened and what to do.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "explainFileError",
+      "line": 12,
+      "offset": 0,
+      "text": "Explains a Node file-system error. Unknown errors keep their own message.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "summarizeFfmpegError",
+      "line": 39,
+      "offset": 0,
+      "text": "Picks a useful line from FFmpeg's stderr.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "explainFfmpegError",
+      "line": 48,
+      "offset": 0,
+      "text": "Explains FFmpeg stderr, and the messages sharp and pdf.js throw for broken files.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "SevenZipErrorContext.canOpenRar",
+      "line": 62,
+      "offset": 0,
+      "text": "Whether this copy of 7-Zip can open RAR files.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "explainSevenZipError",
+      "line": 66,
+      "offset": 0,
+      "text": "Explains 7-Zip's output, which otherwise ends in an unhelpful statistics line.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "unknownOpError",
+      "line": 78,
+      "offset": 0,
+      "text": "Asked for an op the engine doesn't have.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "invalidOpArgsError",
+      "line": 82,
+      "offset": 0,
+      "text": "An op's input didn't match its schema. `problems` are \"field: what's wrong\" lines.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "HOST_NEEDS",
+      "line": 86,
+      "offset": 0,
+      "text": "What the app itself provides, named for a person reading why an op can't run outside it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "opUnavailableError",
+      "line": 91,
+      "offset": 0,
+      "text": "An op needs something that isn't here. `missing` holds tool ids (\"libreoffice\") and app capabilities (\"print\", \"trash\").",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "secretNotKeptError",
+      "line": 103,
+      "offset": 0,
+      "text": "Rerun of a job whose op takes a password: Sparky never keeps those, so the job has to start again from the form.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "OUT_FILE_BECAME_FOLDER",
+      "line": 109,
+      "offset": 0,
+      "text": "A download given a file name that turned out to hold several items.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "API_UNAUTHORIZED",
+      "line": 111,
+      "offset": 0,
+      "text": "Local HTTP API: a request without the right bearer token.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "apiInvalidRequestError",
+      "line": 113,
+      "offset": 0,
+      "text": "Local HTTP API: the body isn't JSON, or isn't the shape the route takes. `problems` are \"field: what's wrong\" lines.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "apiRouteNotFoundError",
+      "line": 117,
+      "offset": 0,
+      "text": "Local HTTP API: no route at this method and path.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "jobNotFoundError",
+      "line": 121,
+      "offset": 0,
+      "text": "Local HTTP API: a job id Sparky doesn't know, or one already removed from the queue.",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "API_INTERNAL",
+      "line": 125,
+      "offset": 0,
+      "text": "Local HTTP API: anything unexpected. Never carries a stack.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "apiLoopbackOnlyError",
+      "line": 127,
+      "offset": 0,
+      "text": "Local HTTP API: asked to listen anywhere but this PC.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "apiBadPortError",
+      "line": 131,
+      "offset": 0,
+      "text": "Local HTTP API: SPARKY_API_PORT isn't a port number.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "API_BAD_NONCE",
+      "line": 135,
+      "offset": 0,
+      "text": "Local HTTP API: /v1/hello without a usable nonce.",
+      "kind": "doc"
+    },
+    {
+      "id": "n20",
+      "symbol": "configNotJsonError",
+      "line": 137,
+      "offset": 0,
+      "text": "Agent client config: the JSON file doesn't parse, so Sparky won't rewrite it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n21",
+      "symbol": "configNotObjectError",
+      "line": 141,
+      "offset": 0,
+      "text": "Agent client config: valid JSON, but not an object at the top.",
+      "kind": "doc"
+    },
+    {
+      "id": "n22",
+      "symbol": "configInlineEntryError",
+      "line": 145,
+      "offset": 0,
+      "text": "Agent client config: Codex's TOML already defines sparky inline or with dotted keys, and a second definition would break the file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n23",
+      "symbol": "configInlineEnvError",
+      "line": 149,
+      "offset": 0,
+      "text": "Agent client config: the sparky table sets `env` inline, so Sparky can't add its own env table beside it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n24",
+      "symbol": "unknownAgentClientError",
+      "line": 153,
+      "offset": 0,
+      "text": "An agent client id Sparky doesn't know.",
+      "kind": "doc"
+    },
+    {
+      "id": "n25",
+      "symbol": "agentAddedMessage",
+      "line": 157,
+      "offset": 0,
+      "text": "Settings, Agents: Sparky was added to a client's settings.",
+      "kind": "doc"
+    },
+    {
+      "id": "n26",
+      "symbol": "agentUpdatedMessage",
+      "line": 161,
+      "offset": 0,
+      "text": "Settings, Agents: the client listed an old or different way to start Sparky, now replaced.",
+      "kind": "doc"
+    },
+    {
+      "id": "n27",
+      "symbol": "agentAlreadyAddedMessage",
+      "line": 165,
+      "offset": 0,
+      "text": "Settings, Agents: the client already starts Sparky this way.",
+      "kind": "doc"
+    },
+    {
+      "id": "n28",
+      "symbol": "AGENT_COMMAND_MISSING",
+      "line": 169,
+      "offset": 0,
+      "text": "Settings, Agents: the `sparky` command that clients start is not in this copy of Sparky.",
+      "kind": "doc"
+    },
+    {
+      "id": "n29",
+      "symbol": "agentAddFailedError",
+      "line": 171,
+      "offset": 0,
+      "text": "Settings, Agents: writing the client's settings failed for another reason.",
+      "kind": "doc"
+    }
+  ]
+}

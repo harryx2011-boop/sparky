@@ -7,7 +7,6 @@ import { BUNDLE, CLI_DIR, runCli, tempDir } from './helpers'
 const APP_BIN = path.join(CLI_DIR, '..', '..', 'apps', 'desktop', 'resources', 'bin')
 let dir: string
 
-/** No tool folder but the data folder: no SPARKY_BIN_DIR, no SPARKY_TEST_BIN, and no installed app under LOCALAPPDATA. */
 function npmEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env }
   delete env.SPARKY_BIN_DIR
@@ -53,7 +52,6 @@ describe.skipIf(process.platform !== 'win32')('sparky setup', () => {
   it('resolves 7zip-bin through require(), so it works from a copy of the bundle on NODE_PATH', async () => {
     const copy = path.join(dir, 'copy')
     fs.cpSync(path.dirname(BUNDLE), copy, { recursive: true })
-    // Hide an installed 7-Zip so 7zip-bin is the only unpacker left.
     const r = await runCli(['setup', '--dry-run'], npmEnv({ NODE_PATH: path.join(CLI_DIR, '..', '..', 'node_modules'), ProgramFiles: path.join(dir, 'nowhere') }), 60_000, path.join(copy, 'sparky.js'))
     expect(r.code).toBe(0)
     const unpack = /Unpacks with: (.+)/.exec(r.stdout)![1]!.trim()
@@ -64,7 +62,6 @@ describe.skipIf(process.platform !== 'win32')('sparky setup', () => {
   it.skipIf(!fs.existsSync(path.join(APP_BIN, 'ffmpeg.exe')))('does nothing when the app already bundles the tools, even without 7zip-bin', async () => {
     const copy = path.join(dir, 'installed')
     fs.cpSync(path.dirname(BUNDLE), copy, { recursive: true })
-    // The app's node_modules as the shim's NODE_PATH sees it: the natives, and no 7zip-bin.
     const appModules = path.join(dir, 'app-modules')
     fs.mkdirSync(appModules)
     fs.symlinkSync(path.join(CLI_DIR, '..', '..', 'node_modules', 'better-sqlite3'), path.join(appModules, 'better-sqlite3'), 'junction')

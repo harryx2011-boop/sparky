@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/pages/DownloadPage.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "DownloadPage",
+      "line": 66,
+      "offset": 27,
+      "text": "Errors thrown in the main process lose custom fields over IPC, so read the hint from the text too.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "DownloadPage",
+      "line": 91,
+      "offset": 52,
+      "text": "The site behind whatever is typed so far, so its mark shows before Preview is pressed.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "DownloadPage",
+      "line": 156,
+      "offset": 117,
+      "text": "Preview is the main action until a preview is up; then Download takes the accent.",
+      "kind": "what"
+    }
+  ]
+}

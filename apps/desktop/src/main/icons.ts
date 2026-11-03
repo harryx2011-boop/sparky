@@ -1,5 +1,4 @@
 // File-type icons from the user's own Windows associations, as PNG data URLs for the renderer.
-// Windows resolves an association from the extension alone, so the probe path never has to exist.
 import { app, type IpcMain, type NativeImage } from 'electron'
 import path from 'node:path'
 import { decideIcon, hashPng, iconExt, NONSENSE_EXT, type IconShot } from './icon-pick'
@@ -38,7 +37,6 @@ async function lookup(ext: string): Promise<string | null> {
   return decision.kind === 'icon' ? decision.dataUrl : null
 }
 
-/** A data URL for the icon Windows shows for this extension, or null when it has no specific one. Never throws. */
 export function iconForExt(raw: unknown): Promise<string | null> {
   const ext = iconExt(raw)
   if (!ext) return Promise.resolve(null)

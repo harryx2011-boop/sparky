@@ -13,7 +13,6 @@ export class GuardError extends Error {
   }
 }
 
-/** SPARKY_MCP_ROOTS (`;`-separated), else the Sparky output folder and the folder the client started the server in. */
 export function mcpRoots(env: Env, outputRoot: string, cwd: string): string[] {
   const set = env.SPARKY_MCP_ROOTS?.trim()
   const list = set ? set.split(';').map((s) => s.trim()).filter(Boolean) : [outputRoot, cwd]
@@ -24,7 +23,6 @@ export function guardOptions(env: Env = process.env, cwd: string = process.cwd()
   return { roots: mcpRoots(env, cliPaths(env).defaultRoot, cwd), allowReplace: env.SPARKY_MCP_ALLOW_REPLACE === '1' }
 }
 
-/** The path with `..`, junctions and symlinks resolved on its deepest existing part, so a link inside a root can't lead out. */
 function real(p: string): string {
   const abs = path.resolve(p)
   const tail: string[] = []
@@ -47,7 +45,6 @@ function inside(root: string, target: string): boolean {
 
 const same = (a: string, b: string) => (process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b)
 
-/** Throws a GuardError naming the way out when an input, `out` or `originals` breaks the rules. Download links are not paths. */
 export function checkPaths(op: Pick<OpDescriptor, 'positional' | 'accepts'>, args: Record<string, unknown>, roots: readonly string[], allowReplace = false): void {
   const inputs = op.accepts.length
     ? op.positional.flatMap((k) => (Array.isArray(args[k]) ? (args[k] as unknown[]) : [args[k]])).filter((v): v is string => typeof v === 'string')

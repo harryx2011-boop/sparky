@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/PerformanceBars.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PerformanceBarsProps.running",
+      "line": 13,
+      "offset": 0,
+      "text": "Bars gently flicker while work is happening.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "PerformanceBars",
+      "line": 17,
+      "offset": 0,
+      "text": "Five bars that fill left to right: one for Low, three for Normal, five for Max.",
+      "kind": "doc"
+    }
+  ]
+}

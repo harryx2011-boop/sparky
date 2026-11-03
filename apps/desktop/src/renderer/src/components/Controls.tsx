@@ -16,7 +16,6 @@ export function Field({ label, children, className, hint }: { label: ReactNode; 
   )
 }
 
-/** Low / Normal / Max with the animated bars. */
 export function PerformancePicker({ value, onChange, running, note }: { value: PerformanceLevel; onChange: (v: PerformanceLevel) => void; running?: boolean; note?: string }) {
   return (
     <div role="radiogroup" aria-label="Performance" className="flex h-8 items-stretch rounded-lg border border-input bg-card p-0.5">

@@ -1,0 +1,127 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/media/run.ts",
+  "description": "What the media ops share: probing, running one FFmpeg pass with progress, picking the encoder the way convert does, and saving.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "MEDIA_OUTPUTS",
+      "line": 26,
+      "offset": 0,
+      "text": "Video and sound formats the media ops can write. GIF has its own op.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "isVideoOutput",
+      "line": 35,
+      "offset": 0,
+      "text": "True when the output format holds a picture.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "hasPicture",
+      "line": 37,
+      "offset": 0,
+      "text": "A picture worth editing: ffprobe found one (cover art doesn't count) and the name doesn't say sound file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "sameOrDefaultExt",
+      "line": 39,
+      "offset": 0,
+      "text": "The source's own format when the media ops can write it, else the usual one for what it holds.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "forEachFile",
+      "line": 57,
+      "offset": 0,
+      "text": "Runs one file at a time and adds the results up.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "probeMedia",
+      "line": 75,
+      "offset": 0,
+      "text": "What ffprobe says; a failed probe reads as \"has both, length unknown\" so the job still tries.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "StepOptions.total",
+      "line": 85,
+      "offset": 0,
+      "text": "Seconds this pass will write, for progress.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "StepOptions.from",
+      "line": 86,
+      "offset": 0,
+      "text": "This pass's share of the job's progress: starts at `from`, covers `span`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "ffmpegStep",
+      "line": 91,
+      "offset": 0,
+      "text": "One FFmpeg run, reporting progress from `-progress pipe:1`. Resolves with the result; cancel rejects.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "ffmpegOk",
+      "line": 108,
+      "offset": 0,
+      "text": "ffmpegStep that throws the plain-language reason on failure.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "EncoderChoice.encode",
+      "line": 114,
+      "offset": 0,
+      "text": "Codec, quality, threads, sound and container flags, from convert's own plan.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "chooseEncoder",
+      "line": 133,
+      "offset": 0,
+      "text": "The encoder convert would use for this target: the Settings codec, the graphics card on Max when it has one, else the CPU.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "withGpuFallback",
+      "line": 153,
+      "offset": 0,
+      "text": "Runs `attempt` with the machine's graphics card, and once more on the processor when a card encoder fails,\nas convert does. `attempt` returns the failed run's stderr, or undefined when it worked.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "Saved.keptOriginal",
+      "line": 170,
+      "offset": 0,
+      "text": "The result was dropped and the source stands in for it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "saveOutput",
+      "line": 173,
+      "offset": 0,
+      "text": "Writes through a hidden temp name, then claims the final name and moves the file onto it, like convert.\n`keepOriginal` sees the finished size and can drop the result in favour of the source: with no `out` the source path\nstands in for it; with one, a copy of the source lands there, since the caller asked for a file at that place.",
+      "kind": "doc"
+    }
+  ]
+}

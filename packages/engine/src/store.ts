@@ -20,7 +20,6 @@ interface HistoryRow {
   args: string | null
 }
 
-/** Schema changes in order; PRAGMA user_version counts how many have run. Append only. */
 const MIGRATIONS = [
   `ALTER TABLE history ADD COLUMN op TEXT;
    ALTER TABLE history ADD COLUMN args TEXT;
@@ -32,7 +31,6 @@ export class Store {
 
   constructor(file: string) {
     this.db = new Database(file)
-    // The app and the CLI can share this file.
     this.db.pragma('busy_timeout = 5000')
     this.db.pragma('journal_mode = WAL')
     this.db.exec(`
@@ -59,7 +57,6 @@ export class Store {
   private migrate(): void {
     const version = () => this.db.pragma('user_version', { simple: true }) as number
     if (version() >= MIGRATIONS.length) return
-    // IMMEDIATE takes the write lock before reading the version, so two processes never run the same step twice.
     this.db
       .transaction(() => {
         for (const sql of MIGRATIONS.slice(version())) this.db.exec(sql)
@@ -72,7 +69,6 @@ export class Store {
     this.db.close()
   }
 
-  // ---------- History ----------
 
   record(job: Job): void {
     if (job.status !== 'done' && job.status !== 'failed' && job.status !== 'canceled') return
@@ -134,7 +130,6 @@ export class Store {
     this.db.exec('DELETE FROM history')
   }
 
-  // ---------- Settings ----------
 
   loadSettings(defaultRoot: string): Settings {
     const base = defaultSettings(defaultRoot)
@@ -144,10 +139,8 @@ export class Store {
       try {
         saved[r.key] = JSON.parse(r.value)
       } catch {
-        /* ignore a corrupt value and fall back to the default */
       }
     }
-    // Older versions stored a "jobs at once" number; one meant "one at a time", anything more meant batch.
     if (typeof saved.batch !== 'boolean' && typeof saved.concurrency === 'number') saved.batch = saved.concurrency > 1
     return sanitize({ ...base, ...saved, downloadExtras: { ...base.downloadExtras, ...(saved.downloadExtras as object | undefined) } }, base)
   }
@@ -178,16 +171,13 @@ function toEntry(r: HistoryRow): HistoryEntry {
     finishedAt: r.finished_at,
     ...settings,
   }
-  // Rows from before ops kept only their convert or download block; the op rebuilds its input from that.
   try {
     entry.args = r.args ? (JSON.parse(r.args) as unknown) : opById(entry.op)?.fromHistory?.(entry)
   } catch {
-    /* a malformed row still lists; it just can't be run again */
   }
   return entry
 }
 
-/** Keeps settings within their allowed ranges even if the file was edited by hand. */
 export function sanitize(s: Settings, base: Settings): Settings {
   const oneOf = <T,>(v: T, allowed: readonly T[], fallback: T) => (allowed.includes(v) ? v : fallback)
   return {

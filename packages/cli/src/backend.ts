@@ -17,11 +17,8 @@ export interface FileTargets {
 }
 
 export interface RunOptions {
-  /** Aborting cancels every job this call started. */
   signal?: AbortSignal
-  /** Stop waiting after this long and return the jobs as they are; they keep running. */
   timeoutMs?: number
-  /** Called with the jobs whenever they are polled. */
   onUpdate?(jobs: Job[]): void
 }
 
@@ -30,13 +27,10 @@ export interface Backend {
   listOps(): Promise<OpInfo[]>
   listFormats(): Promise<FormatsInfo>
   targetsFor(paths: string[]): Promise<FileTargets[]>
-  /** Validates and queues; throws BackendError before anything is queued. */
   startOp(op: string, args: Record<string, unknown>): Promise<Job[]>
-  /** startOp, then waits until every job is done, failed, canceled or paused. */
   runOp(op: string, args: Record<string, unknown>, opts?: RunOptions): Promise<Job[]>
   getJob(id: string): Promise<Job | undefined>
   listJobs(): Promise<Job[]>
-  /** Finished jobs, newest first, from the history the app and the CLI share. */
   history(q: HistoryQuery): Promise<HistoryEntry[]>
   cancelJob(id: string): Promise<Job | undefined>
   close(): Promise<void>
@@ -57,7 +51,6 @@ const sleep = (ms: number, signal?: AbortSignal) =>
     signal?.addEventListener('abort', done, { once: true })
   })
 
-/** Starts, then polls until settled. Both backends share it, so progress, cancel and timeout behave the same. */
 async function startAndWait(b: Backend, op: string, args: Record<string, unknown>, opts: RunOptions, pollMs: number): Promise<Job[]> {
   const { signal, timeoutMs, onUpdate } = opts
   if (signal?.aborted) throw new BackendError('canceled', 'Canceled before it started.')
@@ -71,10 +64,8 @@ async function startAndWait(b: Backend, op: string, args: Record<string, unknown
     while (!jobs.every(isSettled) && Date.now() < until) {
       await sleep(pollMs, signal)
       if (signal?.aborted) {
-        // Give the cancel a moment to land so the caller sees the jobs as canceled.
         await sleep(pollMs)
       }
-      // Settled jobs are not asked again; one that vanished before settling was removed from the queue.
       jobs = await Promise.all(
         jobs.map((old) => (isSettled(old) ? old : b.getJob(old.id).then((j): Job => j ?? { ...old, status: 'canceled', note: JOB_REMOVED_FROM_QUEUE }))),
       )
@@ -87,7 +78,6 @@ async function startAndWait(b: Backend, op: string, args: Record<string, unknown
   }
 }
 
-// ── Remote: the app (or `sparky serve`) on 127.0.0.1 ────────────────────────────────────────────
 
 interface ErrorBody {
   error?: string
@@ -98,7 +88,6 @@ interface ErrorBody {
 export interface RemoteOptions {
   port: number
   token: string
-  /** Milliseconds for the health check. */
   probeMs?: number
 }
 
@@ -110,7 +99,6 @@ export class RemoteBackend implements Backend {
     this.base = `http://127.0.0.1:${opts.port}`
   }
 
-  /** The API when it answers /v1/health with this token, else undefined. `unauthorized` is set when it answered 401. */
   static async connect(opts: RemoteOptions): Promise<{ backend?: RemoteBackend; unauthorized?: boolean }> {
     const b = new RemoteBackend(opts)
     try {
@@ -124,10 +112,6 @@ export class RemoteBackend implements Backend {
     }
   }
 
-  /**
-   * Whatever listens on the port must show it knows the token before the token is sent: it answers a fresh nonce
-   * with HMAC-SHA256(token, nonce). Anything else on 8600 is not Sparky and never sees the token.
-   */
   private async provesToken(timeoutMs: number): Promise<boolean> {
     const nonce = randomBytes(16).toString('hex')
     const res = await this.request('GET', `/v1/hello?nonce=${nonce}`, undefined, timeoutMs, false)
@@ -137,10 +121,6 @@ export class RemoteBackend implements Backend {
     return timingSafeEqual(want, Buffer.from(body.proof, 'hex'))
   }
 
-  /**
-   * One request on its own connection. node:http without keep-alive rather than fetch: on Windows, exiting while
-   * undici still holds a pooled socket trips a libuv assertion (UV_HANDLE_CLOSING) and the process dies with 127.
-   */
   private request(method: string, url: string, body?: unknown, timeoutMs?: number, auth = true): Promise<{ status: number; data: unknown }> {
     const payload = body === undefined ? undefined : JSON.stringify(body)
     return new Promise((resolve, reject) => {
@@ -232,9 +212,7 @@ export class RemoteBackend implements Backend {
   async close() {}
 }
 
-// ── Local: the engine in this process ──────────────────────────────────────────────────────────
 
-/** The engine as the CLI runs it: the app's data and tool folders, no printer or recycle bin. */
 export function createLocalEngine(paths: EnginePaths = cliPaths()): Promise<Engine> {
   return createEngine({ ...paths, appVersion: VERSION, host: {}, skipGpu: false })
 }
@@ -291,14 +269,11 @@ export class LocalBackend implements Backend {
 }
 
 export interface PickOptions {
-  /** --local: never try the app. */
   local?: boolean
   paths?: EnginePaths
-  /** Told why the app was skipped, when that's worth a line on stderr. */
   warn?(message: string): void
 }
 
-/** The app's API when it is open and the token matches, else the engine in this process. */
 export async function connectRemote(paths: EnginePaths, warn?: (m: string) => void): Promise<RemoteBackend | undefined> {
   const token = readToken(paths.dataDir)
   if (!token) return undefined

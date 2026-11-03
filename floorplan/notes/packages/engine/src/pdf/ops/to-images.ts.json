@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/to-images.ts",
+  "description": "pdf.to_images: each page as a PNG, JPG or WEBP. One page gives one picture; more give a folder named after the PDF.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.dpi",
+      "line": 16,
+      "offset": 0,
+      "text": "Dots per inch; 150 when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.quality",
+      "line": 18,
+      "offset": 0,
+      "text": "1-100 for jpg and webp; the compression setting's image quality when left out.",
+      "kind": "doc"
+    }
+  ]
+}

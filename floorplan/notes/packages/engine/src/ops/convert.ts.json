@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/convert.ts",
+  "description": "convert: one file into another format, or the same format made smaller.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.output",
+      "line": 25,
+      "offset": 0,
+      "text": "Target extension; the input's own extension means \"just make it smaller\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "convertArgs",
+      "line": 43,
+      "offset": 0,
+      "text": "The app's ConvertSettings as this op's flat input.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "toSettings",
+      "line": 48,
+      "offset": 0,
+      "text": "The flat input back as ConvertSettings; what the caller left out comes from Settings.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "targetNeeds",
+      "line": 76,
+      "offset": 3,
+      "text": "Anything but HTML goes through Pandoc on its way to the printer.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "convertOp.needs",
+      "line": 92,
+      "offset": 0,
+      "text": "Only what the app lends is checked up front; a missing tool fails the job with the fix in plain words.",
+      "kind": "what"
+    }
+  ]
+}

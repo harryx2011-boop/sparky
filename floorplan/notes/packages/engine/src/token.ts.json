@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/token.ts",
+  "description": "The local API's bearer token: 32 random bytes as hex, in a file only this user can read. The app and `sparky serve` share it.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "WAIT_TRIES",
+      "line": 8,
+      "offset": 0,
+      "text": "How long to wait for a token file another process has created but not finished writing.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "readToken",
+      "line": 15,
+      "offset": 0,
+      "text": "The token, or undefined when the file is missing or doesn't hold one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "ensureToken",
+      "line": 28,
+      "offset": 0,
+      "text": "Reads the token, making one first when there is none.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "ensureToken",
+      "line": 37,
+      "offset": 9,
+      "text": "A hard link appears whole or not at all, and fails if the file exists: the first process to start wins.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "ensureToken",
+      "line": 48,
+      "offset": 20,
+      "text": "Still no token after the wait: the file is damaged, so replace it.",
+      "kind": "what"
+    }
+  ]
+}

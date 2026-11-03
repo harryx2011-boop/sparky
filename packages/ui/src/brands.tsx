@@ -1,6 +1,4 @@
 // Real marks for the sites Sparky names, one row per site, drawn inline so they paint offline.
-// One-colour brands come from Simple Icons, multicolor ones from the bundled Iconify drawings in
-// brand-marks.generated.ts; the ids match SITES in @sparky/core.
 import { siteFor, siteInfo, type SiteId } from '@sparky/core'
 import {
   siBandcamp,
@@ -40,7 +38,6 @@ interface SimpleIcon {
   hex: string
 }
 
-/** Sites whose real mark has several colours or a white knockout use the bundled drawing, not the one-path Simple Icons shape. */
 const BUNDLED: Partial<Record<SiteId, keyof typeof MARKS>> = {
   youtube: 'youtube',
   tiktok: 'tiktok',
@@ -51,7 +48,6 @@ const BUNDLED: Partial<Record<SiteId, keyof typeof MARKS>> = {
   pinterest: 'pinterest',
 }
 
-/** Sites without a mark in Simple Icons fall back to the generic link glyph. */
 export const BRAND_MARKS: Partial<Record<SiteId, SimpleIcon>> = {
   youtube: siYoutube,
   tiktok: siTiktok,
@@ -82,7 +78,6 @@ export const BRAND_MARKS: Partial<Record<SiteId, SimpleIcon>> = {
   loom: siLoom,
 }
 
-/** Brands whose official colour is black (X, TikTok, Threads) take the text colour, so they show on a dark page too. */
 function fillFor(hex: string): string {
   const n = parseInt(hex, 16)
   const lum = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255
@@ -92,11 +87,9 @@ function fillFor(hex: string): string {
 export interface BrandMarkProps extends Omit<SVGProps<SVGSVGElement>, 'id'> {
   site: SiteId
   size?: number
-  /** Adds the site's name for screen readers; decorative otherwise. */
   labelled?: boolean
 }
 
-/** One site's mark in its official colour. Renders nothing for a site without a mark. */
 export function BrandMark({ site, size = 16, labelled = false, ...props }: BrandMarkProps) {
   const name = siteInfo(site).name
   const bundled = BUNDLED[site]
@@ -121,13 +114,11 @@ export function BrandMark({ site, size = 16, labelled = false, ...props }: Brand
   )
 }
 
-/** The mark for whatever site a link points at, or nothing. */
 export function LinkMark({ url, ...props }: Omit<BrandMarkProps, 'site'> & { url: string }) {
   const site = siteFor(url)
   return site ? <BrandMark site={site.id} {...props} /> : null
 }
 
-/** True when a link points at a site with a mark, so callers can swap out a generic icon. */
 export function hasMark(url: string): boolean {
   const site = siteFor(url)
   return Boolean(site && BRAND_MARKS[site.id])

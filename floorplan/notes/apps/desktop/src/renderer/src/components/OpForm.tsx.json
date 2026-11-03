@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/components/OpForm.tsx",
+  "description": "A form generated from an op's input schema. It never names an op, so a new op needs no UI work.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FilePicker",
+      "line": 23,
+      "offset": 0,
+      "text": "Same affordance as the Convert page: click, Enter or Space picks files; dropping adds them.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "ChipInput",
+      "line": 89,
+      "offset": 0,
+      "text": "Type a value and press Enter or comma to add it; Backspace in an empty box removes the last one.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "FieldControl",
+      "line": 184,
+      "offset": 47,
+      "text": "Chosen from the field alone, so the control never swaps after a pick. A field that can be left unset keeps \"Automatic\" in a Select.",
+      "kind": "why"
+    }
+  ]
+}

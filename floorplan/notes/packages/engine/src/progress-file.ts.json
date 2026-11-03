@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/progress-file.ts",
+  "description": "Mirrors running jobs into ~/.claude/state/progress/<id>.json so the QoL VS Code progress bar can show them.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Best effort: every write swallows its errors, so a progress bar never fails a job. Writes are synchronous (a few hundred\nbytes, a few a second) so the last one lands even when a CLI run exits right after its job.\nOff with SPARKY_PROGRESS_FILE=0; SPARKY_PROGRESS_DIR overrides the folder.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": "createProgressWriter",
+      "line": 40,
+      "offset": 6,
+      "text": "Under a test run a writer with no injected folder stays silent, so tests never touch the real one.",
+      "kind": "why"
+    },
+    {
+      "id": "n3",
+      "symbol": "createProgressWriter",
+      "line": 89,
+      "offset": 55,
+      "text": "never fail a job over a progress file",
+      "kind": "why"
+    },
+    {
+      "id": "n4",
+      "symbol": "write",
+      "line": 100,
+      "offset": 7,
+      "text": "best effort",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "remove",
+      "line": 107,
+      "offset": 4,
+      "text": "best effort",
+      "kind": "what"
+    }
+  ]
+}

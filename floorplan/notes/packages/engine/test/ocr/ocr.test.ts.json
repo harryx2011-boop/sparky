@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/ocr/ocr.test.ts",
+  "description": "OCR with the bundled English model. Runs when SPARKY_TEST_BIN holds tessdata/eng.traineddata.gz (npm run fetch-tools).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "twoPagePdf",
+      "line": 35,
+      "offset": 0,
+      "text": "A two-page letter-size PDF with one large word per page, drawn with a standard font pdf.js renders without system fonts.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 63,
+      "offset": null,
+      "text": "The bundled model was read, then kept in the data folder for next time.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 135,
+      "offset": null,
+      "text": "Every worker thread started while `fn` runs, so a test can check none is left behind.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": null,
+      "line": 169,
+      "offset": null,
+      "text": "Still stuck when the wait runs out: stop it so the rest of the suite can run.",
+      "kind": "what"
+    }
+  ]
+}

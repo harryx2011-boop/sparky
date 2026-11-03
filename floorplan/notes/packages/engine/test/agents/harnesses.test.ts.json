@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/agents/harnesses.test.ts",
+  "description": "The shared agent-client registry: detection and install against a temp home, for all four clients.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SEED",
+      "line": 12,
+      "offset": 0,
+      "text": "An existing config with another server in it, per client.",
+      "kind": "doc"
+    }
+  ]
+}

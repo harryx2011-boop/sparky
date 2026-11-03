@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/image/ico.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 18,
+      "offset": null,
+      "text": "ICONDIR: reserved 0, type 1 (icon), 2 images.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 19,
+      "offset": null,
+      "text": "First entry: 16×16, no palette, reserved, 1 plane, 32 bits, size, offset right after the 6 + 2×16 header bytes.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 27,
+      "offset": null,
+      "text": "256 is stored as 0.",
+      "kind": "what"
+    }
+  ]
+}

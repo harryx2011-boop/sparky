@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/pages.ts",
+  "description": "Page lists such as \"1-3, 5, 8-\" or \"odd\", read against a document's page count. Pages are 1-based.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "expand",
+      "line": 15,
+      "offset": 11,
+      "text": "An open or overlong end stops at the last page; a range written backwards runs backwards.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "parsePageGroups",
+      "line": 20,
+      "offset": 0,
+      "text": "Each comma-separated part as its own group, in the order written: \"1-3,4-6\" gives [[1,2,3],[4,5,6]].\nParts are page numbers, ranges (\"2-4\", \"8-\", \"-3\", \"5-last\", \"4-2\" runs backwards) or the words all, odd and even.\nAn empty spec is every page. Throws a plain-language Error for anything else.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "parsePageRanges",
+      "line": 28,
+      "offset": 0,
+      "text": "Every page the spec names, once each, in the order first written.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "isSinglePage",
+      "line": 32,
+      "offset": 0,
+      "text": "True when the spec names exactly one page, so a job over it makes one file.",
+      "kind": "doc"
+    }
+  ]
+}

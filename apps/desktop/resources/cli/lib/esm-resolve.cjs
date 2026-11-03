@@ -1,6 +1,4 @@
 // Node's ESM resolver ignores NODE_PATH, so a bare import in sparky.js would look for
-// node_modules beside resources\cli and miss the app's own. On a miss, retry the
-// import as if it came from each NODE_PATH folder (app.asar.unpacked, then app.asar).
 const { registerHooks } = require('node:module')
 const path = require('node:path')
 const { pathToFileURL } = require('node:url')

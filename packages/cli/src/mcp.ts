@@ -1,5 +1,4 @@
 // `sparky mcp`: the MCP server over stdio. One tool per op in the registry, plus list, job and cancel tools.
-// stdout belongs to the transport; everything else goes to stderr.
 import type { HistoryQuery, Job } from '@sparky/core'
 import { listOps, type OpDescriptor } from '@sparky/engine'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
@@ -22,7 +21,6 @@ const WAIT_FIELD: JsonSchema = {
   description: 'true (default): wait until the job finishes and return its output paths. false: return the job ids at once; the job keeps running in Sparky, and sparky_get_job reports it.',
 }
 
-/** The op's input schema for an agent: labels folded into descriptions, `out` described, `wait` added. */
 export function toolInputSchema(op: OpDescriptor): Tool['inputSchema'] {
   const schema = op.inputSchema as ObjectSchema & Record<string, unknown>
   const properties: Record<string, JsonSchema> = {}
@@ -39,7 +37,6 @@ export function toolInputSchema(op: OpDescriptor): Tool['inputSchema'] {
   return { ...schema, type: 'object', properties, ...(schema.required ? { required: schema.required } : {}) } as Tool['inputSchema']
 }
 
-/** What an agent reads to pick the tool: what it does, what it takes, what it needs, what it returns. */
 export function toolDescription(op: OpDescriptor): string {
   const fields = fieldsOf(op)
   const first = fields.find((f) => f.positional)
@@ -101,7 +98,6 @@ const EXTRA_TOOLS: Tool[] = [
   },
 ]
 
-/** Every tool the server lists: the registry's ops, then the fixed helpers. */
 export function mcpTools(ops: readonly OpDescriptor[]): Tool[] {
   return [
     ...ops.map(
@@ -113,7 +109,6 @@ export function mcpTools(ops: readonly OpDescriptor[]): Tool[] {
         annotations: {
           title: op.label,
           readOnlyHint: false,
-          // Only an op that can replace or bin the originals changes anything but new files.
           destructiveHint: Boolean((op.inputSchema as ObjectSchema).properties?.originals),
           idempotentHint: false,
           openWorldHint: op.accepts.length === 0,
@@ -124,9 +119,7 @@ export function mcpTools(ops: readonly OpDescriptor[]): Tool[] {
   ]
 }
 
-// ── Calls ───────────────────────────────────────────────────────────────────────────────────────
 
-/** Replaces each secret value in text sent back, so a password never leaves through an error message. */
 function scrub(text: string, secrets: readonly string[]): string {
   return secrets.reduce((t, s) => (s ? t.split(s).join('••••') : t), text)
 }
@@ -146,7 +139,6 @@ export function jobsResult(label: string, jobs: readonly Job[], secrets: readonl
   return textResult(headline(label, jobs), { jobs: jobs.map(summarize) }, bad, secrets)
 }
 
-/** Picks the app when it is open (jobs show in its Queue), else a local engine made once and kept. Remembers where each job went. */
 export class McpRouter {
   private local?: Promise<LocalBackend>
   private remote?: { at: number; backend?: Backend }
@@ -268,9 +260,7 @@ export const INSTRUCTIONS = [
   'When the Sparky app is open the jobs show in its Queue.',
 ].join(' ')
 
-/** Runs until stdin closes. `tools` is a profile name (profiles.ts); left out, SPARKY_MCP_TOOLS or core. */
 export async function runMcpServer(tools?: string): Promise<void> {
-  // A stray console.log would corrupt the protocol stream.
   console.log = console.error
   console.info = console.error
   console.debug = console.error

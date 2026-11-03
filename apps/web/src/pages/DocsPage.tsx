@@ -8,7 +8,6 @@ import { Nav } from '../components/Nav'
 import { DOCS, type DocPage } from '../lib/docs'
 import { DOCS_PAGE, HOME } from '../links'
 
-/** The page named by the address: /docs is the index, /docs/<slug> one page, anything else a missing page. */
 function pageFromPath(): { page?: DocPage; missing: boolean } {
   const rest = window.location.pathname.slice(DOCS_PAGE.length).replace(/^\/+|\/+$/g, '')
   if (!rest) return { missing: false }

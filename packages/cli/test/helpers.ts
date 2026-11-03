@@ -14,7 +14,6 @@ export function tempDir(prefix: string): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix))
 }
 
-/** The environment for a child CLI: its own data folder, the test tools, never the user's app on 8600. */
 export function childEnv(dataDir: string, extra: Record<string, string> = {}): NodeJS.ProcessEnv {
   const env: NodeJS.ProcessEnv = { ...process.env, SPARKY_DATA_DIR: dataDir, ...extra }
   delete env.ELECTRON_RUN_AS_NODE

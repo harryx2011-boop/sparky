@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/commands/types.ts",
+  "description": "The command contract: every built-in command is one of these, registered by one line in ./index.ts.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Io.out",
+      "line": 6,
+      "offset": 0,
+      "text": "Results: paths, tables, JSON.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Io.err",
+      "line": 7,
+      "offset": 0,
+      "text": "Progress, notes and errors.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "CommandContext.ops",
+      "line": 17,
+      "offset": 0,
+      "text": "The op registry, for routing and help without starting an engine.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "Command.usage",
+      "line": 22,
+      "offset": 0,
+      "text": "Shown in `sparky --help`, e.g. \"cancel <id>\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "withBackend",
+      "line": 32,
+      "offset": 0,
+      "text": "Runs `fn` against the app or a local engine, and always closes the local one.",
+      "kind": "doc"
+    }
+  ]
+}

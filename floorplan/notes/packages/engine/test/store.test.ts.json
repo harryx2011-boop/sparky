@@ -1,0 +1,39 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/test/store.test.ts",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 58,
+      "offset": null,
+      "text": "A saved batch choice wins over the old number.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 64,
+      "offset": null,
+      "text": "A saved theme is kept; only the default moved to dark.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": null,
+      "line": 86,
+      "offset": null,
+      "text": "Opening again runs nothing twice.",
+      "kind": "what"
+    },
+    {
+      "id": "n4",
+      "symbol": null,
+      "line": 95,
+      "offset": null,
+      "text": "A malformed old row still lists; it just has nothing to run again.",
+      "kind": "what"
+    }
+  ]
+}

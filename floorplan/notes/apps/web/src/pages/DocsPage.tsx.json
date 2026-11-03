@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/pages/DocsPage.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "pageFromPath",
+      "line": 11,
+      "offset": 0,
+      "text": "The page named by the address: /docs is the index, /docs/<slug> one page, anything else a missing page.",
+      "kind": "doc"
+    }
+  ]
+}

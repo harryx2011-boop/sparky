@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/file-icons/vendor.mjs",
+  "description": "Re-vendors the file-type SVGs from vscode-icons at a pinned commit: node packages/ui/src/file-icons/vendor.mjs",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Writes svg/*.svg (what ships) and svgs.ts (the same markup as strings, so the unit needs no bundler loader).",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "ICONS",
+      "line": 8,
+      "offset": 0,
+      "text": "Pack file name → the recorded edits (see LICENSE). An ink edit swaps a fill that vanishes on one theme for the text colour.",
+      "kind": "doc"
+    }
+  ]
+}

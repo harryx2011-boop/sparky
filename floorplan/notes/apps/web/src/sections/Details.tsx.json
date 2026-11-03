@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Details.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "SponsorVisual",
+      "line": 106,
+      "offset": 1,
+      "text": "A video timeline with the sponsor segments snipped out.",
+      "kind": "what"
+    }
+  ]
+}

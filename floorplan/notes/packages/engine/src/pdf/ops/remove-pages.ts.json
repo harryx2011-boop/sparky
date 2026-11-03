@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/remove-pages.ts",
+  "description": "pdf.remove_pages: a copy of the PDF without the chosen pages.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "removeInput.pages",
+      "line": 10,
+      "offset": 0,
+      "text": "The pages to take out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "removePagesOp.run",
+      "line": 22,
+      "offset": 6,
+      "text": "Last first, so the earlier page numbers still point at the same pages.",
+      "kind": "what"
+    }
+  ]
+}

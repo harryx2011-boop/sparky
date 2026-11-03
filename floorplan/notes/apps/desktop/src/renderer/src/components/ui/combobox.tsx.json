@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/components/ui/combobox.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "Combobox",
+      "line": 12,
+      "offset": 0,
+      "text": "Searchable, grouped picker (shadcn's Combobox pattern: Popover + Command).",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Combobox",
+      "line": 29,
+      "offset": 17,
+      "text": "Leads the closed picker; the search glyph when omitted.",
+      "kind": "doc"
+    }
+  ]
+}

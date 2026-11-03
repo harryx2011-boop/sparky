@@ -1,0 +1,47 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/split.ts",
+  "description": "pdf.split: one PDF into several, in a folder named after it.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "input.mode",
+      "line": 14,
+      "offset": 0,
+      "text": "'ranges': one file per part of `ranges`; 'every': `every` pages per file; 'pages': one file per page; 'odd_even': odd pages and even pages. Defaults to 'ranges' when `ranges` is given, else 'pages'.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "input.ranges",
+      "line": 15,
+      "offset": 0,
+      "text": "Parts separated by commas, e.g. \"1-3,4-6\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "input.every",
+      "line": 16,
+      "offset": 0,
+      "text": "Pages per file in 'every' mode; 1 when left out.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "splitParts",
+      "line": 26,
+      "offset": 0,
+      "text": "The files a split makes, as 1-based page lists with their name suffixes.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "splitParts",
+      "line": 53,
+      "offset": 27,
+      "text": "The same pages asked for twice would overwrite each other; the part number is unique.",
+      "kind": "what"
+    }
+  ]
+}

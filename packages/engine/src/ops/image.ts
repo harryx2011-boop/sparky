@@ -115,7 +115,6 @@ const G = IMAGE_TEXT.gif.fields
 
 const gifInput = z.object({
   files: files.meta(G.files),
-  // GIF stores each frame's time in 16 bits; sharp takes it in milliseconds.
   delayMs: z.number().int().min(0).max(65535).optional().meta(G.delayMs),
   loop: z.boolean().default(true).meta(G.loop),
   width: px.optional().meta(G.width),

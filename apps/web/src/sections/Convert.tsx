@@ -44,10 +44,6 @@ const ROWS: { icon: LucideIcon; label: string; formats: string }[] = [
   { icon: Archive, label: 'Archives', formats: 'Make ZIP or 7Z, or open ZIP, 7Z and RAR into a folder' },
 ]
 
-/**
- * Drives the scene: follows the scroll on big screens,
- * plays on a loop on small ones, and holds still for reduced motion.
- */
 function useSceneProgress(target: React.RefObject<HTMLElement | null>, scrollDriven: boolean): MotionValue<number> {
   const reduce = useReducedMotion()
   const { scrollYProgress } = useScroll({ target, offset: ['start start', 'end end'] })
@@ -77,7 +73,6 @@ function DropScene({ progress, onRow }: { progress: MotionValue<number>; onRow: 
   const bar = useTransform(morph, (m) => `${m * 100}%`)
   const size = useTransform(morph, (m) => formatBytes(ex.before + (ex.after - ex.before) * m))
   const done = useTransform(local, [0.66, 0.74], [0, 1])
-  // The zone lights up lime as the file arrives, the same drag-over state the app shows.
   const zonePct = useTransform(local, [0.2, 0.3, 0.4], [0, 100, 0])
   const zoneFillPct = useTransform(zonePct, (v) => v * 0.08)
   const zoneBorder = useMotionTemplate`color-mix(in oklab, var(--lime) ${zonePct}%, var(--input))`

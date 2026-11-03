@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/ops/run.ts",
+  "description": "Between the queue and the registry: validating input, splitting it into jobs, and running a job's op.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "absoluteOut",
+      "line": 11,
+      "offset": 0,
+      "text": "Absolute, keeping a trailing separator, which marks a folder that doesn't exist yet.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "splitInput",
+      "line": 38,
+      "offset": 0,
+      "text": "'each' ops become one input per item of their first positional field; 'all' ops stay whole.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "SECRET_GIVEN",
+      "line": 63,
+      "offset": 0,
+      "text": "Set in stored args when the job was given a secret field.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "splitSecrets",
+      "line": 65,
+      "offset": 0,
+      "text": "Splits validated args into what may be stored and the op's secret fields, which only live in memory.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "splitSecrets",
+      "line": 68,
+      "offset": 3,
+      "text": "The marker says a secret was given, so a rerun from History knows to ask for it; op schemas drop unknown keys.",
+      "kind": "what"
+    },
+    {
+      "id": "n6",
+      "symbol": "runOpJob",
+      "line": 77,
+      "offset": 0,
+      "text": "The queue's runner: look the op up by id and run it. `secrets` are the fields kept out of `job.args`.",
+      "kind": "doc"
+    }
+  ]
+}

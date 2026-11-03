@@ -28,7 +28,6 @@ export function statusText(job: Job): string {
   }
 }
 
-/** What a job works on: source → result icons for a conversion, a glyph for a download or a tool. `badge` sits on the last icon. */
 export function JobIcons({ job, size, badge }: { job: Pick<Job, 'kind' | 'source' | 'convert' | 'outputs'>; size: number; badge?: ReactNode }) {
   const target = job.convert?.output ?? job.outputs[0] ?? ''
   const last = (icon: ReactNode) => (
@@ -50,7 +49,6 @@ export function JobIcons({ job, size, badge }: { job: Pick<Job, 'kind' | 'source
   return <span className="flex items-center text-subtle-foreground">{last(<Glyph size={size - 2} />)}</span>
 }
 
-/** One job with its progress and controls. `compact` is the dock layout. */
 export function JobRow({ job, compact, draggable, onUpdate }: { job: Job; compact?: boolean; draggable?: boolean; onUpdate?: () => void }) {
   const running = job.status === 'running'
   const act = (fn: (id: string) => Promise<void>) => () => void fn(job.id).then(onUpdate)

@@ -1,5 +1,4 @@
 // A stand-in for window.sparky so the UI can run in a normal browser (npm run dev:ui).
-// It fakes a small queue and a few history entries; nothing touches real files.
 import {
   batchConcurrency,
   categoryOf,
@@ -41,7 +40,6 @@ function addJob(j: Omit<Job, 'id' | 'status' | 'progress' | 'outputs' | 'created
   return job
 }
 
-// The real app imports this module too; only the browser mock needs the fake queue ticking.
 if (!window.sparky) setInterval(() => {
   let running = jobs.filter((j) => j.status === 'running').length
   for (const j of jobs) {
@@ -194,7 +192,6 @@ const mockOps: OpSummary[] = [
   }),
 ]
 
-/** Spreadsheets only print through LibreOffice, which the mock PC doesn't have. */
 const NEEDS_OFFICE = new Set(['xls', 'xlsx', 'csv', 'ods'])
 
 export const mockApi: SparkyApi = {

@@ -11,7 +11,6 @@ import { ROUTES, type ApiHost } from './routes'
 export const DEFAULT_API_PORT = 8600
 export const API_BIND = '127.0.0.1'
 
-/** The port the API uses: the caller's, else `SPARKY_API_PORT`, else 8600. A client calls it with no argument to find the server. */
 export function apiPort(port?: number): number {
   if (port !== undefined) return port
   const env = process.env.SPARKY_API_PORT?.trim()
@@ -22,14 +21,10 @@ export function apiPort(port?: number): number {
 }
 
 export interface ApiServerOptions {
-  /** Where the token file lives: the engine's data folder. */
   dataDir: string
-  /** 0 picks a free port. Default: apiPort(). */
   port?: number
-  /** Reported by /v1/health, so a client knows whether its jobs show in the app's Queue. */
   host: ApiHost
   version: string
-  /** Only 127.0.0.1 is accepted; anything else throws before listening. */
   bind?: string
 }
 
@@ -39,7 +34,6 @@ export interface ApiServer {
   close(): Promise<void>
 }
 
-/** A long file list must never be refused; only JSON with local paths comes in. */
 const BODY_LIMIT = 1024 * 1024 * 1024
 
 const BEARER = /^\s*bearer\s+(\S+)\s*$/i
@@ -57,11 +51,9 @@ export async function startApiServer(engine: Engine, opts: ApiServerOptions): Pr
     logger: process.env.SPARKY_API_LOG === '1',
     bodyLimit: BODY_LIMIT,
     genReqId: () => randomUUID(),
-    // Quitting the app must not wait on a client blocked in `wait: true`.
     forceCloseConnections: true,
   })
 
-  // Every body is read as JSON whatever its content type; an empty one is no body.
   const json = app.getDefaultJsonParser('error', 'error')
   app.removeAllContentTypeParsers()
   app.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
@@ -72,7 +64,6 @@ export async function startApiServer(engine: Engine, opts: ApiServerOptions): Pr
   app.addHook('onRequest', async (req) => {
     if ((req.routeOptions.config as { public?: boolean }).public) return
     const sent = BEARER.exec(req.headers.authorization ?? '')?.[1] ?? ''
-    // Hashing both sides gives equal lengths, so the comparison takes the same time whatever was sent.
     if (!timingSafeEqual(digest(sent), expected)) throw new ApiError(401, 'unauthorized', API_UNAUTHORIZED)
   })
 

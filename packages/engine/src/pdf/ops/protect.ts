@@ -8,13 +8,9 @@ import { eachFile, needGhostscript, pdfFilesField, pdfOp } from './common'
 
 const input = z.object({
   files: pdfFilesField,
-  /** Asked for when the PDF is opened. */
   userPassword: z.string().min(1).optional().meta(PDF_TEXT.fields.userPassword),
-  /** Lifts the print and copy limits. A random one is set when left out. */
   ownerPassword: z.string().min(1).optional().meta(PDF_TEXT.fields.ownerPassword),
-  /** true when left out. */
   allowPrint: z.boolean().default(true).meta(PDF_TEXT.fields.allowPrint),
-  /** true when left out. */
   allowCopy: z.boolean().default(true).meta(PDF_TEXT.fields.allowCopy),
 })
 

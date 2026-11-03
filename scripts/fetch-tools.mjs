@@ -1,13 +1,5 @@
 #!/usr/bin/env node
 // Downloads the Windows builds of the tools Sparky bundles into apps/desktop/resources/bin.
-// They are not committed to git; the installer ships them so users need no setup.
-//
-//   node scripts/fetch-tools.mjs            fetch anything missing
-//   node scripts/fetch-tools.mjs --force    fetch everything again
-//
-// Set GITHUB_TOKEN to avoid GitHub's API rate limit on shared CI runners.
-//
-// `fetchTools({ binDir, force })` is the same work as a function; `sparky setup` calls it for npm installs that have no app.
 import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import fs from 'node:fs'
@@ -24,7 +16,6 @@ const headers = {
   ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
 }
 
-/** Each tool: where it comes from and which files to keep. */
 const TOOLS = [
   {
     id: 'yt-dlp',
@@ -37,8 +28,6 @@ const TOOLS = [
     id: 'ffmpeg',
     repo: 'BtbN/FFmpeg-Builds',
     tag: 'latest',
-    // The oldest release branch, not master: newer FFmpeg needs a newer graphics driver for NVIDIA speed
-    // (master and 9.0 need driver 610+, which most PCs don't have yet).
     asset: /^ffmpeg-n[\d.]+-latest-win64-gpl-[\d.]+\.zip$/,
     pick: (assets) => assets.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true }))[0],
     keep: ['ffmpeg.exe', 'ffprobe.exe'],
@@ -54,7 +43,6 @@ const TOOLS = [
   {
     id: '7zip',
     repo: 'ip7z/7zip',
-    // The full 7-Zip (7z.exe + 7z.dll) can open RAR archives; the standalone 7za can't.
     asset: /^7z\d+-x64\.exe$/,
     keep: ['7z.exe', '7z.dll'],
     fallback: { asset: /^7z\d+-extra\.7z$/, keep: ['x64/7za.exe', 'x64/7za.dll', 'x64/7zxa.dll'] },
@@ -69,11 +57,9 @@ const TOOLS = [
   },
 ]
 
-/** Data files fetched as they are (no release, no unpacking). `gzip` stores them compressed, the way tesseract.js reads them. */
 const DATA = [
   {
     id: 'tessdata-eng',
-    // The fast LSTM English model (about 4 MB) for OCR; other languages download on demand.
     url: 'https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/4.1.0/eng.traineddata',
     dest: 'tessdata/eng.traineddata.gz',
     gzip: true,
@@ -153,12 +139,10 @@ export function findExtractor({ path7za } = {}) {
     }
   }
   if (!bin || !fs.existsSync(bin)) throw new Error('Need 7-Zip to unpack the downloads. Install it, or run "npm install" so the 7zip-bin package is available.')
-  // npm drops the execute bit on 7zip-bin's Linux and macOS binaries.
   if (process.platform !== 'win32') fs.chmodSync(bin, 0o755)
   return bin
 }
 
-/** True when every tool's files are in `dir` (either download option counts). */
 function toolPresent(tool, dir) {
   const has = (keep) => keep.every((k) => fs.existsSync(path.join(dir, path.basename(k))))
   return has(tool.keep) || Boolean(tool.fallback && has(tool.fallback.keep))
@@ -177,7 +161,6 @@ export function planTools({ binDir, force = false }) {
   ]
 }
 
-/** True when `dir` already holds every tool and data file, as the installed app's resources\bin does. */
 export function hasAllTools(dir) {
   return planTools({ binDir: dir }).every((p) => p.present)
 }
@@ -275,8 +258,6 @@ export async function fetchTools({ binDir, force = false, log = console.log, war
   return { ok: failed.length === 0, failed, binDir }
 }
 
-// Run as a script only when this file itself is the entry point, never when bundled into another program.
-// Compared as real paths, case-insensitively on Windows, so a linked folder or a lower-case drive letter still counts.
 function isEntry() {
   if (path.basename(here) !== 'fetch-tools.mjs' || !process.argv[1]) return false
   try {

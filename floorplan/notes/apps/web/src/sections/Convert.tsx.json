@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Convert.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "useSceneProgress",
+      "line": 47,
+      "offset": 0,
+      "text": "Drives the scene: follows the scroll on big screens,\nplays on a loop on small ones, and holds still for reduced motion.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "DropScene",
+      "line": 76,
+      "offset": 16,
+      "text": "The zone lights up lime as the file arrives, the same drag-over state the app shows.",
+      "kind": "what"
+    }
+  ]
+}

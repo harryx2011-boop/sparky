@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/main/agents.ts",
+  "description": "Detecting agent clients and adding Sparky's MCP entry to them, for the Settings Agents group.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "entryForThisPc",
+      "line": 9,
+      "offset": 0,
+      "text": "How a client should start this copy of Sparky, or null when it is not an installed one (the dev tree).",
+      "kind": "doc"
+    }
+  ]
+}

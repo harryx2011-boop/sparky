@@ -7,26 +7,19 @@ export type OriginalsMode = 'keep' | 'replace' | 'trash'
 
 export interface AdvancedOptions {
   codec?: VideoCodec
-  /** Overrides the compression level's video quality with a fixed bitrate. */
   videoKbps?: number
   audioKbps?: number
-  /** 1–100, images only. Overrides the compression level. */
   imageQuality?: number
-  /** Seconds. */
   trimStart?: number
   trimEnd?: number
-  /** Resize images (or GIFs). Keeps the aspect ratio when only one is set. */
   width?: number
   height?: number
-  /** Frames per second for GIF output. */
   fps?: number
 }
 
 export interface ConvertSettings {
-  /** Output extension, e.g. "mp4". Same as the input means "just shrink it". */
   output: string
   compression: CompressionLevel
-  /** null keeps the source resolution. */
   resolution: Resolution | null
   performance: PerformanceLevel
   originals: OriginalsMode
@@ -45,16 +38,11 @@ export interface DownloadExtras {
 
 export interface DownloadRequest {
   url: string
-  /** Title shown in the queue. */
   title?: string
   mode: 'video' | 'audio'
-  /** null means "best available". */
   quality: Resolution | null
-  /** 1-based playlist positions. Empty or undefined downloads everything. */
   items?: number[]
-  /** How many items this request will download, for overall progress. */
   count?: number
-  /** Convert the finished download into this format in the same job. */
   convertTo?: string | null
   compression: CompressionLevel
   performance: PerformanceLevel
@@ -69,35 +57,26 @@ export interface JobStage {
   label: string
 }
 
-/** The app's bucket for a job: its icon, its History filter. Which op ran it is `Job.op`. */
 export type JobKind = 'convert' | 'download' | 'tool'
 
 export interface Job {
   id: string
   kind: JobKind
-  /** The engine op that runs this job, e.g. "convert" or "pdf.merge". */
   op: string
-  /** The op's input as validated by its schema, including the caller's `out`. */
   args?: unknown
-  /** Pausing throws the work away, so a resumed job starts from the beginning. */
   restartsOnResume?: boolean
   title: string
-  /** File path or link. */
   source: string
   category?: Category | 'download'
   status: JobStatus
   stage?: JobStage
-  /** 0–1, or -1 when progress can't be measured. */
   progress: number
-  /** e.g. "3.1x" or "6.4 MB/s" */
   speed?: string
-  /** Seconds left. */
   eta?: number
   outputs: string[]
   sizeBefore?: number
   sizeAfter?: number
   error?: string
-  /** A hint that yt-dlp may need an update. */
   suggestUpdate?: boolean
   note?: string
   createdAt: number
@@ -125,22 +104,18 @@ export interface HistoryEntry {
   download?: DownloadRequest
 }
 
-/** Plain-language words for the engine's ops: `label` for the app and the CLI help, `done` for the finished notification. One row per op. */
 export const OP_TEXT = {
   convert: { label: 'Convert a file', done: 'Converted' },
   download: { label: 'Download from a link', done: 'Downloaded' },
-  /** A job whose op this build doesn't know, such as one queued by a newer CLI. */
   unknown: { label: 'A task', done: 'Finished' },
 } as const
 
-/** Queue title for a conversion, e.g. "clip.mov → MP4". */
 export function convertTitle(input: string, output: string): string {
   const name = input.split(/[\\/]/).pop() ?? input
   const ext = normalizeExt(output)
   return `${name} → ${ext === 'folder' ? 'Folder' : ext.toUpperCase()}`
 }
 
-/** Queue title for a download, e.g. "Night bus home → MP3". */
 export function downloadTitle(req: Pick<DownloadRequest, 'url' | 'title' | 'mode' | 'convertTo'>): string {
   const target = req.convertTo ? ` → ${req.convertTo.toUpperCase()}` : req.mode === 'audio' ? ' → MP3' : ''
   return `${req.title ?? req.url}${target}`
@@ -157,7 +132,6 @@ export type Theme = 'system' | 'light' | 'dark'
 
 export interface Settings {
   outputRoot: string
-  /** Work on several files at the same time. How many is Sparky's call, from the Performance level and the PC. */
   batch: boolean
   performance: PerformanceLevel
   compression: CompressionLevel
@@ -200,7 +174,6 @@ export function defaultSettings(outputRoot: string): Settings {
   }
 }
 
-/** Hard limits for the queue itself; the batch rule stays well inside them. */
 export const CONCURRENCY_MIN = 1
 export const CONCURRENCY_MAX = 8
 
@@ -213,7 +186,6 @@ export interface ToolStatus {
   optional: boolean
 }
 
-/** What each bundled tool does, in plain words, shown in Settings. One place, so the app and its browser preview agree. */
 export const TOOL_LABELS: Record<ToolStatus['id'], string> = {
   ffmpeg: 'Video, audio and images',
   ffprobe: 'Reads file details',
@@ -225,10 +197,8 @@ export const TOOL_LABELS: Record<ToolStatus['id'], string> = {
   libreoffice: 'Better Word to PDF',
 }
 
-/** Tools the user installs; the rest ship inside Sparky. */
 export const OPTIONAL_TOOLS: ReadonlySet<ToolStatus['id']> = new Set(['deno', 'ghostscript', 'libreoffice'])
 
-/** The tools' own names, for the credits line and the add-on hints where a person has to find them by name. */
 export const TOOL_NAMES: Record<ToolStatus['id'], string> = {
   ffmpeg: 'FFmpeg',
   ffprobe: 'FFprobe',
@@ -255,14 +225,12 @@ export interface ProbeResult {
   ext: string
   size: number
   category?: Category
-  /** Seconds, for audio and video. */
   duration?: number
   width?: number
   height?: number
 }
 
 export interface LinkEntry {
-  /** 1-based position in the playlist. */
   index: number
   id: string
   title: string
@@ -277,9 +245,7 @@ export interface LinkInfo {
   uploader?: string
   thumbnail?: string
   duration?: number
-  /** Tallest video height on offer. */
   maxHeight?: number
-  /** Rough size of the best download, in bytes. */
   sizeEstimate?: number
   entries: LinkEntry[]
   subtitleLangs: string[]
@@ -290,28 +256,22 @@ export interface ClipboardOffer {
   url: string
 }
 
-/** An engine op as the app sees it. `missing` holds tool ids ("libreoffice") and app capabilities ("print", "trash"). */
 export interface OpSummary {
   id: string
   label: string
   doneLabel: string
-  /** 'pdf', 'video', 'audio', 'image', 'document', 'archive', 'tool', or 'convert'/'download' for the two ops with their own pages. */
   category: string
   kind: JobKind
   arity: 'each' | 'all'
   positional: string[]
   requires: string[]
-  /** Fields to render as password inputs; Sparky never stores them. */
   secret?: string[]
-  /** Extensions the op takes, lower case, without the dot. */
   accepts: string[]
-  /** JSON Schema of the op's input, `out` included. */
   inputSchema: Record<string, unknown>
   available: boolean
   missing: string[]
 }
 
-/** One thing a file can become, and whether this PC can make it. */
 export interface TargetSummary {
   op: string
   ext: string
@@ -321,16 +281,13 @@ export interface TargetSummary {
 
 export type OpStartResult = { ok: true; jobs: Job[] } | { ok: false; error: { code: string; message: string; field?: string } }
 
-/** `canceled` when the user closed the dialog; `missing` counts files that were gone or could not be copied. */
 export interface SaveResult {
   canceled: boolean
   saved: number
   missing: number
-  /** Where the files went: the file for a single save, else the folder. */
   dest?: string
 }
 
-/** The API the preload script exposes as `window.sparky`. */
 export interface SparkyApi {
   system: {
     info(): Promise<SystemInfo>
@@ -339,11 +296,9 @@ export interface SparkyApi {
     pick(): Promise<string[]>
     pickFolder(): Promise<string | null>
     probe(paths: string[]): Promise<ProbeResult[]>
-    /** Path for a File dropped into the window. */
     pathFor(file: File): string
     showInFolder(path: string): Promise<void>
     open(path: string): Promise<void>
-    /** Copies finished files where the user chooses: a save dialog for one file, a folder picker for several. */
     save(paths: string[]): Promise<SaveResult>
   }
   convert: {
@@ -356,7 +311,6 @@ export interface SparkyApi {
   ops: {
     list(): Promise<OpSummary[]>
     targets(paths: string[]): Promise<{ path: string; targets: TargetSummary[] }[]>
-    /** Never throws for bad input: a wrong or unavailable request comes back as `ok: false`. */
     start(op: string, args: unknown): Promise<OpStartResult>
   }
   queue: {
@@ -375,7 +329,6 @@ export interface SparkyApi {
   }
   history: {
     search(query: HistoryQuery): Promise<HistoryEntry[]>
-    /** A refused rerun (bad input, or a password Sparky never kept) comes back as `ok: false`. */
     rerun(id: string): Promise<OpStartResult>
     remove(id: string): Promise<void>
     clear(): Promise<void>
@@ -403,11 +356,9 @@ export interface SparkyApi {
   onNavigate(listener: (to: { section: Section; url?: string }) => void): () => void
   api: {
     info(): Promise<ApiInfo>
-    /** Shows the token file in Explorer; the token itself never reaches the UI or the clipboard. */
     revealToken(): Promise<void>
   }
   icons: {
-    /** A data URL for the icon Windows shows for this extension, or null when Windows has no specific one. */
     forExt(ext: string): Promise<string | null>
   }
   agents: {
@@ -418,24 +369,17 @@ export interface SparkyApi {
 
 export type Section = 'convert' | 'download' | 'tools' | 'queue' | 'history' | 'settings'
 
-/** The local HTTP API as the app hosts it, for the Settings Agents group. */
 export interface ApiInfo {
-  /** False when the port was taken at startup. */
   running: boolean
   port: number
-  /** The token file clients read. */
   tokenPath: string
 }
 
-/** An agent client that can run Sparky's MCP server. */
 export interface AgentClient {
   id: string
   label: string
-  /** The client is installed on this PC. */
   found: boolean
-  /** Its config already lists Sparky. */
   installed: boolean
-  /** Installed, and it starts this copy of Sparky the way Sparky would write it now. False means an update is offered. */
   current: boolean
   configPath: string
 }

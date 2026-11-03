@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/main/icons.ts",
+  "description": "File-type icons from the user's own Windows associations, as PNG data URLs for the renderer.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Windows resolves an association from the extension alone, so the probe path never has to exist.",
+      "kind": "why"
+    },
+    {
+      "id": "n2",
+      "symbol": "iconForExt",
+      "line": 40,
+      "offset": 0,
+      "text": "A data URL for the icon Windows shows for this extension, or null when it has no specific one. Never throws.",
+      "kind": "doc"
+    }
+  ]
+}

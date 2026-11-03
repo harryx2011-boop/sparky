@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/ops/common.ts",
+  "description": "What every pdf op shares: its registry fields, its input pieces, and the one-PDF-in, one-PDF-out flow.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "pdfFilesField",
+      "line": 11,
+      "offset": 0,
+      "text": "The usual first field: PDFs, each handled on its own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "pagesField",
+      "line": 12,
+      "offset": 0,
+      "text": "A page list: numbers, ranges such as 1-3 or 8-, and the words all, odd and even.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "pdfOp",
+      "line": 18,
+      "offset": 0,
+      "text": "The registry fields every pdf op has: labels from PDF_TEXT, `files` first and made absolute, a title naming the file.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "editPdf",
+      "line": 38,
+      "offset": 0,
+      "text": "Opens `file`, lets `edit` change it (or build a new document from it), and saves the result under the source's name plus `suffix`.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "eachFile",
+      "line": 44,
+      "offset": 0,
+      "text": "Runs `each` over the op's files in turn, collecting outputs and warnings.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "needGhostscript",
+      "line": 58,
+      "offset": 0,
+      "text": "The Ghostscript path, or the plain-language reason the op can't run without it.",
+      "kind": "doc"
+    }
+  ]
+}

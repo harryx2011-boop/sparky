@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/sections/Tools.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "GROUPS",
+      "line": 5,
+      "offset": 0,
+      "text": "ops.json comes from the real registry (scripts/gen-site-ops.mjs). A category missing here lands in \"More\".",
+      "kind": "what"
+    }
+  ]
+}

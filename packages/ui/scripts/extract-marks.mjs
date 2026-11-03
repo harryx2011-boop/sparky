@@ -1,8 +1,4 @@
 // Writes OUT from the Iconify marks named in MARKS, so each surface paints offline and nothing is fetched at runtime.
-// Run after `npm i`; only the chosen marks are written, never the whole set.
-//   id      'name' is @iconify-json/logos (multicolor); 'set:name' is fetched once from api.iconify.design
-//   mono    a brand that is one ink colour by design: every fill becomes currentColor
-//   ink     a multicolor brand with black parts (TikTok): only the black becomes currentColor, hues stay as drawn
 import { createRequire } from 'node:module'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -39,7 +35,6 @@ async function load(id) {
   return { body: i.body, w: i.width ?? j.width ?? 16, h: i.height ?? j.height ?? 16 }
 }
 
-// Gradient and clip ids repeat across marks (a, b, SVGID_1); prefix them so two marks on one page cannot collide.
 function scope(key, body) {
   const ids = [...body.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])
   for (const id of ids) {

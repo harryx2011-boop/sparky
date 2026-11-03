@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/cli-text.ts",
+  "description": "Words the `sparky` command line shows that the engine and the app share: queue states and how secrets are given.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "JOB_REMOVED_FROM_QUEUE",
+      "line": 3,
+      "offset": 0,
+      "text": "A job the CLI or an agent was waiting on left the app's queue (removed, or cleared) before it finished.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "secretEnvName",
+      "line": 5,
+      "offset": 0,
+      "text": "The environment variable that can hold a secret field: `userPassword` → SPARKY_USER_PASSWORD.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "secretWays",
+      "line": 9,
+      "offset": 0,
+      "text": "The three ways to give a secret without it landing in shell history or the process list.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "secretOnCommandLineError",
+      "line": 13,
+      "offset": 0,
+      "text": "A secret typed on the command line itself.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "secretHelp",
+      "line": 17,
+      "offset": 0,
+      "text": "Help text for a secret field.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "SECRET_STDIN_TWICE",
+      "line": 21,
+      "offset": 0,
+      "text": "Two secret fields both asked to read stdin.",
+      "kind": "doc"
+    }
+  ]
+}

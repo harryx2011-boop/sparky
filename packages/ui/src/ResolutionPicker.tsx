@@ -4,17 +4,14 @@ import { cn } from './cn'
 
 export interface ResolutionPickerProps {
   options: ResolutionOption[]
-  /** null means "same as the source". */
   value: Resolution | null
   onChange: (value: Resolution | null) => void
-  /** Adds an "Original" choice that keeps the source size. */
   allowOriginal?: boolean
   originalLabel?: string
   className?: string
   size?: 'sm' | 'md'
 }
 
-/** 720p · 1080p · 1440p · 4K. Locked options explain why in a tooltip. */
 export function ResolutionPicker({ options, value, onChange, allowOriginal = true, originalLabel = 'Original', className, size = 'sm' }: ResolutionPickerProps) {
   const visible = options.filter((o) => !o.hidden)
   const btn = cn(

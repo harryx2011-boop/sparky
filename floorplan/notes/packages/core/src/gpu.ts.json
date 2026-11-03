@@ -1,0 +1,71 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/gpu.ts",
+  "description": "Graphics card encoders and the 1440p/4K unlock rules.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "GPU_ENCODERS",
+      "line": 13,
+      "offset": 0,
+      "text": "FFmpeg encoder names per vendor and codec.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "GpuInfo",
+      "line": 31,
+      "offset": 0,
+      "text": "Hardware encoders that were found and actually worked on this PC.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "GpuInfo.encoders",
+      "line": 32,
+      "offset": 0,
+      "text": "e.g. [\"h264_nvenc\", \"hevc_nvenc\"]",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "parseEncoderList",
+      "line": 37,
+      "offset": 0,
+      "text": "Parses `ffmpeg -hide_banner -encoders` and returns the hardware encoders it was built with.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "ResolutionOption.hidden",
+      "line": 66,
+      "offset": 0,
+      "text": "Hidden options are above the source size. Sparky never upscales.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "ResolutionOption.reason",
+      "line": 68,
+      "offset": 0,
+      "text": "Why it is locked, in plain words. Shown as a tooltip.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "ResolutionContext.sourceHeight",
+      "line": 72,
+      "offset": 0,
+      "text": "Height of the source in pixels, if known.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "clampResolution",
+      "line": 94,
+      "offset": 0,
+      "text": "Clamps a wanted resolution to the best one that is actually available.",
+      "kind": "doc"
+    }
+  ]
+}

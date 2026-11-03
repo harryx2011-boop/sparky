@@ -88,7 +88,6 @@ describe('sparky mcp', () => {
   })
 
   it('writes nothing but protocol to stdout', () => {
-    // Any stray stdout line would have broken the client above; stderr may hold logs.
     expect(stderr).not.toMatch(/SyntaxError|Unexpected token/)
   })
 })

@@ -1,0 +1,127 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/lib/ops.ts",
+  "description": "Reads an op's JSON Schema into form fields, and words what an op is missing. Nothing here names an op.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FieldSpec.numeric",
+      "line": 22,
+      "offset": 0,
+      "text": "For lists: numbers or text.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FieldSpec.secret",
+      "line": 23,
+      "offset": 0,
+      "text": "A password or similar: typed hidden, never kept by the engine.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "humanize",
+      "line": 30,
+      "offset": 0,
+      "text": "\"targetMb\" → \"Target MB\", \"page_size\" → \"Page size\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "consts",
+      "line": 40,
+      "offset": 0,
+      "text": "Choice labels come from the field's `labels` meta (`.meta({ labels: { h: 'Side to side' } })`), else the value made readable.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "fieldsOf",
+      "line": 57,
+      "offset": 0,
+      "text": "Every field but `out`, required ones first, in the schema's own order.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "initial",
+      "line": 84,
+      "offset": 0,
+      "text": "The form's starting values: the schema's defaults, else empty.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "toArgs",
+      "line": 96,
+      "offset": 0,
+      "text": "What the person set. Empty fields are left out for the engine's own defaults; a switch with a default is always sent, so turning a default-on switch off reaches the engine.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "missingRequired",
+      "line": 114,
+      "offset": 0,
+      "text": "The first required field left empty, with a plain line for it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "errorFor",
+      "line": 124,
+      "offset": 0,
+      "text": "Whether a field error from the engine (\"files.1\", \"pages\") belongs to this field.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "needsList",
+      "line": 134,
+      "offset": 0,
+      "text": "\"LibreOffice\", \"LibreOffice and Ghostscript\", \"a part of Sparky that’s missing\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "needsText",
+      "line": 143,
+      "offset": 0,
+      "text": "One plain line for a list row: \"Needs LibreOffice\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "acceptsText",
+      "line": 149,
+      "offset": 0,
+      "text": "What an op takes, for the file picker: \"PDF files\", \"Images and videos\".",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "acceptsText",
+      "line": 154,
+      "offset": 5,
+      "text": "One stray extension (GIF counts as video) shouldn't make an image tool read \"Images and videos\".",
+      "kind": "what"
+    },
+    {
+      "id": "n14",
+      "symbol": "OWN_PAGE",
+      "line": 170,
+      "offset": 0,
+      "text": "Ops with a page of their own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "groupOps",
+      "line": 172,
+      "offset": 0,
+      "text": "The Tools list: ops grouped in a fixed order, groups this build doesn't name at the end.",
+      "kind": "doc"
+    }
+  ]
+}

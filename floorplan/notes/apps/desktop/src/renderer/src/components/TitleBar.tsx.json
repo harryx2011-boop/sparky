@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/components/TitleBar.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "TitleBar",
+      "line": 6,
+      "offset": 0,
+      "text": "Frameless window title bar with Windows-style caption buttons.",
+      "kind": "doc"
+    }
+  ]
+}

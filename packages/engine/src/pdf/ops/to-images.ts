@@ -13,10 +13,8 @@ type Format = (typeof FORMATS)[number]
 const input = z.object({
   files: pdfFilesField,
   format: z.enum(FORMATS).optional().meta(PDF_TEXT.fields.format),
-  /** Dots per inch; 150 when left out. */
   dpi: z.number().min(1).optional().meta(PDF_TEXT.fields.dpi),
   pages: pagesField.optional().meta(PDF_TEXT.fields.imagePages),
-  /** 1-100 for jpg and webp; the compression setting's image quality when left out. */
   quality: z.number().int().min(1).max(100).optional().meta(PDF_TEXT.fields.quality),
 })
 

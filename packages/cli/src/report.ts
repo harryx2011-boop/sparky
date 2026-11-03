@@ -1,7 +1,6 @@
 // How finished and running jobs are shown: the summary agents and --json get, the lines people read, the progress bar.
 import type { HistoryEntry, Job } from '@sparky/core'
 
-/** What a caller needs from a job; never its args, so a secret can't leave through here. */
 export interface JobSummary {
   id: string
   op: string
@@ -12,7 +11,6 @@ export interface JobSummary {
   note?: string
   sizeBefore?: number
   sizeAfter?: number
-  /** 0–1 while running, -1 when it can't be measured. Left out once settled. */
   progress?: number
 }
 
@@ -32,7 +30,6 @@ export function summarize(j: Job): JobSummary {
   }
 }
 
-/** What a caller needs from a finished job in History; never its args. */
 export interface HistorySummary {
   id: string
   op: string
@@ -69,14 +66,12 @@ export function bytes(n: number): string {
   return `${v >= 100 ? v.toFixed(0) : v.toFixed(1)} ${units[i]}`
 }
 
-/** "2 done, 1 failed" */
 export function countLine(jobs: readonly Job[]): string {
   const counts = new Map<string, number>()
   for (const j of jobs) counts.set(j.status, (counts.get(j.status) ?? 0) + 1)
   return [...counts].map(([s, n]) => `${n} ${s}`).join(', ')
 }
 
-/** One plain line for a set of jobs: what happened and where the results are. */
 export function headline(label: string, jobs: readonly Job[]): string {
   if (!jobs.length) return `${label}: nothing to do.`
   const outputs = jobs.flatMap((j) => j.outputs)
@@ -99,7 +94,6 @@ export interface Bar {
 
 export const NO_BAR: Bar = { update() {}, done() {} }
 
-/** A one-line bar on a terminal's stderr; nothing at all when stderr is not a terminal. */
 export function progressBar(label: string, stream: NodeJS.WriteStream = process.stderr): Bar {
   if (!stream.isTTY) return NO_BAR
   let last = ''

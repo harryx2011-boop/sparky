@@ -1,5 +1,4 @@
 // Pulls the pictures out of a PDF. JPG and JPEG 2000 streams are written as they are; other grey, RGB, CMYK
-// and indexed samples (1, 2, 4 or 8 bits) are rebuilt into PNG with sharp. The rest are counted as skipped.
 import {
   decodePDFRawStream,
   PDFArray,
@@ -20,7 +19,6 @@ export interface PdfImage {
   data: Buffer
 }
 
-/** Every image stream the file holds, less the ones used only as another image's transparency. */
 export function imageStreams(doc: PDFDocument): PDFRawStream[] {
   const images: PDFRawStream[] = []
   const masks = new Set<PDFObject>()
@@ -49,7 +47,6 @@ function num(dict: PDFDict, key: string): number | undefined {
 
 interface ColourSpace {
   components: number
-  /** RGB lookup table for an indexed space. */
   palette?: Uint8Array
   cmyk?: boolean
 }
@@ -103,7 +100,6 @@ function colourSpace(doc: PDFDocument, value: PDFObject | undefined): ColourSpac
   return undefined
 }
 
-/** Undoes the PNG row filters (Predictor 10 to 15). */
 export function unpredictPng(data: Uint8Array, rowBytes: number, bytesPerPixel: number): Uint8Array {
   const rows = Math.floor(data.length / (rowBytes + 1))
   const out = new Uint8Array(rows * rowBytes)
@@ -135,7 +131,6 @@ export function unpredictPng(data: Uint8Array, rowBytes: number, bytesPerPixel: 
 
 const PLAIN_FILTERS = new Set(['FlateDecode', 'LZWDecode', 'ASCII85Decode', 'ASCIIHexDecode', 'RunLengthDecode'])
 
-/** One image stream as a file's bytes, or undefined when Sparky can't rebuild it. */
 export async function extractImage(doc: PDFDocument, stream: PDFRawStream): Promise<PdfImage | undefined> {
   const dict = stream.dict
   const f = filters(dict)

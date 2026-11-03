@@ -12,14 +12,12 @@ import { printJson, withBackend, type CommandContext } from './types'
 
 export const RESERVED_FLAGS = ['json', 'wait', 'local', 'help'] as const
 
-/** Extra spellings; each applies only when the op has the target field. */
 export const FLAG_ALIASES: Record<string, string> = { to: 'output' }
 
 export function bindOp(op: OpDescriptor, argv: readonly string[]): Bound {
   return bindArgs(argv, { schema: opSchema(op), positional: op.positional, aliases: FLAG_ALIASES, reserved: RESERVED_FLAGS, command: commandName(op.id) })
 }
 
-/** "Choose one with --output: pdf, jpg, webp" when a target field is missing and the backend can list targets. */
 async function missingTargetHint(b: Backend, op: OpDescriptor, args: Record<string, unknown>): Promise<string> {
   const key = op.positional[0]
   const items = key && Array.isArray(args[key]) ? (args[key] as string[]) : []

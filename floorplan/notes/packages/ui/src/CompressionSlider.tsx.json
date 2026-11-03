@@ -1,0 +1,23 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/ui/src/CompressionSlider.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "CompressionSliderProps.variant",
+      "line": 10,
+      "offset": 0,
+      "text": "Archives are lossless, so their stops read as speed vs. size.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "CompressionSliderProps.detail",
+      "line": 12,
+      "offset": 0,
+      "text": "Shown on the right of the label row. Defaults to the level's plain hint.",
+      "kind": "doc"
+    }
+  ]
+}

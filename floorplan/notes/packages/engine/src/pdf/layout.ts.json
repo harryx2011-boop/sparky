@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/pdf/layout.ts",
+  "description": "Where a picture sits on a PDF page. Units are PDF points (1/72 inch).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "PAGE_SIZES",
+      "line": 8,
+      "offset": 0,
+      "text": "Portrait width and height.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "Placement.clip",
+      "line": 24,
+      "offset": 0,
+      "text": "The picture overflows its box (cover), so it is clipped to it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "placeImage",
+      "line": 34,
+      "offset": 0,
+      "text": "`fit` makes the page the picture's own size at its DPI (plus margins); a paper size centres it inside the margins.",
+      "kind": "doc"
+    }
+  ]
+}

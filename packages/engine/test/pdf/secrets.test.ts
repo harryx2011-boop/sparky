@@ -1,5 +1,4 @@
 // Passwords never leave the run: not in the queue snapshot, not in History, not on Ghostscript's command line.
-// Ghostscript is stood in for by Node under its name, with a preload that records what it was given and writes the output.
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -37,7 +36,6 @@ describe('secret fields', () => {
     const preload = path.join(dir, 'fake-gs.cjs')
     fs.writeFileSync(preload, FAKE_GS)
     log = path.join(dir, 'gs-log.json')
-    // NODE_OPTIONS drops backslashes inside quotes.
     process.env.NODE_OPTIONS = `--require "${preload.split(path.sep).join('/')}"`
     process.env.FAKE_GS_LOG = log
     engine = await createEngine({ binDirs: [bin], dataDir: path.join(dir, 'data'), tempDir: path.join(dir, 'tmp'), defaultRoot: path.join(dir, 'Sparky'), appVersion: 'test', host: {}, skipGpu: true })
@@ -83,7 +81,6 @@ describe('secret fields', () => {
   })
 
   it('reruns a job that was given no password', async () => {
-    // The stand-in can't run without an @argfile first (Node reads "-sDEVICE" as its own option), so this job fails; its History row is what counts.
     const [job] = await engine.runOp('pdf.unlock', { files: [path.join(dir, 'doc.pdf')] })
     const row = engine.history({}).find((h) => h.id === job!.id)!
     const again = engine.rerun(row.id)

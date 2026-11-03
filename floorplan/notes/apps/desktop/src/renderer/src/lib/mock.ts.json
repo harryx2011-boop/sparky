@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/lib/mock.ts",
+  "description": "A stand-in for window.sparky so the UI can run in a normal browser (npm run dev:ui).",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "It fakes a small queue and a few history entries; nothing touches real files.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": null,
+      "line": 43,
+      "offset": null,
+      "text": "The real app imports this module too; only the browser mock needs the fake queue ticking.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "NEEDS_OFFICE",
+      "line": 195,
+      "offset": 0,
+      "text": "Spreadsheets only print through LibreOffice, which the mock PC doesn't have.",
+      "kind": "doc"
+    }
+  ]
+}

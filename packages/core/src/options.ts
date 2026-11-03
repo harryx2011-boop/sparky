@@ -43,16 +43,12 @@ export type CompressOptions = ConvertOptions & {
   quality?: 'email' | 'discord' | 'web' | 'archive'
 }
 
-/** One shape for all three thumbnail modes; only the framing differs. */
 export type ThumbsOptions = {
   mode: 'poster' | 'sprite' | 'preview'
   width: number
-  /** poster and preview: where to start, in seconds. */
   at?: number
-  /** sprite: how many frames to lay out, and how many per row. */
   count?: number
   columns?: number
-  /** preview: how long, and how smooth. */
   durationSec?: number
   fps?: number
 }
@@ -166,7 +162,6 @@ export function validateMediaFormat(value: string, label = 'format'): MediaForma
   return value as MediaFormat
 }
 
-/** Size a compress preset aims for, in bytes. Null means quality-led, no size goal. */
 export const PRESET_TARGETS: Record<'email' | 'discord' | 'web' | 'archive', number | null> = {
   email: 25 * 1024 * 1024,
   discord: 10 * 1024 * 1024,
@@ -174,15 +169,10 @@ export const PRESET_TARGETS: Record<'email' | 'discord' | 'web' | 'archive', num
   archive: null,
 }
 
-/** Presentation choices for document conversion. None of these paths is lossy in the codec sense. */
 export type DocumentOptions = {
-  /** Delimiter for csv in and out. Tab covers the .tsv-in-a-.csv case. */
   delimiter?: ',' | ';' | '\t' | '|'
-  /** Treat the first row as headers when reading, and emit them when writing. */
   header?: boolean
-  /** Which sheet to read from a workbook: index or name. Default: the first. */
   sheet?: number | string
-  /** Indent for json output. 0 emits a single line. */
   indent?: 0 | 2 | 4
   pageSize?: 'a4' | 'letter' | 'legal'
   orientation?: 'portrait' | 'landscape'

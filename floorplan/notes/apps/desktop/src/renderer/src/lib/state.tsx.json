@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/desktop/src/renderer/src/lib/state.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "AppState.files",
+      "line": 13,
+      "offset": 0,
+      "text": "Files waiting on the Convert page, kept when switching sections.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "AppState.pendingLink",
+      "line": 17,
+      "offset": 0,
+      "text": "A link handed over by the tray or the clipboard chip.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "useTheme",
+      "line": 90,
+      "offset": 0,
+      "text": "Dark until the saved choice arrives (index.html starts dark); \"Match Windows\" follows the system from then on.",
+      "kind": "doc"
+    }
+  ]
+}

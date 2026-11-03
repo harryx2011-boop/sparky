@@ -22,12 +22,10 @@ export interface EditOptions {
   output: EditExt
 }
 
-/** Formats without an alpha channel: transparent pixels are laid onto the background. */
 const OPAQUE = new Set<EditExt>(['jpg', 'bmp'])
 
 const hex = (c: string) => (c.startsWith('#') ? c : `#${c}`)
 
-/** Frame times and loop count, set again when frames are joined back into one animation. */
 interface Animation {
   delay?: number[]
   loop?: number
@@ -43,7 +41,6 @@ function encode(img: Sharp, o: EditOptions, anim: Animation = {}): Sharp {
     case 'avif':
       return img.avif(o.lossless ? { lossless: true } : { quality: q ?? 60 })
     case 'png':
-      // A quality asks for a smaller palette PNG; without one PNG stays lossless.
       return img.png(q === undefined ? { compressionLevel: 9 } : { compressionLevel: 9, palette: true, quality: q })
     case 'tiff':
       return img.tiff(q === undefined ? { compression: 'lzw' } : { compression: 'jpeg', quality: q })
@@ -54,10 +51,8 @@ function encode(img: Sharp, o: EditOptions, anim: Animation = {}): Sharp {
   }
 }
 
-/** Formats that hold every frame of a moving picture. */
 const ANIMATED = new Set(['gif', 'webp'])
 
-/** Returns a note for the finished job, when there is something to say. */
 export async function editImage(input: string, output: string, o: EditOptions): Promise<string | undefined> {
   if (o.percent !== undefined && (o.width !== undefined || o.height !== undefined)) throw new Error(IMAGE_TEXT.sizeOrPercent)
   const { default: sharp } = await import('sharp')
@@ -69,8 +64,6 @@ export async function editImage(input: string, output: string, o: EditOptions): 
     const note = moving && !animated ? IMAGE_TEXT.firstFrameOnly(o.output) : undefined
 
     const turned = o.rotate === 90 || o.rotate === 270
-    // sharp mirrors before it turns, whatever the call order. Mirroring the turned picture left to right is
-    // the same as mirroring the original top to bottom when the turn is a quarter, so the axes swap.
     const flip = turned && o.flip !== 'hv' ? (o.flip === 'h' ? 'v' : o.flip === 'v' ? 'h' : undefined) : o.flip
 
     let { width, height } = o
@@ -97,7 +90,6 @@ export async function editImage(input: string, output: string, o: EditOptions): 
     let img: Sharp
     let anim: Animation = {}
     if (animated && o.rotate) {
-      // sharp can't turn a multi-frame picture, so each frame is turned alone and the frames joined again.
       const frames: Buffer[] = []
       for (let page = 0; page < (meta.pages ?? 1); page++) frames.push(await shape(sharp(bytes, { page })).png({ compressionLevel: 0 }).toBuffer())
       img = sharp(frames, { join: { animated: true } })

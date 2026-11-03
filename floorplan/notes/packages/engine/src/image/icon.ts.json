@@ -1,0 +1,15 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/image/icon.ts",
+  "description": "A picture made square at each requested size, packed into one .ico.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "makeIcon",
+      "line": 19,
+      "offset": 10,
+      "text": "Letterboxed on transparency, so a wide logo keeps its shape.",
+      "kind": "what"
+    }
+  ]
+}

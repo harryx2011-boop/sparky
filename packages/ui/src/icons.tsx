@@ -10,13 +10,11 @@ function brand(key: keyof typeof MARKS) {
   }
 }
 
-/** Brand marks in their own colours. GitHub is one ink by design, so it takes the current text colour. */
 export const GmailIcon = brand('gmail')
 export const DiscordIcon = brand('discord')
 export const GithubIcon = brand('github')
 export const WindowsIcon = brand('windows')
 
-/** The Sparky bolt on its own, as an icon. */
 export function Bolt({ size = 16, strokeWidth = 2.4, ...props }: IconProps & { strokeWidth?: number }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
@@ -25,7 +23,6 @@ export function Bolt({ size = 16, strokeWidth = 2.4, ...props }: IconProps & { s
   )
 }
 
-/** The Sparky logo: a white bolt on a dark tile. Same drawing as the app icon and the favicon. */
 export function LogoMark({ size = 28, className }: { size?: number; className?: string }) {
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} className={className} style={{ flexShrink: 0 }} aria-hidden="true">

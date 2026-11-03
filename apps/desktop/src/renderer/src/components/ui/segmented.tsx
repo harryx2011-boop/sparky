@@ -2,7 +2,6 @@ import { cn } from '@sparky/ui'
 import { ToggleGroup } from 'radix-ui'
 import type { ReactNode } from 'react'
 
-/** A compact single-choice toggle group. */
 export function Segmented<T extends string>({
   value,
   onChange,

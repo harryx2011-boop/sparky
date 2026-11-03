@@ -20,7 +20,6 @@ import { run, throwIfAborted } from './process'
 import type { RunContext } from './queue'
 import { jsRuntimeArg } from './tools'
 
-/** Belt and braces with --encoding: make Python itself speak UTF-8 on Windows pipes. */
 const YTDLP_ENV = { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' }
 
 class DownloadError extends Error {
@@ -59,7 +58,6 @@ export async function updateYtDlp(env: EngineEnv): Promise<{ ok: boolean; messag
   }
 }
 
-/** Downloads one request into `outDir` (default: the output root's Downloads folder). */
 export async function downloadLink(env: EngineEnv, req: DownloadRequest, ctx: Pick<RunContext, 'signal' | 'update'>, outDir?: string): Promise<Pick<Job, 'outputs' | 'sizeAfter' | 'note'>> {
   const outputDir = outDir ?? path.join(env.settings().outputRoot, OUTPUT_FOLDERS.download)
   await fs.mkdir(outputDir, { recursive: true }).catch((e) => {
@@ -92,7 +90,6 @@ export async function downloadLink(env: EngineEnv, req: DownloadRequest, ctx: Pi
       } else {
         if (ev.item && ev.item !== item) item = ev.item
         const part = ev.total ? Math.min(1, ev.downloaded / ev.total) : 0
-        // Video and sound download separately, so keep the bar from jumping backwards.
         const overall = Math.min(0.999, (item - 1 + part) / count)
         best = Math.max(best, overall)
         ctx.update({
@@ -133,7 +130,6 @@ export async function downloadLink(env: EngineEnv, req: DownloadRequest, ctx: Pi
         },
         { out: path.dirname(file) },
       )
-      // The downloaded copy was only a stepping stone.
       if (result.output !== file) await fs.rm(file, { force: true })
       outputs.push(result.output)
       sizeAfter += result.sizeAfter

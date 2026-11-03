@@ -1,8 +1,6 @@
 import { resolutionOptions, type CompressionLevel, type PerformanceLevel, type Resolution } from '@sparky/core'
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 
-// The demo pretends the visitor has a 4K clip and an NVIDIA card,
-// so Max unlocks 1440p and 4K just like it would in the app.
 const DEMO_GPU = { encoders: ['h264_nvenc', 'hevc_nvenc'] }
 
 interface DemoState {
@@ -13,7 +11,6 @@ interface DemoState {
   resolution: Resolution | null
   setResolution: (r: Resolution | null) => void
   options: ReturnType<typeof resolutionOptions>
-  /** Resolution after the lock rules are applied. */
   effectiveResolution: Resolution | null
 }
 

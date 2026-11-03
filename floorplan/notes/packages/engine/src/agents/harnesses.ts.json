@@ -1,0 +1,199 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/agents/harnesses.ts",
+  "description": "The agent clients Sparky can add itself to: one object each, found by its markers, written without touching other entries.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 2,
+      "offset": null,
+      "text": "Shared by `sparky init` and the app's Settings, so both write exactly the same entry the same way.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "McpEntry.env",
+      "line": 11,
+      "offset": 0,
+      "text": "Variables the client sets for the server. Merged into an existing entry's env, never replacing the user's own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "mcpEntry",
+      "line": 14,
+      "offset": 0,
+      "text": "How a client should start `sparky mcp`. On Windows `sparky` is a .cmd shim, which a client spawning\nwithout a shell can't start, so the entry goes through cmd /c (what Claude Code's docs ask for npx too).",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "HarnessError",
+      "line": 29,
+      "offset": 0,
+      "text": "A config Sparky refused to touch, or a client it doesn't know. The message says what to do.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "Harness.markers",
+      "line": 42,
+      "offset": 0,
+      "text": "Absolute paths whose presence means the client is installed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "Harness.plan",
+      "line": 44,
+      "offset": 0,
+      "text": "Plans the file's new text; `applyWrite` writes it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "Harness.listed",
+      "line": 45,
+      "offset": 0,
+      "text": "The config already names a \"sparky\" server, however it starts it. Never throws.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "Harness.equivalent",
+      "line": 46,
+      "offset": 0,
+      "text": "A line the user could run instead, when the client has its own command for it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "applyWrite",
+      "line": 68,
+      "offset": 0,
+      "text": "Writes through a temp file and a rename, so a client reading the file never sees half of it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n10",
+      "symbol": "applyWrite",
+      "line": 70,
+      "offset": 2,
+      "text": "A symlinked config (dotfiles) is written where it points, so the link survives; the file keeps its mode.",
+      "kind": "what"
+    },
+    {
+      "id": "n11",
+      "symbol": "upsertJson",
+      "line": 87,
+      "offset": 0,
+      "text": "Sets `<key>.sparky` in a JSON file, keeping every other key, the BOM and the trailing newline as they were.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "upsertJson",
+      "line": 100,
+      "offset": 13,
+      "text": "An existing entry keeps the user's own keys (env, timeouts); only how to start Sparky is ours.",
+      "kind": "what"
+    },
+    {
+      "id": "n13",
+      "symbol": "openBrackets",
+      "line": 131,
+      "offset": 0,
+      "text": "How far '[' outnumbers ']' outside strings, for a value that runs over several lines.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "definedElsewhere",
+      "line": 136,
+      "offset": 0,
+      "text": "The line defining sparky other than as its own `[<table>.sparky]` table: `sparky = { … }` or `sparky.command = …`\nunder `[<table>]`, or `<table>.sparky.… = …` in the root table. Adding a table beside either makes the file invalid.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "upsertEnvTable",
+      "line": 147,
+      "offset": 0,
+      "text": "Sets each env pair in `[<table>.sparky.env]`, keeping the user's other keys; adds the table after sparky's own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n16",
+      "symbol": "upsertToml",
+      "line": 176,
+      "offset": 0,
+      "text": "Sets `command`, `args` and any `env` pairs in the `[<table>.sparky]` table of a TOML file, keeping its other keys\nand sub-tables. Sparky defined inline or with dotted keys is left alone: a second definition would make the file invalid.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "HarnessStatus.found",
+      "line": 286,
+      "offset": 0,
+      "text": "The client is installed on this PC.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "HarnessStatus.installed",
+      "line": 287,
+      "offset": 0,
+      "text": "Its config already names a \"sparky\" server.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "HarnessStatus.current",
+      "line": 288,
+      "offset": 0,
+      "text": "Installed, and it starts Sparky exactly the way `entry` would (command, args and env); without an entry, same as installed.",
+      "kind": "doc"
+    },
+    {
+      "id": "n20",
+      "symbol": "detectHarnesses",
+      "line": 292,
+      "offset": 0,
+      "text": "Every known client, whether it is installed, and whether it already lists Sparky. Never throws on a broken config.",
+      "kind": "doc"
+    },
+    {
+      "id": "n21",
+      "symbol": "InstallOptions.vars",
+      "line": 316,
+      "offset": 0,
+      "text": "The environment the client's config location is read from (CODEX_HOME, CLAUDE_CONFIG_DIR); `env` is the server's own.",
+      "kind": "doc"
+    },
+    {
+      "id": "n22",
+      "symbol": "InstallOptions.dryRun",
+      "line": 317,
+      "offset": 0,
+      "text": "Plan the change without writing it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n23",
+      "symbol": "installHarness",
+      "line": 325,
+      "offset": 0,
+      "text": "Adds (or updates) the \"sparky\" server in one client's config. Only `command`, `args` and Sparky's own `env` keys of\nan existing entry change. Throws HarnessError for an unknown client or a config Sparky won't touch, before anything is written.",
+      "kind": "doc"
+    },
+    {
+      "id": "n24",
+      "symbol": "configDiff",
+      "line": 334,
+      "offset": 0,
+      "text": "The changed lines with two lines of context: common head and tail trimmed, the middle shown as -/+.",
+      "kind": "doc"
+    }
+  ]
+}

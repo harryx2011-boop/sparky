@@ -1,0 +1,55 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/documents.ts",
+  "description": "Document formats handled by the engine's document module, and which pairs it can produce.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "TABLE_FORMATS",
+      "line": 3,
+      "offset": 0,
+      "text": "Documents share no universal intermediate, so the matrix is explicit rather than derived.\n.xls is not here: LibreOffice converts it when installed.",
+      "kind": "what"
+    },
+    {
+      "id": "n2",
+      "symbol": "DocFamily",
+      "line": 11,
+      "offset": 0,
+      "text": "Which pipeline a format goes through: rows, rich text, or a page.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "DOC_TARGETS",
+      "line": 36,
+      "offset": 0,
+      "text": "Source format to the targets the document module can produce.\nTable formats all lower to rows, so they interconvert. PDF is one-way in each direction:\ntext out of a PDF, or a PDF rendered from text. A PDF table is glyphs placed on a page, and\nrebuilding cells from it gives confidently wrong numbers, so there is no pdf to csv or xlsx.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "DOC_TARGETS.json",
+      "line": 39,
+      "offset": 0,
+      "text": "Only an array of flat objects becomes rows; anything else fails with a plain-language error.",
+      "kind": "what"
+    },
+    {
+      "id": "n5",
+      "symbol": "normalizeDocExt",
+      "line": 57,
+      "offset": 0,
+      "text": "Canonical document extension for an extension or alias, with or without the dot.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "DOC_INPUT_EXTS",
+      "line": 68,
+      "offset": 0,
+      "text": "Every extension the document module reads, aliases included.",
+      "kind": "doc"
+    }
+  ]
+}

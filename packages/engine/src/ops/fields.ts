@@ -8,12 +8,10 @@ export const compressionField = z.union([z.literal(0), z.literal(1), z.literal(2
 export const performanceField = z.enum(['low', 'normal', 'max'])
 export const heights = [z.literal(720), z.literal(1080), z.literal(1440), z.literal(2160)] as const
 
-/** Drops keys whose value is undefined, so stored input stays small and spreads never clear a default. */
 export function defined<T extends object>(o: T): Partial<T> {
   return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>
 }
 
-/** An op's progress as a job patch. A key given as undefined clears that field. */
 export function progressPatch(p: OpProgress): Partial<Job> {
   const patch: Partial<Job> = {}
   if (p.fraction !== undefined) patch.progress = p.fraction === null ? -1 : p.fraction
@@ -24,7 +22,6 @@ export function progressPatch(p: OpProgress): Partial<Job> {
   return patch
 }
 
-/** convertFile and downloadLink still report as job patches; this routes them through ctx.progress. */
 export function legacyRun(ctx: OpContext): Pick<RunContext, 'signal' | 'update'> {
   return {
     signal: ctx.signal,

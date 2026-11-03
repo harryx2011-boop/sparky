@@ -15,9 +15,7 @@ describe('encodeIco', () => {
       { size: 16, png: a },
       { size: 256, png: b },
     ])
-    // ICONDIR: reserved 0, type 1 (icon), 2 images.
     expect([...ico.subarray(0, 6)]).toEqual([0, 0, 1, 0, 2, 0])
-    // First entry: 16×16, no palette, reserved, 1 plane, 32 bits, size, offset right after the 6 + 2×16 header bytes.
     expect(ico.readUInt8(6)).toBe(16)
     expect(ico.readUInt8(7)).toBe(16)
     expect(ico.readUInt8(8)).toBe(0)
@@ -26,7 +24,6 @@ describe('encodeIco', () => {
     expect(ico.readUInt16LE(12)).toBe(32)
     expect(ico.readUInt32LE(14)).toBe(a.length)
     expect(ico.readUInt32LE(18)).toBe(38)
-    // 256 is stored as 0.
     expect(ico.readUInt8(22)).toBe(0)
     expect(ico.readUInt8(23)).toBe(0)
     expect(ico.readUInt32LE(30)).toBe(b.length)

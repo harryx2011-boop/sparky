@@ -5,7 +5,6 @@ import { clip, endPath, popGraphicsState, pushGraphicsState, rectangle, type PDF
 import { readBytes } from './document'
 import { placeImage, type LayoutOptions } from './layout'
 
-/** What sharp reads here (no BMP or iPhone HEIC in its build). */
 export const PICTURE_INPUTS = new Set(['png', 'jpg', 'webp', 'avif', 'tiff', 'gif'])
 
 interface Picture {
@@ -23,7 +22,6 @@ async function readPicture(file: string): Promise<Picture> {
     throw fail()
   })
   const dpi = meta.density && meta.density > 0 ? meta.density : 72
-  // A plain RGB or grey JPG the right way up can be embedded byte for byte.
   if (meta.format === 'jpeg' && (meta.orientation ?? 1) === 1 && (meta.space === 'srgb' || meta.space === 'b-w') && meta.width && meta.height) {
     return { embed: (doc) => doc.embedJpg(bytes), width: meta.width, height: meta.height, dpi }
   }
@@ -35,11 +33,9 @@ async function readPicture(file: string): Promise<Picture> {
     .catch(() => {
       throw fail()
     })
-  // pdf-lib reads the whole ArrayBuffer behind a view, so it gets a buffer of its own.
   return { embed: (doc) => doc.embedPng(new Uint8Array(data)), width: info.width, height: info.height, dpi }
 }
 
-/** Adds one page to `doc` holding the picture in `file`. */
 export async function addPicturePage(doc: PDFDocument, file: string, layout: LayoutOptions): Promise<void> {
   const pic = await readPicture(file)
   const at = placeImage(pic.width, pic.height, pic.dpi, layout)

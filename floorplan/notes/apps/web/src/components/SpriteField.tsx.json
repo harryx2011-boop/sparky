@@ -1,0 +1,159 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "apps/web/src/components/SpriteField.tsx",
+  "description": null,
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": null,
+      "line": 5,
+      "offset": null,
+      "text": "A field of glowing sprites. At `progress` 0 the dots trace the Sparky bolt like a small galaxy;\nas progress rises they swirl out into a spiral star field. Drawn on a 2D canvas with\npre-rendered glow sprites, so thousands of dots stay cheap.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "BOLT",
+      "line": 5,
+      "offset": 0,
+      "text": "The bolt from the logo, in its 24×24 icon space.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "PALETTE",
+      "line": 15,
+      "offset": 0,
+      "text": "White dots with a lime sprinkle. The lime is read from the theme so it stays the one accent.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "Particle.bx",
+      "line": 27,
+      "offset": 0,
+      "text": "Home on the bolt, in bolt units (0–24).",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "Particle.r",
+      "line": 29,
+      "offset": 0,
+      "text": "Spiral position: radius (0–1 of the field) and angle.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "Particle.delay",
+      "line": 35,
+      "offset": 0,
+      "text": "Staggers the scatter so it ripples outwards.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "Particle.star",
+      "line": 36,
+      "offset": 0,
+      "text": "Background stars never join the bolt.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "sampleBolt",
+      "line": 56,
+      "offset": 0,
+      "text": "Points spread evenly along the bolt outline, with a soft glow band and a sprinkle inside.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "sampleBolt",
+      "line": 75,
+      "offset": 19,
+      "text": "A faint dusting inside the bolt, like the core of a galaxy.",
+      "kind": "what"
+    },
+    {
+      "id": "n10",
+      "symbol": "SpriteFieldProps.getProgress",
+      "line": 113,
+      "offset": 0,
+      "text": "0 = bolt, 1 = fully scattered galaxy. Read every frame.",
+      "kind": "doc"
+    },
+    {
+      "id": "n11",
+      "symbol": "SpriteFieldProps.boltScale",
+      "line": 114,
+      "offset": 0,
+      "text": "Bolt height as a fraction of the canvas height.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "SpriteFieldProps.boltX",
+      "line": 115,
+      "offset": 0,
+      "text": "Horizontal centre of the bolt and the galaxy, 0–1.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "SpriteFieldProps.boltY",
+      "line": 116,
+      "offset": 0,
+      "text": "Vertical centre of the bolt, 0–1.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "SpriteFieldProps.assembleOnMount",
+      "line": 117,
+      "offset": 0,
+      "text": "Gather the dots into the bolt when the field first appears.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": "SpriteField",
+      "line": 153,
+      "offset": 32,
+      "text": "Three spiral arms; the scatter keeps a hint of the galaxy.",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": "SpriteField",
+      "line": 175,
+      "offset": 54,
+      "text": "On load the dots fly in from the galaxy to form the bolt.",
+      "kind": "what"
+    },
+    {
+      "id": "n17",
+      "symbol": "SpriteField",
+      "line": 193,
+      "offset": 72,
+      "text": "Flatten the galaxy a little so it reads as a disc.",
+      "kind": "what"
+    },
+    {
+      "id": "n18",
+      "symbol": "SpriteField",
+      "line": 204,
+      "offset": 83,
+      "text": "1 = on the bolt, 0 = out in the galaxy.",
+      "kind": "what"
+    },
+    {
+      "id": "n19",
+      "symbol": "SpriteField",
+      "line": 240,
+      "offset": 119,
+      "text": "Reduced motion: one still frame of the finished bolt, redrawn on scroll.",
+      "kind": "what"
+    }
+  ]
+}

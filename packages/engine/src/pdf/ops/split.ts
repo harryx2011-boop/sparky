@@ -11,11 +11,8 @@ import { eachFile, pdfFilesField, pdfOp } from './common'
 
 const input = z.object({
   files: pdfFilesField,
-  /** 'ranges': one file per part of `ranges`; 'every': `every` pages per file; 'pages': one file per page; 'odd_even': odd pages and even pages. Defaults to 'ranges' when `ranges` is given, else 'pages'. */
   mode: z.enum(['ranges', 'every', 'pages', 'odd_even']).optional().meta(PDF_TEXT.fields.splitMode),
-  /** Parts separated by commas, e.g. "1-3,4-6". */
   ranges: z.string().optional().meta(PDF_TEXT.fields.ranges),
-  /** Pages per file in 'every' mode; 1 when left out. */
   every: z.number().int().min(1).optional().meta(PDF_TEXT.fields.every),
 })
 
@@ -26,7 +23,6 @@ interface Part {
   suffix: string
 }
 
-/** The files a split makes, as 1-based page lists with their name suffixes. */
 export function splitParts(a: Pick<Args, 'mode' | 'ranges' | 'every'>, total: number): Part[] {
   const all = Array.from({ length: total }, (_, i) => i + 1)
   const mode = a.mode ?? (a.ranges ? 'ranges' : 'pages')
@@ -54,7 +50,6 @@ export function splitParts(a: Pick<Args, 'mode' | 'ranges' | 'every'>, total: nu
   const used = new Set<string>()
   return groups.map((pages, i) => {
     let suffix = PDF_TEXT.partSuffix(pages, i + 1, groups.length)
-    // The same pages asked for twice would overwrite each other; the part number is unique.
     if (used.has(suffix)) suffix = PDF_TEXT.partSuffix([], i + 1, groups.length)
     used.add(suffix)
     return { pages, suffix }

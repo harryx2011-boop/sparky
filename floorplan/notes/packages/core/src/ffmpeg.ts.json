@@ -1,0 +1,79 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/core/src/ffmpeg.ts",
+  "description": "Builds FFmpeg command lines and reads its progress output.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "FfmpegPlanInput.defaultCodec",
+      "line": 11,
+      "offset": 0,
+      "text": "Codec picked in Settings, used unless Advanced overrides it.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "FfmpegPlan.encoder",
+      "line": 19,
+      "offset": 0,
+      "text": "Video encoder in use, if any.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "FfmpegPlan.notes",
+      "line": 21,
+      "offset": 0,
+      "text": "Plain-language notes for the job card, e.g. why Max fell back to the CPU.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "QUALITY",
+      "line": 25,
+      "offset": 0,
+      "text": "Per-codec quality numbers for each compression level (lower is better).",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "scaleFilter",
+      "line": 52,
+      "offset": 4,
+      "text": "Never taller than the source, and always an even number of pixels.",
+      "kind": "why"
+    },
+    {
+      "id": "n6",
+      "symbol": "parseFfprobe",
+      "line": 184,
+      "offset": 0,
+      "text": "Reads `ffprobe -print_format json -show_format -show_streams` output.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "ProgressUpdate.progress",
+      "line": 202,
+      "offset": 0,
+      "text": "0–1, or -1 when the total length is unknown.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "createFfmpegProgressParser",
+      "line": 208,
+      "offset": 0,
+      "text": "Parses the key=value stream from `-progress pipe:1`.\nFeed it raw stdout chunks; it returns an update after each complete block.",
+      "kind": "doc"
+    },
+    {
+      "id": "n9",
+      "symbol": "gpuTestArgs",
+      "line": 249,
+      "offset": 0,
+      "text": "Test encode used to confirm a hardware encoder really works on this PC.",
+      "kind": "doc"
+    }
+  ]
+}

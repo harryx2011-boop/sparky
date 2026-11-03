@@ -1,0 +1,159 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/cli/src/backend.ts",
+  "description": "One interface over the two ways to run a job: the open app's HTTP API (jobs show in its Queue), or the engine in this process.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "RunOptions.signal",
+      "line": 20,
+      "offset": 0,
+      "text": "Aborting cancels every job this call started.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "RunOptions.timeoutMs",
+      "line": 21,
+      "offset": 0,
+      "text": "Stop waiting after this long and return the jobs as they are; they keep running.",
+      "kind": "doc"
+    },
+    {
+      "id": "n3",
+      "symbol": "RunOptions.onUpdate",
+      "line": 22,
+      "offset": 0,
+      "text": "Called with the jobs whenever they are polled.",
+      "kind": "doc"
+    },
+    {
+      "id": "n4",
+      "symbol": "Backend.startOp",
+      "line": 30,
+      "offset": 0,
+      "text": "Validates and queues; throws BackendError before anything is queued.",
+      "kind": "doc"
+    },
+    {
+      "id": "n5",
+      "symbol": "Backend.runOp",
+      "line": 31,
+      "offset": 0,
+      "text": "startOp, then waits until every job is done, failed, canceled or paused.",
+      "kind": "doc"
+    },
+    {
+      "id": "n6",
+      "symbol": "Backend.history",
+      "line": 34,
+      "offset": 0,
+      "text": "Finished jobs, newest first, from the history the app and the CLI share.",
+      "kind": "doc"
+    },
+    {
+      "id": "n7",
+      "symbol": "startAndWait",
+      "line": 54,
+      "offset": 0,
+      "text": "Starts, then polls until settled. Both backends share it, so progress, cancel and timeout behave the same.",
+      "kind": "doc"
+    },
+    {
+      "id": "n8",
+      "symbol": "startAndWait",
+      "line": 67,
+      "offset": 13,
+      "text": "Give the cancel a moment to land so the caller sees the jobs as canceled.",
+      "kind": "what"
+    },
+    {
+      "id": "n9",
+      "symbol": "startAndWait",
+      "line": 69,
+      "offset": 15,
+      "text": "Settled jobs are not asked again; one that vanished before settling was removed from the queue.",
+      "kind": "what"
+    },
+    {
+      "id": "n10",
+      "symbol": "ErrorBody",
+      "line": 82,
+      "offset": 0,
+      "text": "── Remote: the app (or `sparky serve`) on 127.0.0.1 ────────────────────────────────────────────",
+      "kind": "what"
+    },
+    {
+      "id": "n11",
+      "symbol": "RemoteOptions.probeMs",
+      "line": 91,
+      "offset": 0,
+      "text": "Milliseconds for the health check.",
+      "kind": "doc"
+    },
+    {
+      "id": "n12",
+      "symbol": "RemoteBackend.connect",
+      "line": 102,
+      "offset": 0,
+      "text": "The API when it answers /v1/health with this token, else undefined. `unauthorized` is set when it answered 401.",
+      "kind": "doc"
+    },
+    {
+      "id": "n13",
+      "symbol": "RemoteBackend.provesToken",
+      "line": 115,
+      "offset": 0,
+      "text": "Whatever listens on the port must show it knows the token before the token is sent: it answers a fresh nonce\nwith HMAC-SHA256(token, nonce). Anything else on 8600 is not Sparky and never sees the token.",
+      "kind": "doc"
+    },
+    {
+      "id": "n14",
+      "symbol": "RemoteBackend.request",
+      "line": 124,
+      "offset": 0,
+      "text": "One request on its own connection. node:http without keep-alive rather than fetch: on Windows, exiting while\nundici still holds a pooled socket trips a libuv assertion (UV_HANDLE_CLOSING) and the process dies with 127.",
+      "kind": "doc"
+    },
+    {
+      "id": "n15",
+      "symbol": null,
+      "line": 216,
+      "offset": null,
+      "text": "── Local: the engine in this process ──────────────────────────────────────────────────────────",
+      "kind": "what"
+    },
+    {
+      "id": "n16",
+      "symbol": "createLocalEngine",
+      "line": 216,
+      "offset": 0,
+      "text": "The engine as the CLI runs it: the app's data and tool folders, no printer or recycle bin.",
+      "kind": "doc"
+    },
+    {
+      "id": "n17",
+      "symbol": "PickOptions.local",
+      "line": 272,
+      "offset": 0,
+      "text": "--local: never try the app.",
+      "kind": "doc"
+    },
+    {
+      "id": "n18",
+      "symbol": "PickOptions.warn",
+      "line": 274,
+      "offset": 0,
+      "text": "Told why the app was skipped, when that's worth a line on stderr.",
+      "kind": "doc"
+    },
+    {
+      "id": "n19",
+      "symbol": "connectRemote",
+      "line": 277,
+      "offset": 0,
+      "text": "The app's API when it is open and the token matches, else the engine in this process.",
+      "kind": "doc"
+    }
+  ]
+}

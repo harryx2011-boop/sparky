@@ -1,0 +1,31 @@
+{
+  "$schema": "synapse-q/notes@1",
+  "file": "packages/engine/src/media/thumbs.ts",
+  "description": "media.thumbs: a poster frame, a sheet of evenly spaced frames, or a short looping preview.",
+  "notes": [
+    {
+      "id": "n1",
+      "symbol": "thumbsOptions",
+      "line": 26,
+      "offset": 0,
+      "text": "The options thumbsArgs takes, with the defaults filled in from what the probe found.",
+      "kind": "doc"
+    },
+    {
+      "id": "n2",
+      "symbol": "thumbsOptions",
+      "line": 29,
+      "offset": 3,
+      "text": "Past the end there is no frame to take; the last half second always has one.",
+      "kind": "what"
+    },
+    {
+      "id": "n3",
+      "symbol": "thumbsOne",
+      "line": 46,
+      "offset": 7,
+      "text": "A poster is one frame, so there is nothing to measure; a sheet reads the whole video; a preview only its stretch.",
+      "kind": "what"
+    }
+  ]
+}
