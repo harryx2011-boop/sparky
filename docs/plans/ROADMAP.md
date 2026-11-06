@@ -20,7 +20,7 @@ Plan: `2026-11-05-sparky-2-file-manager.md` (34 steps). Branch `sparky-2`; `main
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Spec, ADRs, three design directions | Not started |
+| 0 | Spec, ADRs, three design directions | Spec and ADRs drafted 2026-11-05 (await Harry), comps not started |
 | 1 | Native lister addon, listing IPC, watcher, window-first startup | Not started |
 | 2 | Theme system, new shell, Details/List/Grid, navigation, thumbnails, drag and drop, right-click menu and convert wheel | Not started |
 | 3 | Copy, move, rename, delete as engine ops, undo journal, preview before run, agent wiring | Not started |
