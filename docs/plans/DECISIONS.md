@@ -44,6 +44,7 @@ Source: `2026-11-05-sparky-2-file-manager.md`, section "Decisions".
 | D-2.0-5 | Extras in 2.0 | Batch rename, archives as folders, tags and folder sizes, cloud and network drives |
 | D-2.0-6 | Look | Close to Atlas: translucent panels, a theme set. Non-default themes may change the accent; the default theme keeps lime |
 | D-2.0-7 | Windows depth | Sparky's own right-click menu plus "Open in Explorer"; no other apps' shell items, no Win+E takeover |
+| D-2.0-8 | Main-window direction (2026-11-06) | C · Frost: floating rounded panels over the blurred desktop, soft lime selection tint, frosted job pill, convert wheel with lime last-used ring and spark burst. Comp: `apps/desktop/src/renderer/prototypes/file-manager/` (`data-mood="frost"`); critique `docs/design/2.0/README.md` |
 
 ## Decided against
 

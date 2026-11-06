@@ -17,6 +17,7 @@ Research behind it: `D:\sparky\reports\Sparky file manager remap.md` (notes in `
 | D-2.0-5 | Extras in 2.0 | Batch rename, archives as folders, tags and folder sizes, cloud and network drives (all four) |
 | D-2.0-6 | Look | Close to Atlas: translucent panels, a theme set. Replaces the "lime is the one accent" rule for non-default themes; the default theme keeps lime |
 | D-2.0-7 | Windows depth | Sparky's own right-click menu only, plus "Open in Explorer"; no hosting of other apps' shell menu items, no Win+E takeover |
+| D-2.0-8 | Main-window direction (2026-11-06) | C · Frost (glassy, floating panels). Workbench and Live Wire are dropped |
 
 Defaults I picked (not asked; change any of them before its phase starts):
 
@@ -39,7 +40,7 @@ Each step is one commit. Verify commands run from the repo root. `npm run check`
 
 1. **Spec.** `docs/specs/file-manager.md` (spec-driven skill): behaviours as Given/When/Then scenarios S1…Sn for listing, selection, file ops and undo, tabs and panes, command bar, search, preview, extras, cloud; each maps to one test named `S<n>: …`. Verify: Harry reads it; every phase below names its scenarios.
 2. **ADR.** `docs/adr/0001-file-ops-as-engine-ops.md` and `0002-native-fs-addon.md` (context, decision, consequences). Verify: files exist with Status: Accepted after Harry's nod.
-3. **Three design directions.** Three real React comps of the main window, built from the library parts the app will ship with, in `apps/desktop/src/renderer/prototypes/file-manager/` and served by `npm run dev:ui -w @sparky/desktop` at `http://localhost:4601/prototypes/file-manager/`. Screenshots and critique in `docs/design/2.0/` (the root `design/` folder is untracked scratch). Harry picks one. Verify: screenshots shown; pick recorded as D-2.0-8.
+3. **Three design directions.** Three real React comps of the main window, built from the library parts the app will ship with, in `apps/desktop/src/renderer/prototypes/file-manager/` and served by `npm run dev:ui -w @sparky/desktop` at `http://localhost:4601/prototypes/file-manager/`. Screenshots and critique in `docs/design/2.0/` (the root `design/` folder is untracked scratch). Harry picks one. Verify: screenshots shown; pick recorded as D-2.0-8. **Done 2026-11-06: Frost.**
 
    Comp brief (Harry, 2026-11-06, `website-design` interview):
 
@@ -63,7 +64,7 @@ Each step is one commit. Verify commands run from the repo root. `npm run check`
 
 ### Phase 2: shell, theme system and Browse
 
-8. **Theme tokens:** theme registry in `packages/ui` (default Sparky dark with lime, Sparky light, plus the token slots for translucent surfaces); acrylic/Mica window material on Windows 11 with an opaque fallback. Verify: token check (`apps/desktop` 0 misses), typecheck.
+8. **Theme tokens:** theme registry in `packages/ui` (default Sparky dark with lime, Sparky light, plus the token slots for translucent surfaces); acrylic/Mica window material on Windows 11 with an opaque fallback. Frost (D-2.0-8) is the default look: promote the comp's `--fm-*` values from `prototypes/file-manager/moods.css` (frost block) into `packages/ui/src/styles.css` and `TOKENS.md`, the blur coming from the real window material instead of the comp's painted wallpaper. The Windows 10 fallback must still read as Frost (rounded floating panels, gaps, tinted surfaces), not collapse into a flat window. Verify: token check (`apps/desktop` 0 misses), typecheck, screenshots on a Windows 11 window and with the material forced off.
 9. **New shell layout:** title bar with tab strip, Places sidebar (Quick access, drives, Downloads\Sparky, then Convert, Download, Tools, Queue, History), pane area, inspector slot, status bar, job pill replacing the queue dock. Old pages render inside the pane area. Verify: `npm run dev:ui -w @sparky/desktop` on 4601, screenshots against the picked comp.
 10. **Details, List and Grid views:** TanStack Virtual, sortable columns, density control (row height and font size). Verify: desktop tests; 100k-row folder scrolls without dropped frames (Performance trace).
 11. **Navigation:** breadcrumb that turns into an editable path, back/forward/up, keyboard selection (arrows, Shift, Ctrl, Ctrl+A, type-to-select), open with default app, reveal. Verify: scenario tests S-nav.

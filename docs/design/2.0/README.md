@@ -1,6 +1,6 @@
 # Sparky 2.0 main window: three directions
 
-Phase 0 step 3 of `docs/plans/2026-11-05-sparky-2-file-manager.md`. Harry picks one; the pick becomes D-2.0-8.
+Phase 0 step 3 of `docs/plans/2026-11-05-sparky-2-file-manager.md`. **Picked 2026-11-06: C · Frost (D-2.0-8).** Workbench and Live Wire stay in the comp page for reference until Phase 2 step 8 promotes the Frost values into the theme, then the prototype folder is deleted.
 
 **Concept line (all three):** every file is one spark away from becoming something else.
 **The one bold idea:** the convert wheel. Right-click a file, choose "Convert to…", and the formats it can become fly out on spokes around the pointer: video formats on the top arc, audio on the bottom, the format last used for that type ringed in lime, a lime spark burst on the pick.
