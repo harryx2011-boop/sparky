@@ -1,4 +1,5 @@
 {
   "files": [],
-  "references": []
+  "references": [],
+  "compilerOptions": { "paths": { "@/*": ["./src/renderer/src/*"] } }
 }

@@ -1,0 +1,94 @@
+/* Mood skins for the Sparky 2.0 comps; the --fm-* values are comp-only and move to TOKENS.md with the winner. */
+
+[data-mood] {
+  --fm-row: 28px;
+  --fm-gap: 0px;
+  --fm-panel-radius: 0px;
+  --fm-side: var(--background);
+  --fm-pane: var(--background);
+  --fm-inspector: var(--background);
+  --fm-line: var(--border);
+  --fm-select: var(--accent);
+  --fm-select-text: var(--foreground);
+  --fm-blur: 0px;
+  --fm-handle: var(--fm-line);
+  --fm-wall-a: #3c5a33;
+  --fm-wall-b: #6a4a2a;
+  --fm-wall-base: #0d0f0e;
+}
+
+[data-mood] [data-slot='resizable-handle'] {
+  width: max(1px, var(--fm-gap));
+  background: var(--fm-handle);
+}
+
+[data-mood='workbench'] {
+  --fm-row: 26px;
+  --fm-side: color-mix(in srgb, var(--card) 60%, var(--background));
+  --fm-inspector: color-mix(in srgb, var(--card) 60%, var(--background));
+}
+[data-mood='workbench'] [data-fm='row'][data-selected] td:first-child,
+[data-mood='workbench'] [data-fm='place'][data-active] {
+  box-shadow: inset 2px 0 0 var(--lime);
+}
+[data-mood='workbench'] [data-fm='pill'] {
+  border: 1px solid var(--fm-line);
+  background: var(--card);
+}
+
+[data-mood='livewire'] {
+  --fm-row: 32px;
+  --fm-select: var(--lime);
+  --fm-select-text: var(--lime-foreground);
+  --fm-side: var(--card);
+}
+[data-mood='livewire'] [data-fm='row'][data-selected] [data-fm='muted'] {
+  color: color-mix(in srgb, var(--lime-foreground) 70%, transparent);
+}
+[data-mood='livewire'] [data-fm='place'][data-active] {
+  background: var(--lime);
+  color: var(--lime-foreground);
+}
+[data-mood='livewire'] [data-fm='tab'][data-state='active'] {
+  box-shadow: inset 0 -2px 0 var(--lime);
+}
+[data-mood='livewire'] [data-fm='spoke'] {
+  border-color: color-mix(in srgb, var(--lime) 55%, transparent);
+}
+[data-mood='livewire'] [data-fm='pill'] {
+  background: var(--lime);
+  color: var(--lime-foreground);
+}
+[data-mood='livewire'] [data-fm='pill'] [data-fm='track'] {
+  background: color-mix(in srgb, var(--lime-foreground) 20%, transparent);
+}
+[data-mood='livewire'] [data-fm='pill'] [data-fm='fill'] {
+  background: var(--lime-foreground);
+}
+
+[data-mood='frost'] {
+  --fm-row: 30px;
+  --fm-gap: 8px;
+  --fm-panel-radius: var(--radius-xl);
+  --fm-side: color-mix(in srgb, var(--card) 55%, transparent);
+  --fm-pane: color-mix(in srgb, var(--background) 62%, transparent);
+  --fm-inspector: color-mix(in srgb, var(--card) 55%, transparent);
+  --fm-line: color-mix(in srgb, var(--foreground) 9%, transparent);
+  --fm-select: color-mix(in srgb, var(--lime) 16%, transparent);
+  --fm-blur: 28px;
+  --fm-handle: transparent;
+  background:
+    radial-gradient(60% 70% at 18% 20%, var(--fm-wall-a) 0%, transparent 70%),
+    radial-gradient(50% 60% at 85% 80%, var(--fm-wall-b) 0%, transparent 70%),
+    var(--fm-wall-base);
+}
+[data-mood='frost'] [data-fm='panel'],
+[data-mood='frost'] [data-fm='pane'] {
+  border: 1px solid var(--fm-line);
+  backdrop-filter: blur(var(--fm-blur)) saturate(140%);
+}
+[data-mood='frost'] [data-fm='pill'] {
+  border: 1px solid var(--fm-line);
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  backdrop-filter: blur(16px);
+}

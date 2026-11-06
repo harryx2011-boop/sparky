@@ -39,7 +39,20 @@ Each step is one commit. Verify commands run from the repo root. `npm run check`
 
 1. **Spec.** `docs/specs/file-manager.md` (spec-driven skill): behaviours as Given/When/Then scenarios S1…Sn for listing, selection, file ops and undo, tabs and panes, command bar, search, preview, extras, cloud; each maps to one test named `S<n>: …`. Verify: Harry reads it; every phase below names its scenarios.
 2. **ADR.** `docs/adr/0001-file-ops-as-engine-ops.md` and `0002-native-fs-addon.md` (context, decision, consequences). Verify: files exist with Status: Accepted after Harry's nod.
-3. **Three design directions.** Three static HTML comps of the main window (Atlas-close layout, translucent panels, convert wheel open, inspector, job pill) in `docs/design/2.0/` (the root `design/` folder is untracked scratch), screenshotted and critiqued (design-taste). Harry picks one. Verify: screenshots shown; pick recorded as D-2.0-8.
+3. **Three design directions.** Three real React comps of the main window, built from the library parts the app will ship with, in `apps/desktop/src/renderer/prototypes/file-manager/` and served by `npm run dev:ui -w @sparky/desktop` at `http://localhost:4601/prototypes/file-manager/`. Screenshots and critique in `docs/design/2.0/` (the root `design/` folder is untracked scratch). Harry picks one. Verify: screenshots shown; pick recorded as D-2.0-8.
+
+   Comp brief (Harry, 2026-11-06, `website-design` interview):
+
+   | Question | Answer |
+   |---|---|
+   | Format | Real React comps (not static HTML), so the winner becomes Phase 2's starting code |
+   | What varies | Three moods on the same bones: calm and dense, bold lime, glassy and translucent |
+   | Component sources | shadcn/ui for base parts, Watermelon UI and Componentry for richer parts, React Bits for 1-2 signature pieces. No motion gallery (retired from the harness the same day) |
+   | Signature motion | The convert wheel |
+   | Default view | Details list |
+   | Convert, Download, Tools | A sidebar section under the drives |
+   | Inspector | Opens when a file is selected |
+   | Fonts | Keep Satoshi and IBM Plex Mono |
 
 ### Phase 1: foundations
 
