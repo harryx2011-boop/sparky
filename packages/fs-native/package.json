@@ -1,0 +1,27 @@
+{
+  "name": "@sparky/fs-native",
+  "version": "1.3.0",
+  "private": true,
+  "description": "Native Windows folder lister: names, kinds, sizes and dates as columns in one FindFirstFileExW pass.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "gypfile": true,
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "typecheck": "node ../../node_modules/typescript-native/bin/tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "node-addon-api": "^8.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

@@ -15,13 +15,13 @@ Read first, in order:
 7. D:\sparky\reports\Sparky file manager remap.md (research behind it, outside the repo)
 
 State:
-- Sparky 2.0 file manager: spec S1-S33 (draft) and ADRs 0001/0002 (Proposed) on main. Branch sparky-2 has the three main-window comps as real React (A Workbench, B Live Wire, C Frost) at http://localhost:4601/prototypes/file-manager/ under npm run dev:ui -w @sparky/desktop, built from shadcn/ui (apps/desktop/components.json, new) and React Bits CircularText + ClickSpark for the convert wheel. Harry picked C · Frost (D-2.0-8). Waiting on Harry: agree the spec, accept the ADRs.
+- Sparky 2.0 file manager: spec S1-S33 and ADRs 0001/0002 on main (approved on sparky-2). Branch sparky-2 has the three main-window comps as real React (A Workbench, B Live Wire, C Frost) at http://localhost:4601/prototypes/file-manager/ under npm run dev:ui -w @sparky/desktop, built from shadcn/ui (apps/desktop/components.json, new) and React Bits CircularText + ClickSpark for the convert wheel. Harry picked C · Frost (D-2.0-8); spec agreed and ADRs Accepted. Phase 1 step 4 done: packages/fs-native lists 100k entries in 116 ms (11 tests pass, UNC test skips on this PC).
 - main: 1.3.0 in the manifests, installed locally, not tagged or released. Latest published release 1.1.1.
 - Transcript op and progress bar changes are on main, not in the installed app.
 - Untracked in the live checkout (not repo content): .aether/, .worktrees/, design/.
 
 Next steps:
-0. Sparky 2.0: once Harry agrees, mark the spec agreed and ADRs Accepted, then Phase 1 step 4 (packages/fs-native, test-first) on sparky-2. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
+0. Sparky 2.0 on sparky-2: Phase 1 step 5 (rebuild fs-native for Electron in app-deps, asarUnpack it, package and list C:\Windows\System32 from the installed app), then steps 6-7. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
 1. Harry reviews and merges setup-revamp (CLAUDE.md, docs/plans set, archived 1.1 plan, context.md note).
 2. Rebuild the installed app: node ~/.claude/scripts/desktop-apps.mjs --rebuild sparky (use --no-test).
 3. Memory folder for sparky (SPK-2) is handled by the memory track, not this repo.

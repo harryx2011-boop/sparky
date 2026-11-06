@@ -57,7 +57,7 @@ Each step is one commit. Verify commands run from the repo root. `npm run check`
 
 ### Phase 1: foundations
 
-4. **`packages/fs-native` addon:** `list(path) -> { names, kinds, sizes, mtimes, ctimes, attrs }` as columns, long paths and UNC accepted. Verify: `npm test -w @sparky/fs-native` (5k and 100k entry fixtures; asserts the 100k list returns under 300 ms on a warm cache).
+4. **`packages/fs-native` addon:** `list(path) -> { names, kinds, sizes, mtimes, ctimes, attrs }` as columns, long paths and UNC accepted. Verify: `npm test -w @sparky/fs-native` (5k and 100k entry fixtures; asserts the 100k list returns under 300 ms on a warm cache). **Done 2026-11-06:** 100k in 116 ms, 11 tests pass; the UNC test skips on this PC (`\\localhost\C$` not reachable), so UNC is first proven in step 29.
 5. **Electron build wiring:** addon rebuilt for Electron in `app-deps`, unpacked in asar, packaged. Verify: `npm run package:win`, then the installed app lists `C:\Windows\System32`.
 6. **Listing IPC:** `fs:list` streams the first 200 rows, then the rest as columnar transferable buffers; `fs:watch` pushes adds, removes and renames via `@parcel/watcher`. Verify: `npm test -w @sparky/desktop` (main-side tests with a temp folder).
 7. **Startup order:** window first, engine started lazily on the first op or Queue view; encoder probe cached by ffmpeg path and mtime (ROADMAP open item). Verify: time to first window logged, under 1 s on a warm start; engine suite green.
