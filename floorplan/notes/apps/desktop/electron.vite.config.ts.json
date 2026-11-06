@@ -6,7 +6,7 @@
     {
       "id": "n1",
       "symbol": "bundleWorkspace",
-      "line": 6,
+      "line": 8,
       "offset": 0,
       "text": "@sparky/* workspace packages are TypeScript source, so they are bundled rather than externalized.",
       "kind": "what"

@@ -13,6 +13,8 @@ asarUnpack:
   - "**/node_modules/sharp/**"
   - "**/node_modules/@img/**"
   - "**/node_modules/better-sqlite3/**"
+  # The fs-native lister, copied beside the main bundle by electron.vite.config.ts.
+  - "out/build/Release/*.node"
   # tesseract.js runs OCR in a worker thread started from a file path, which can't point inside the archive.
   # The worker loads the wasm core and these modules itself, so they sit beside it.
   - "**/node_modules/tesseract.js/**"

@@ -30,6 +30,7 @@
   "devDependencies": {
     "@sparky/core": "*",
     "@sparky/engine": "*",
+    "@sparky/fs-native": "*",
     "@sparky/ui": "*",
     "@tailwindcss/vite": "^4.3.3",
     "@types/better-sqlite3": "^9.6.0",
