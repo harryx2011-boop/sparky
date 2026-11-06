@@ -12,9 +12,6 @@
   --fm-select-text: var(--foreground);
   --fm-blur: 0px;
   --fm-handle: var(--fm-line);
-  --fm-wall-a: #3c5a33;
-  --fm-wall-b: #6a4a2a;
-  --fm-wall-base: #0d0f0e;
 }
 
 [data-mood] [data-slot='resizable-handle'] {
@@ -67,20 +64,17 @@
 }
 
 [data-mood='frost'] {
-  --fm-row: 30px;
-  --fm-gap: 8px;
-  --fm-panel-radius: var(--radius-xl);
-  --fm-side: color-mix(in srgb, var(--card) 55%, transparent);
-  --fm-pane: color-mix(in srgb, var(--background) 62%, transparent);
-  --fm-inspector: color-mix(in srgb, var(--card) 55%, transparent);
-  --fm-line: color-mix(in srgb, var(--foreground) 9%, transparent);
-  --fm-select: color-mix(in srgb, var(--lime) 16%, transparent);
-  --fm-blur: 28px;
+  --fm-row: var(--shell-row);
+  --fm-gap: var(--shell-gap);
+  --fm-panel-radius: var(--shell-radius);
+  --fm-side: var(--shell-side);
+  --fm-pane: var(--shell-pane);
+  --fm-inspector: var(--shell-inspector);
+  --fm-line: var(--shell-line);
+  --fm-select: var(--shell-select);
+  --fm-blur: var(--shell-blur);
   --fm-handle: transparent;
-  background:
-    radial-gradient(60% 70% at 18% 20%, var(--fm-wall-a) 0%, transparent 70%),
-    radial-gradient(50% 60% at 85% 80%, var(--fm-wall-b) 0%, transparent 70%),
-    var(--fm-wall-base);
+  background: var(--shell-wall);
 }
 [data-mood='frost'] [data-fm='panel'],
 [data-mood='frost'] [data-fm='pane'] {
@@ -89,6 +83,6 @@
 }
 [data-mood='frost'] [data-fm='pill'] {
   border: 1px solid var(--fm-line);
-  background: color-mix(in srgb, var(--card) 70%, transparent);
+  background: var(--shell-pill);
   backdrop-filter: blur(16px);
 }

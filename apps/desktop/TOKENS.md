@@ -55,6 +55,15 @@ Source of truth: `../../packages/ui/src/styles.css` (shared theme, imported by `
 | `--sp-flow-sheen` | `color-mix(in srgb, var(--lime-foreground) 14%, transparent)` | compression sheen, dark | `../../packages/ui/src/styles.css:256` |
 | `--sp-flow-edge` | `transparent` | compression spark edge, light | `../../packages/ui/src/styles.css:251` |
 | `--sp-flow-edge` | `color-mix(in srgb, var(--lime-foreground) 22%, transparent)` | compression spark edge, dark | `../../packages/ui/src/styles.css:257` |
+| `--shell-side` | `color-mix(in srgb, var(--card) 55%, transparent)` | 2.0 shell Places panel, both themes | `../../packages/ui/src/styles.css:388` |
+| `--shell-pane` | `color-mix(in srgb, var(--background) 62%, transparent)` | 2.0 shell file pane, both themes | `../../packages/ui/src/styles.css:389` |
+| `--shell-inspector` | `color-mix(in srgb, var(--card) 55%, transparent)` | 2.0 shell inspector panel, both themes | `../../packages/ui/src/styles.css:390` |
+| `--shell-line` | `color-mix(in srgb, var(--foreground) 9%, transparent)` | 2.0 shell panel hairline, both themes | `../../packages/ui/src/styles.css:391` |
+| `--shell-select` | `color-mix(in srgb, var(--lime) 16%, transparent)` | 2.0 shell selected row, both themes | `../../packages/ui/src/styles.css:392` |
+| `--shell-pill` | `color-mix(in srgb, var(--card) 70%, transparent)` | 2.0 shell job pill, both themes | `../../packages/ui/src/styles.css:393` |
+| `--shell-wall` | `radial-gradient(60% 70% at 18% 20%, #cfe0c2 0%, transparent 70%), radial-gradient(50% 60% at 85% 80%, #ead6c0 0%, transparent 70%), #f3f3f1` | 2.0 shell painted wall, light (no window material) | `../../packages/ui/src/styles.css:395` |
+| `--shell-wall` | `radial-gradient(60% 70% at 18% 20%, #3c5a33 0%, transparent 70%), radial-gradient(50% 60% at 85% 80%, #6a4a2a 0%, transparent 70%), #0d0f0e` | 2.0 shell painted wall, dark (no window material) | `../../packages/ui/src/styles.css:398` |
+| `--shell-wall` | `transparent` | 2.0 shell wall under the Windows 11 material (`data-material="os"`) | `../../packages/ui/src/styles.css:401` |
 
 ## Type
 | token | value | use | source |
@@ -64,9 +73,16 @@ Source of truth: `../../packages/ui/src/styles.css` (shared theme, imported by `
 | `html font-size` | `14px` | base UI size | `src/renderer/src/index.css:11` |
 | `Satoshi Fallback ascent-override` | `101%` | fallback metrics match Satoshi | `../../packages/ui/src/styles.css:37` |
 
+## Spacing
+| token | value | use | source |
+| --- | --- | --- | --- |
+| `--shell-row` | `30px` | 2.0 shell file row height | `../../packages/ui/src/styles.css:385` |
+| `--shell-gap` | `8px` | 2.0 shell gap between floating panels | `../../packages/ui/src/styles.css:386` |
+
 ## Radius
 | token | value | use | source |
 | --- | --- | --- | --- |
+| `--shell-radius` | `calc(var(--radius) + 4px)` | 2.0 shell floating panels | `../../packages/ui/src/styles.css:387` |
 | `--radius` | `8px` | base radius | `../../packages/ui/src/styles.css:87` |
 | `--radius-sm` | `calc(var(--radius) - 4px)` | `rounded-sm` | `../../packages/ui/src/styles.css:146` |
 | `--radius-md` | `calc(var(--radius) - 2px)` | `rounded-md` | `../../packages/ui/src/styles.css:147` |
@@ -78,6 +94,7 @@ Source of truth: `../../packages/ui/src/styles.css` (shared theme, imported by `
 ## Shadow
 | token | value | use | source |
 | --- | --- | --- | --- |
+| `--shell-blur` | `28px` | 2.0 shell panel backdrop blur (`.sp-panel`) | `../../packages/ui/src/styles.css:394` |
 | `.sp-flow-thumb::before` | `0 1px 2px rgb(0 0 0 / 0.16), 0 2px 8px rgb(0 0 0 / 0.14)` | compression thumb, light | `../../packages/ui/src/styles.css:330` |
 | `.dark .sp-flow-thumb::before` | `0 1px 2px rgb(0 0 0 / 0.5), 0 2px 8px rgb(0 0 0 / 0.4)` | compression thumb, dark | `../../packages/ui/src/styles.css:334` |
 | `.sp-flow-thumb:focus-visible::before` | `0 0 0 4px color-mix(in srgb, var(--ring) 45%, transparent), 0 1px 2px rgb(0 0 0 / 0.16)` | compression thumb focus ring | `../../packages/ui/src/styles.css:346` |
