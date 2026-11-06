@@ -14,6 +14,23 @@ Releases first, then the phases of the 1.1 plan (all done), then open items. Det
 | 1.2.0 | 2026-09-30 | Save as and Save all. Manifest bump, not tagged. |
 | 1.3.0 | 2026-10-09 | MCP tool profiles and path guard. Manifest bump, installed locally, not tagged or released. |
 
+## Sparky 2.0: file manager (planned 2026-11-05)
+
+Plan: `2026-11-05-sparky-2-file-manager.md` (34 steps). Branch `sparky-2`; `main` keeps 1.3.0 shippable.
+
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Spec, ADRs, three design directions | Not started |
+| 1 | Native lister addon, listing IPC, watcher, window-first startup | Not started |
+| 2 | Theme system, new shell, Details/List/Grid, navigation, thumbnails, drag and drop, right-click menu and convert wheel | Not started |
+| 3 | Copy, move, rename, delete as engine ops, undo journal, preview before run, agent wiring | Not started |
+| 4 | Tabs, split panes, Ctrl+K command bar, search | Not started |
+| 5 | Space preview, inspector | Not started |
+| 6 | Batch rename, archives as folders, tags, folder sizes | Not started |
+| 7 | Network paths, rclone cloud remotes | Not started |
+| 8 | Theme set, polish | Not started |
+| 9 | Docs, site, 2.0.0 release | Not started |
+
 ## Phases of the 1.1 plan (archived)
 
 Source: `archive/2026-09-25-sparky-1.1-agents-utilities.md`.

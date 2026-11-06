@@ -31,6 +31,20 @@ Source: `archive/2026-09-25-sparky-1.1-agents-utilities.md`, section "Decisions 
 | D-1.1-19 | Docs | Landing site "For agents" section and tools page; README, context.md, CONTRIBUTING; Helix site and docs drop the converter; ElixirLabs chapter 05 copy |
 | D-1.1-20 | Ports | Sparky joins the registry: site dev 4600, renderer `dev:ui` 4601, local API 8600 |
 
+## Sparky 2.0 file manager (2026-11-05)
+
+Source: `2026-11-05-sparky-2-file-manager.md`, section "Decisions".
+
+| ID | Question | Decision |
+|---|---|---|
+| D-2.0-1 | How far | Full file manager now, not a Browse page first |
+| D-2.0-2 | UI change | Atlas-style restyle: denser rows, themes, radial convert wheel |
+| D-2.0-3 | Stack | Stay on Electron with native addons; no Tauri rewrite |
+| D-2.0-4 | Release | Sparky 2.0 in place; Convert, Download and Tools stay inside |
+| D-2.0-5 | Extras in 2.0 | Batch rename, archives as folders, tags and folder sizes, cloud and network drives |
+| D-2.0-6 | Look | Close to Atlas: translucent panels, a theme set. Non-default themes may change the accent; the default theme keeps lime |
+| D-2.0-7 | Windows depth | Sparky's own right-click menu plus "Open in Explorer"; no other apps' shell items, no Win+E takeover |
+
 ## Decided against
 
 Source: `context.md`, section "Decided against".

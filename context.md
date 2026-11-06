@@ -4,6 +4,8 @@
 Queued: memory folder edits (SPK-2, memory track); token check on `apps/web` (no token files, 2 misses); no repo skill rows. Untracked in the live checkout, not repo content: `.aether/`, `.worktrees/`, `design/`.
 Token check: `apps/desktop` 72 rows, 65 paths, 0 misses.
 
+**2026-11-05: Sparky 2.0 file manager planned.** Prompted by Atlas (atlasnative.com, Rust/GPUI alpha with a convert wheel). Research report: `D:\sparky\reports\Sparky file manager remap.md` (outside the repo; it recommended a Browse page first), notes in `D:\sparky\research_notes\Sparky file manager remap\`. Harry chose the full file manager now, restyled close to Atlas, on Electron, shipped as Sparky 2.0 in place, with batch rename, archives, tags, folder sizes and cloud/network drives, and Sparky's own right-click menu only (D-2.0-1..7 in `docs/plans/DECISIONS.md`). Plan: `docs/plans/2026-11-05-sparky-2-file-manager.md` (10 phases, 34 steps, branch `sparky-2`). No code yet; Phase 0 (spec, ADRs, three design directions) is next.
+
 Status: Complete (marked 2026-10-12). Shipped; no work planned. Resume only for updates or changes. Open items are tracked in ~/.claude/BACKLOG.md.
 
 Current version 1.3.0 (root manifest). Latest published release 1.1.1; 1.3.0 installed locally, not released.
