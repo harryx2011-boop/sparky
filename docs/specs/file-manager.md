@@ -1,6 +1,6 @@
 # Sparky 2.0 file manager
 
-Status: draft   ·   Date: 2026-11-05   ·   Plan: `docs/plans/2026-11-05-sparky-2-file-manager.md`
+Status: agreed (Harry, 2026-11-06)   ·   Date: 2026-11-05   ·   Plan: `docs/plans/2026-11-05-sparky-2-file-manager.md`
 
 ## Goal
 People browse, organise and act on files in Sparky instead of Explorer, and every action (convert, compress, copy, move, rename, delete, download) runs through the same queue that the CLI and agents use. Phase-level specs may split from this file as each phase starts.
@@ -65,7 +65,7 @@ Other apps' Explorer menu items, Win+E takeover, encrypted folders, disk-space m
 ## Test map (planned; filled as each phase lands)
 | Scenarios | Test file |
 |---|---|
-| S1-S2 | `packages/fs-native/test/list.test.ts` |
+| S1-S2, S4 (error code) | `packages/fs-native/test/list.test.ts` (S4 message in the window: `apps/desktop/src/main/fs.test.ts`) |
 | S3-S9 | `apps/desktop/src/main/fs.test.ts`, `apps/desktop/src/renderer/src/browse/*.test.tsx` |
 | S10-S15, S27 | `packages/engine/test/file-ops.test.ts` |
 | S16 | `packages/cli/test/mcp-limits.test.ts` |

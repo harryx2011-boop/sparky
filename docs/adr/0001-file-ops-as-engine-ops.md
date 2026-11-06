@@ -1,6 +1,6 @@
 # 0001: File operations are engine ops
 
-Status: Proposed   ·   Date: 2026-11-05   ·   Plan: `docs/plans/2026-11-05-sparky-2-file-manager.md`
+Status: Accepted (Harry, 2026-11-06)   ·   Date: 2026-11-05   ·   Plan: `docs/plans/2026-11-05-sparky-2-file-manager.md`
 
 ## Context
 Sparky 2.0 becomes a file manager (D-2.0-1). It needs copy, move, rename, delete, mkdir, batch rename, extract and pack. Sparky already has one op registry (`packages/engine/src/ops/`) that drives the Queue, History, the CLI, the HTTP API and the MCP server. Rival file managers keep file transfers in a separate queue from any media tools; none lets an agent call the same actions the window uses (research report, `D:\sparky\reports\Sparky file manager remap.md`).
