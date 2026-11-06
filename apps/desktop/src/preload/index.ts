@@ -72,6 +72,13 @@ const api: SparkyApi = {
   onNavigate: (l) => listen('navigate', l),
   api: { info: () => invoke('api:info'), revealToken: () => invoke('api:revealToken') },
   icons: { forExt: (ext) => invoke('icons:forExt', ext) },
+  folders: {
+    list: (path) => invoke('folders:list', path),
+    rest: (id) => invoke('folders:rest', id),
+    watch: (path) => invoke('folders:watch', path),
+    unwatch: (id) => invoke('folders:unwatch', id),
+    onChange: (l) => listen('folders:change', l),
+  },
   agents: { detect: () => invoke('agents:detect'), install: (id) => invoke('agents:install', id) },
 }
 

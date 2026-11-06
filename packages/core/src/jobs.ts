@@ -1,4 +1,5 @@
 // Job, settings and IPC types shared by the app's main process and its UI.
+import type { FolderListing, FolderListResult } from './folders'
 import { normalizeExt, type Category } from './formats'
 import type { GpuInfo, VideoCodec } from './gpu'
 import type { CompressionLevel, PerformanceLevel, Resolution } from './levels'
@@ -360,6 +361,13 @@ export interface SparkyApi {
   }
   icons: {
     forExt(ext: string): Promise<string | null>
+  }
+  folders: {
+    list(path: string): Promise<FolderListResult>
+    rest(id: string): Promise<FolderListing | null>
+    watch(path: string): Promise<string>
+    unwatch(id: string): Promise<void>
+    onChange(listener: (watchId: string) => void): () => void
   }
   agents: {
     detect(): Promise<AgentClient[]>

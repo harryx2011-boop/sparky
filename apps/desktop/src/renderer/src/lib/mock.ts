@@ -318,6 +318,13 @@ export const mockApi: SparkyApi = {
   onNavigate: () => () => undefined,
   api: { info: async () => ({ running: true, port: 8600, tokenPath: 'C:\\Users\\you\\AppData\\Roaming\\Sparky\\api-token' }), revealToken: noop },
   icons: { forExt: async () => null },
+  folders: {
+    list: async (path) => ({ ok: false, path, code: 'ENOSYS', message: 'Folders open in the app, not the browser preview.' }),
+    rest: async () => null,
+    watch: async () => 'preview',
+    unwatch: noop,
+    onChange: () => () => undefined,
+  },
   agents: {
     detect: async () => [
       { id: 'claude-code', label: 'Claude Code', found: true, installed: false, current: false, configPath: 'C:\\Users\\you\\.claude.json' },

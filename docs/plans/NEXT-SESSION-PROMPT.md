@@ -21,7 +21,7 @@ State:
 - Untracked in the live checkout (not repo content): .aether/, .worktrees/, design/.
 
 Next steps:
-0. Sparky 2.0 on sparky-2: Phase 1 steps 4-5 done (fs-native lister, packed and unpacked from the asar). Next: step 6 (`fs:list` IPC; its first in-app use also proves the bundled addon path in a real window), then step 7. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
+0. Sparky 2.0 on sparky-2: Phase 1 steps 4-6 done (fs-native lister packed outside the asar; `window.sparky.folders` lists and watches folders). Next: step 7 (startup order: window first, engine lazy, encoder probe cached), then Phase 2 step 8 (Frost tokens). To drive the dev app from a script: unset `ELECTRON_RUN_AS_NODE` (VS Code sets it) and pass `--user-data-dir=<scratch>` when the installed Sparky is open. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
 1. Harry reviews and merges setup-revamp (CLAUDE.md, docs/plans set, archived 1.1 plan, context.md note).
 2. Rebuild the installed app: node ~/.claude/scripts/desktop-apps.mjs --rebuild sparky (use --no-test).
 3. Memory folder for sparky (SPK-2) is handled by the memory track, not this repo.

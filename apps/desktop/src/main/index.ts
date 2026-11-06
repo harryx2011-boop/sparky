@@ -7,6 +7,7 @@ import fsp from 'node:fs/promises'
 import path from 'node:path'
 import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
 import { registerAgentsIpc } from './agents'
+import { registerFsIpc } from './fs'
 import { registerIconIpc } from './icons'
 import { copyInto, copyTo } from './save'
 
@@ -292,6 +293,7 @@ function registerIpc(): void {
   })
   registerAgentsIpc(ipcMain)
   registerIconIpc(ipcMain)
+  registerFsIpc(ipcMain)
 }
 
 function configuredApiPort(): number {
