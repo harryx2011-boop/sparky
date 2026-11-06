@@ -28,6 +28,7 @@ import { CanceledError } from './process'
 import { createProgressWriter } from './progress-file'
 import { JobQueue } from './queue'
 import { Store } from './store'
+import { loadGpu } from './gpu-cache'
 import { detectGpu, locateTools, toolStatuses } from './tools'
 
 export interface EngineOptions {
@@ -143,7 +144,7 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
   const store = new Store(path.join(opts.dataDir, 'sparky.db'))
   let settings = store.loadSettings(opts.defaultRoot)
   const tools = locateTools(opts.binDirs)
-  const gpu = opts.skipGpu ? { encoders: [], label: 'Not checked' } : await detectGpu(tools.ffmpeg)
+  const gpu = opts.skipGpu ? { encoders: [], label: 'Not checked' } : await loadGpu(tools.ffmpeg, path.join(opts.dataDir, 'gpu-cache.json'), detectGpu)
 
   const env: EngineEnv = {
     tools,

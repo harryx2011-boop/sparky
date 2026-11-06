@@ -73,4 +73,4 @@ Other apps' Explorer menu items, Win+E takeover, encrypted folders, disk-space m
 | S21-S24 | `apps/desktop/src/renderer/src/shell/*.test.tsx`, `packages/engine/test/search.test.ts` |
 | S25-S26 | `apps/desktop/src/renderer/src/preview/*.test.tsx` |
 | S28-S31 | `packages/engine/test/{archive,tags,folder-size,remote}.test.ts` |
-| S32-S33 | `apps/desktop/src/renderer/src/theme.test.tsx`, `apps/desktop/src/main/startup.test.ts` |
+| S32-S33 | `apps/desktop/src/renderer/src/theme.test.tsx`, `packages/engine/test/gpu-cache.test.ts` (S33) |

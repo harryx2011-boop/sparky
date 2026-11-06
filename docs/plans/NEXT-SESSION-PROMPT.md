@@ -15,13 +15,13 @@ Read first, in order:
 7. D:\sparky\reports\Sparky file manager remap.md (research behind it, outside the repo)
 
 State:
-- Sparky 2.0 file manager: spec S1-S33 and ADRs 0001/0002 on main (approved on sparky-2). Branch sparky-2 has the three main-window comps as real React (A Workbench, B Live Wire, C Frost) at http://localhost:4601/prototypes/file-manager/ under npm run dev:ui -w @sparky/desktop, built from shadcn/ui (apps/desktop/components.json, new) and React Bits CircularText + ClickSpark for the convert wheel. Harry picked C · Frost (D-2.0-8); spec agreed and ADRs Accepted. Phase 1 step 4 done: packages/fs-native lists 100k entries in 116 ms (11 tests pass, UNC test skips on this PC).
+- Sparky 2.0 file manager: spec S1-S33 and ADRs 0001/0002 on main (approved on sparky-2). Branch sparky-2 has the three main-window comps as real React (A Workbench, B Live Wire, C Frost) at http://localhost:4601/prototypes/file-manager/ under npm run dev:ui -w @sparky/desktop, built from shadcn/ui (apps/desktop/components.json, new) and React Bits CircularText + ClickSpark for the convert wheel. Harry picked C · Frost (D-2.0-8); spec agreed and ADRs Accepted. Phase 1 done: packages/fs-native lists 100k entries in 116 ms (UNC test skips on this PC), packed outside the asar; window.sparky.folders lists (200 rows first) and watches folders; GPU probe cached so a warm engine start is ~20 ms. Nothing on sparky-2 is pushed.
 - main: 1.3.0 in the manifests, installed locally, not tagged or released. Latest published release 1.1.1.
 - Transcript op and progress bar changes are on main, not in the installed app.
 - Untracked in the live checkout (not repo content): .aether/, .worktrees/, design/.
 
 Next steps:
-0. Sparky 2.0 on sparky-2: Phase 1 steps 4-6 done (fs-native lister packed outside the asar; `window.sparky.folders` lists and watches folders). Next: step 7 (startup order: window first, engine lazy, encoder probe cached), then Phase 2 step 8 (Frost tokens). To drive the dev app from a script: unset `ELECTRON_RUN_AS_NODE` (VS Code sets it) and pass `--user-data-dir=<scratch>` when the installed Sparky is open. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
+0. Sparky 2.0 on sparky-2: Phase 1 steps 4-6 done (fs-native lister packed outside the asar; `window.sparky.folders` lists and watches folders). Phase 1 complete (step 7: GPU probe cached, warm engine start ~20 ms). Next: Phase 2 step 8 (Frost tokens into packages/ui styles.css and TOKENS.md), then step 9 (new shell layout). To drive the dev app from a script: unset `ELECTRON_RUN_AS_NODE` (VS Code sets it) and pass `--user-data-dir=<scratch>` when the installed Sparky is open. UI work loads the website-design skill first (shadcn/ui, then Watermelon/Componentry, then React Bits).
 1. Harry reviews and merges setup-revamp (CLAUDE.md, docs/plans set, archived 1.1 plan, context.md note).
 2. Rebuild the installed app: node ~/.claude/scripts/desktop-apps.mjs --rebuild sparky (use --no-test).
 3. Memory folder for sparky (SPK-2) is handled by the memory track, not this repo.
