@@ -40,7 +40,9 @@ Scope: the Electron app's renderer, the main product UI (`src/renderer/src`). Th
 | Tooltip | `src/renderer/src/components/ui/tooltip.tsx` | popover surface, small text |
 | Dialog | `src/renderer/src/components/ui/dialog.tsx` | 420px, overlay black at 50% |
 | Places | `src/renderer/src/shell/Places.tsx` | Quick access folders and drives (open in the pane), then Sparky's sections with Ctrl+1 to 6, Settings pinned at the bottom, lime count on Queue while jobs wait |
-| Folder views | `src/renderer/src/browse/` | Details (sortable columns), List (columns flow across) and Grid (tiles); virtual rows via TanStack Virtual; Compact, Normal and Roomy densities; selected item uses `--shell-select`; hidden items at 60% opacity when shown |
+| Folder views | `src/renderer/src/browse/` | Details (sortable columns), List (columns flow across) and Grid (tiles); virtual rows via TanStack Virtual; Compact, Normal and Roomy densities; selected items use `--shell-select`; the keyboard cursor gets a thin inset `--ring` outline while the list has focus; hidden items at 60% opacity when shown |
+| Path bar | `src/renderer/src/browse/PathBar.tsx` | shadcn Breadcrumb; past five parts the middle folds into a `BreadcrumbEllipsis` menu (drive plus the last three stay); typing swaps in the shadcn Input in mono, errors in a popover under it in `--destructive` |
+| Page status | `src/renderer/src/lib/pageStatus.ts` | one mono line in the shell status bar, left of the job pill, that the open page sets ("5 selected") |
 | Title bar | `src/renderer/src/shell/TitleBar.tsx` | frameless drag region, one tab, double-click maximizes |
 | Job pill | `src/renderer/src/shell/JobPill.tsx` | the running job with progress, or the waiting count, or Queue idle; click opens the Queue |
 | Job row and job icons | `src/renderer/src/components/JobRow.tsx` | source and result icons, progress and controls |

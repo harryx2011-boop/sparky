@@ -1,6 +1,6 @@
 import type { FolderListing } from '@sparky/core'
 import { describe, expect, it } from 'vitest'
-import { DENSITIES, formatDate, joinPath, mergeListing, parentOf, shownRows, toRows, typeLabel } from './model'
+import { checkTyped, crumbs, DENSITIES, foldCrumbs, formatDate, joinPath, mergeListing, parentOf, shownRows, toRows, typedPath, typeLabel } from './model'
 
 function listing(entries: { name: string; dir?: boolean; size?: number; mtime?: number; hidden?: boolean }[]): FolderListing {
   return {
@@ -84,5 +84,40 @@ describe('paths', () => {
     expect(parentOf('C:\\Users\\harry')).toBe('C:\\Users')
     expect(parentOf('C:\\Users')).toBe('C:\\')
     expect(parentOf('C:\\')).toBeNull()
+  })
+
+  it('S5: splits a path into breadcrumb parts that each open their folder', () => {
+    expect(crumbs('C:\\Users\\harry')).toEqual([
+      { label: 'C:', path: 'C:\\' },
+      { label: 'Users', path: 'C:\\Users' },
+      { label: 'harry', path: 'C:\\Users\\harry' },
+    ])
+    expect(crumbs('D:\\')).toEqual([{ label: 'D:', path: 'D:\\' }])
+    expect(crumbs('\\\\nas\\share\\films')).toEqual([
+      { label: '\\\\nas\\share', path: '\\\\nas\\share' },
+      { label: 'films', path: '\\\\nas\\share\\films' },
+    ])
+  })
+
+  it('S5: a deep path keeps the drive and the last three folders, the middle folds into a menu', () => {
+    const deep = foldCrumbs(crumbs('C:\\Users\\harry\\AppData\\Local\\Temp\\navtest'))
+    expect(deep.head.map((c) => c.label)).toEqual(['C:'])
+    expect(deep.folded.map((c) => c.label)).toEqual(['Users', 'harry', 'AppData'])
+    expect(deep.tail.map((c) => c.label)).toEqual(['Local', 'Temp', 'navtest'])
+    const short = foldCrumbs(crumbs('C:\\Users\\harry\\Music'))
+    expect(short).toEqual({ head: crumbs('C:\\Users\\harry\\Music'), folded: [], tail: [] })
+  })
+
+  it('S5: cleans a typed path: quotes, forward slashes, a bare drive', () => {
+    expect(typedPath('  "C:/Users/harry/"  ')).toBe('C:\\Users\\harry')
+    expect(typedPath('d:')).toBe('D:\\')
+    expect(typedPath('c:/')).toBe('C:\\')
+    expect(typedPath('   ')).toBe('')
+  })
+
+  it('S5: a typed path opens when it lists, and an unknown one gives the message', async () => {
+    const list = async (path: string) => (path === 'C:\\Real' ? { ok: true as const, path } : { ok: false as const, path, message: "That folder doesn't exist." })
+    expect(await checkTyped('C:/Real', list)).toEqual({ ok: true, path: 'C:\\Real' })
+    expect(await checkTyped('C:\\Nope', list)).toEqual({ ok: false, message: "That folder doesn't exist." })
   })
 })

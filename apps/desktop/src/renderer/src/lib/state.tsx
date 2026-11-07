@@ -1,5 +1,6 @@
 import type { Job, ProbeResult, Section, Settings, SystemInfo } from '@sparky/core'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { back, current, forward, open, type History } from '../browse/history'
 import { api } from './api'
 
 interface AppState {
@@ -7,6 +8,8 @@ interface AppState {
   go: (s: Section) => void
   folder: string | null
   openFolder: (path: string) => void
+  history: History | null
+  moveHistory: (to: 'back' | 'forward') => void
   settings: Settings | null
   updateSettings: (patch: Partial<Settings>) => Promise<void>
   system: SystemInfo | null
@@ -24,7 +27,7 @@ const Ctx = createContext<AppState | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [section, setSection] = useState<Section>('convert')
-  const [folder, setFolder] = useState<string | null>(null)
+  const [history, setHistory] = useState<History | null>(null)
   const [settings, setSettings] = useState<Settings | null>(null)
   const [system, setSystem] = useState<SystemInfo | null>(null)
   const [jobs, setJobs] = useState<Job[]>([])
@@ -67,11 +70,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     () => ({
       section,
       go: setSection,
-      folder,
+      folder: history && current(history).path,
       openFolder: (path) => {
-        setFolder(path)
+        setHistory((h) => open(h, path))
         setSection('browse')
       },
+      history,
+      moveHistory: (to) => setHistory((h) => h && (to === 'back' ? back(h) : forward(h))),
       settings,
       updateSettings,
       system,
@@ -84,7 +89,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       pendingLink,
       setPendingLink,
     }),
-    [section, folder, settings, updateSettings, system, refreshSystem, jobs, files, addFiles, pendingLink],
+    [section, history, settings, updateSettings, system, refreshSystem, jobs, files, addFiles, pendingLink],
   )
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

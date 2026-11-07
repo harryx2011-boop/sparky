@@ -113,6 +113,44 @@ export function parentOf(path: string): string | null {
   return /^[A-Za-z]:$/.test(parent) ? `${parent}\\` : parent
 }
 
+export interface Crumb {
+  label: string
+  path: string
+}
+
+export function crumbs(path: string): Crumb[] {
+  const unc = path.startsWith('\\\\')
+  const parts = path.replace(/^\\\\/, '').split('\\').filter(Boolean)
+  const head = unc ? `\\\\${parts.splice(0, 2).join('\\')}` : (parts.shift() ?? path)
+  const out: Crumb[] = [{ label: head, path: unc ? head : `${head}\\` }]
+  let at = head
+  for (const part of parts) {
+    at = `${at}\\${part}`
+    out.push({ label: part, path: at })
+  }
+  return out
+}
+
+const TAIL_CRUMBS = 3
+
+export function foldCrumbs(parts: Crumb[]): { head: Crumb[]; folded: Crumb[]; tail: Crumb[] } {
+  if (parts.length <= TAIL_CRUMBS + 2) return { head: parts, folded: [], tail: [] }
+  return { head: parts.slice(0, 1), folded: parts.slice(1, -TAIL_CRUMBS), tail: parts.slice(-TAIL_CRUMBS) }
+}
+
+export function typedPath(input: string): string {
+  const path = input.trim().replace(/^"(.*)"$/, '$1').trim().replace(/\//g, '\\')
+  if (/^[A-Za-z]:\\?$/.test(path)) return `${path[0]!.toUpperCase()}:\\`
+  return path.replace(/\\+$/, '').replace(/^([a-z]):/, (_, d: string) => `${d.toUpperCase()}:`)
+}
+
+type Checked = { ok: true; path: string } | { ok: false; message: string }
+
+export async function checkTyped(input: string, list: (path: string) => Promise<Checked>): Promise<Checked> {
+  const res = await list(typedPath(input))
+  return res.ok ? { ok: true, path: res.path } : { ok: false, message: res.message }
+}
+
 export function folderName(path: string): string {
   const trimmed = path.replace(/\\+$/, '')
   return trimmed.slice(trimmed.lastIndexOf('\\') + 1) || path
