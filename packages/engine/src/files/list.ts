@@ -18,7 +18,7 @@ function dateMs(value: string | number | undefined, field: string): number | und
   return ms
 }
 
-function filter(q: ListQuery): (e: FileEntry) => boolean {
+export function filter(q: ListQuery): (e: FileEntry) => boolean {
   const glob = q.glob ? globMatcher(q.glob) : null
   const exts = q.ext?.map((x) => x.replace(/^\./, '').toLowerCase())
   const after = dateMs(q.after, 'after')
@@ -62,9 +62,9 @@ function summarize(entries: FileEntry[]): FolderSummary {
   return { files, dirs: entries.length - files, bytes, exts }
 }
 
-export function walk(lister: Lister, root: string, depth: number, hidden: boolean): { entries: FileEntry[]; skipped: number } {
-  const entries: FileEntry[] = []
+export function walk(lister: Lister, root: string, depth: number, hidden: boolean, onEntry: (e: FileEntry) => boolean): { skipped: number } {
   let skipped = 0
+  let stopped = false
   const visit = (rel: string, level: number) => {
     let listing
     try {
@@ -74,7 +74,7 @@ export function walk(lister: Lister, root: string, depth: number, hidden: boolea
       if (err instanceof FilesError) return void skipped++
       throw err
     }
-    for (let i = 0; i < listing.names.length; i++) {
+    for (let i = 0; i < listing.names.length && !stopped; i++) {
       const attrs = listing.attrs[i]!
       const isHidden = (attrs & (ATTR.hidden | ATTR.system)) !== 0
       if (isHidden && !hidden) continue
@@ -82,20 +82,23 @@ export function walk(lister: Lister, root: string, depth: number, hidden: boolea
       const name = rel ? path.join(rel, base) : base
       const kind = listing.kinds[i] === 1 ? 'dir' : 'file'
       const link = (attrs & ATTR.reparse) !== 0
-      entries.push({ name, kind, size: listing.sizes[i]!, mtime: listing.mtimes[i]!, ctime: listing.ctimes[i]!, hidden: isHidden, link })
-      if (kind === 'dir' && !link && level < depth) visit(name, level + 1)
+      const entry: FileEntry = { name, kind, size: listing.sizes[i]!, mtime: listing.mtimes[i]!, ctime: listing.ctimes[i]!, hidden: isHidden, link }
+      if (!onEntry(entry)) stopped = true
+      else if (kind === 'dir' && !link && level < depth) visit(name, level + 1)
     }
   }
   visit('', 1)
-  return { entries, skipped }
+  return { skipped }
 }
 
 export function listFiles(q: ListQuery, lister: Lister = defaultLister): ListResult {
   const depth = Math.max(1, Math.floor(q.depth ?? 1))
   const limit = Math.max(1, Math.floor(q.limit ?? DEFAULT_LIMIT))
   const start = q.cursor ? Number.parseInt(q.cursor, 10) || 0 : 0
-  const { entries, skipped } = walk(lister, q.path, depth, q.hidden ?? false)
-  const matched = sorted(entries.filter(filter(q)), q.sort ?? 'name', q.desc ?? false)
+  const keep = filter(q)
+  const hits: FileEntry[] = []
+  const { skipped } = walk(lister, q.path, depth, q.hidden ?? false, (e) => (keep(e) && hits.push(e), true))
+  const matched = sorted(hits, q.sort ?? 'name', q.desc ?? false)
   const end = start + limit
   return {
     path: q.path,

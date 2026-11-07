@@ -1,5 +1,5 @@
 // Spec scenarios S1, S2 and S4 (docs/specs/file-manager.md) for the native folder lister.
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, utimesSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, symlinkSync, utimesSync, writeFileSync } from 'node:fs'
 import { rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -126,6 +126,17 @@ describe('fs-native list', () => {
     const dir = join(root, 'empty')
     mkdirSync(dir)
     expect(list(dir).names).toEqual([])
+  })
+
+  it('a junction reads as a folder with the reparse flag, in the addon and the fallback alike', () => {
+    const dir = join(root, 'with-junction')
+    mkdirSync(join(dir, 'real'), { recursive: true })
+    symlinkSync(join(dir, 'real'), join(dir, 'jump'), 'junction')
+    for (const l of [list(dir), listFallback(dir)]) {
+      const i = l.names.indexOf('jump')
+      expect(l.kinds[i]).toBe(1)
+      expect(l.attrs[i]! & 0x400).toBe(0x400)
+    }
   })
 
   it('a drive root lists without . and ..', () => {

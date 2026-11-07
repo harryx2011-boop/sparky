@@ -1,9 +1,10 @@
-// Agents read folders through these: listing with filters, paging and a summary, and stat of many paths (S34-S36).
+// Agents read folders through these: listing with filters, paging and a summary, stat of many paths, and find by name (S34-S37).
+import { list } from '@sparky/fs-native'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { listFiles, statFiles } from '../src/files'
+import { findFiles, listFiles, statFiles, type Lister } from '../src/files'
 
 let root: string
 beforeEach(() => {
@@ -93,5 +94,43 @@ describe('statFiles', () => {
   it('stats a drive root', () => {
     const drive = path.parse(root).root
     expect(statFiles([drive])[0]).toMatchObject({ path: drive, kind: 'dir' })
+  })
+})
+
+describe('findFiles', () => {
+  const refuse = (blocked: string): Lister => (p) => {
+    if (p === blocked) throw Object.assign(new Error('refused'), { code: 'EACCES' })
+    return list(p)
+  }
+
+  it('S37: Find by name: each match once, the junction loop not followed, the blocked folder counted', () => {
+    file('a/b/clip1.mp4')
+    file('c/clip2.mp4')
+    file('c/notes.txt')
+    file('c/blocked/hidden-clip.mp4')
+    fs.symlinkSync(root, path.join(root, 'a', 'loop'), 'junction')
+
+    const res = findFiles({ path: root, glob: '*.mp4' }, refuse(path.join(root, 'c', 'blocked')))
+    expect(res.entries.map((e) => e.name).sort()).toEqual([path.join('a', 'b', 'clip1.mp4'), path.join('c', 'clip2.mp4')])
+    expect(res.skipped).toBe(1)
+    expect(res.next).toBeUndefined()
+  })
+
+  it('matches plain text anywhere in the name, ignoring case', () => {
+    file('Report-2026.pdf')
+    file('old/annual report.docx')
+    file('other.txt')
+    expect(findFiles({ path: root, text: 'REPORT' }).entries.map((e) => e.name).sort()).toEqual(['Report-2026.pdf', path.join('old', 'annual report.docx')])
+  })
+
+  it('stops at the limit and hands back a cursor to the next matches', () => {
+    for (let i = 0; i < 5; i++) file(`d${i}/hit.log`)
+    const first = findFiles({ path: root, glob: '*.log', limit: 2 })
+    expect(first.entries).toHaveLength(2)
+    expect(first.next).toBe('2')
+    const rest = findFiles({ path: root, glob: '*.log', limit: 10, cursor: first.next })
+    expect(rest.entries).toHaveLength(3)
+    expect(rest.next).toBeUndefined()
+    expect(new Set([...first.entries, ...rest.entries].map((e) => e.name)).size).toBe(5)
   })
 })

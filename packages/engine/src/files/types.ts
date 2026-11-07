@@ -46,6 +46,17 @@ export interface ListResult {
   skipped: number
 }
 
+export interface FindQuery extends Omit<ListQuery, 'sort' | 'desc'> {
+  text?: string
+}
+
+export interface FindResult {
+  path: string
+  entries: FileEntry[]
+  next?: string
+  skipped: number
+}
+
 export type StatResult =
   | { path: string; kind: 'missing' }
   | { path: string; kind: EntryKind; size: number; mtime: number; ctime: number; ext: string; hidden: boolean; readonly: boolean; link: boolean }
