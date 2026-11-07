@@ -113,8 +113,8 @@ describe('help text', () => {
 describe('MCP tools from descriptors', () => {
   const tools = mcpTools(OPS)
 
-  it('names one tool per op plus the five helpers', () => {
-    expect(tools.map((t) => t.name)).toEqual(['sparky_convert', 'sparky_pdf_squash_pages', 'sparky_pdf_merge', 'sparky_download', 'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_list_history', 'sparky_cancel_job'])
+  it('names one tool per op plus the five helpers and the three file reads', () => {
+    expect(tools.map((t) => t.name)).toEqual(['sparky_convert', 'sparky_pdf_squash_pages', 'sparky_pdf_merge', 'sparky_download', 'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_list_history', 'sparky_cancel_job', 'sparky_files_list', 'sparky_files_find', 'sparky_files_stat'])
   })
 
   it('adds wait, folds labels into descriptions and drops the labels keyword', () => {

@@ -24,7 +24,7 @@ async function fill(dir: string, count: number, sized: boolean) {
   }
 }
 
-afterAll(() => rm(root, { recursive: true, force: true }), 300_000)
+afterAll(() => rm(root, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }), 300_000)
 
 describe('fs-native list', () => {
   const small = join(root, 'small')
