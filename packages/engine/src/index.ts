@@ -316,6 +316,7 @@ export async function createEngine(opts: EngineOptions): Promise<Engine> {
 export type { EngineEnv, EngineHost } from './convert'
 export { convertFile, probeFiles } from './convert'
 export { downloadLink, inspectLink } from './download'
+export * from './files'
 export * from './ops'
 export { opContext, parseOpInput, runOpJob, splitInput } from './ops/run'
 export { planOutput, splitOut, type OutputPlan, type OutputRequest, type OutTarget } from './output'

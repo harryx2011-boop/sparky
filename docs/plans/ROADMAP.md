@@ -63,6 +63,7 @@ Source: `archive/2026-09-25-sparky-1.1-agents-utilities.md`.
 ## Open items
 
 - **Rebuild the installed app** for 1.3.0 and the transcript and progress changes: `node ~/.claude/scripts/desktop-apps.mjs --rebuild sparky` (needs `--no-test`; the PDF word-timing test is slow).
+- **OCR of PDFs returns empty text** (found 2026-11-07 on `sparky-2`): `packages/engine/test/ocr/ocr.test.ts` fails "reads every page of a PDF…" and "makes one searchable PDF…" with `expected '' to contain 'FIRST'`; image OCR passes. Fails the same with the agent-files change removed, so it predates it. Not diagnosed (suspect the PDF page render in `src/pdf/raster.ts`).
 - **Speech-to-text fallback** for videos with no captions. Not started.
 - **Engine run test** for the transcript op with a fake yt-dlp. Not started.
 - **Startup encoder probe** cache (`packages/engine/src/tools.ts:137-158`). Proposal, not started.
