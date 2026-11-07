@@ -20,7 +20,7 @@ export function SparkBurst() {
     [reduce],
   )
   return (
-    <div aria-hidden className="pointer-events-none absolute bottom-[calc(var(--dock-h,168px)+40px)] right-10 z-40">
+    <div aria-hidden className="pointer-events-none absolute bottom-12 right-8 z-40">
       {bursts.map((b) => (
         <div key={b.id} className="absolute">
           {Array.from({ length: 14 }, (_, i) => {

@@ -4,11 +4,13 @@ import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nati
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
 import { registerAgentsIpc } from './agents'
 import { registerFsIpc } from './fs'
 import { registerIconIpc } from './icons'
+import { windowMaterial } from './material'
 import { copyInto, copyTo } from './save'
 
 const isDev = !app.isPackaged
@@ -63,6 +65,7 @@ function navigate(section: Section, url?: string): void {
 }
 
 function createWindow(): void {
+  const material = windowMaterial(process.platform, os.release(), process.env.SPARKY_MATERIAL)
   win = new BrowserWindow({
     width: 1180,
     height: 780,
@@ -70,7 +73,9 @@ function createWindow(): void {
     minHeight: 600,
     show: false,
     frame: false,
-    backgroundColor: engine.getSettings().theme === 'light' || (engine.getSettings().theme === 'system' && !nativeTheme.shouldUseDarkColors) ? '#fafafa' : '#0a0a0a',
+    ...(material === 'os'
+      ? { backgroundMaterial: 'acrylic' as const, backgroundColor: '#00000000' }
+      : { backgroundColor: engine.getSettings().theme === 'light' || (engine.getSettings().theme === 'system' && !nativeTheme.shouldUseDarkColors) ? '#fafafa' : '#0a0a0a' }),
     icon: path.join(resources, 'icon.png'),
     title: 'Sparky',
     webPreferences: {
@@ -103,8 +108,8 @@ function createWindow(): void {
   })
   win.webContents.on('will-navigate', (e) => e.preventDefault())
 
-  if (isDev && process.env.ELECTRON_RENDERER_URL) void win.loadURL(process.env.ELECTRON_RENDERER_URL)
-  else void win.loadFile(path.join(__dirname, '../renderer/index.html'))
+  if (isDev && process.env.ELECTRON_RENDERER_URL) void win.loadURL(`${process.env.ELECTRON_RENDERER_URL}?material=${material}`)
+  else void win.loadFile(path.join(__dirname, '../renderer/index.html'), { query: { material } })
 }
 
 async function offerClipboardLink(): Promise<void> {

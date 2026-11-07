@@ -4,11 +4,7 @@ import { useEffect, type ReactNode } from 'react'
 import { Toaster, toast } from 'sonner'
 import { ClipboardChip } from './components/ClipboardChip'
 import { FileDropOverlay } from './components/FileDropOverlay'
-import { Footer } from './components/Footer'
-import { QueueDock } from './components/QueueDock'
-import { SECTIONS, Sidebar } from './components/Sidebar'
 import { SparkBurst } from './components/SparkBurst'
-import { TitleBar } from './components/TitleBar'
 import { TooltipProvider } from './components/ui/tooltip'
 import { api } from './lib/api'
 import { AppProvider, useApp, useTheme } from './lib/state'
@@ -18,6 +14,9 @@ import { HistoryPage } from './pages/HistoryPage'
 import { QueuePage } from './pages/QueuePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { ToolsPage } from './pages/ToolsPage'
+import { Places, SECTIONS } from './shell/Places'
+import { StatusBar } from './shell/StatusBar'
+import { TitleBar } from './shell/TitleBar'
 
 const PAGES: Record<Section, () => ReactNode> = {
   convert: ConvertPage,
@@ -67,11 +66,13 @@ function Shell() {
 
   const Page = PAGES[section]
   return (
-    <div className="flex h-full flex-col bg-background text-foreground">
+    <div className="sp-shell flex h-full flex-col text-foreground">
       <TitleBar />
-      <div className="flex min-h-0 grow">
-        <Sidebar />
-        <main className="relative flex min-w-0 grow flex-col overflow-y-auto">
+      <div className="flex min-h-0 grow gap-[var(--shell-gap)] px-[var(--shell-gap)]">
+        <aside className="sp-panel w-[216px] shrink-0 overflow-hidden bg-[var(--shell-side)]">
+          <Places />
+        </aside>
+        <main className="sp-panel relative flex min-w-0 grow flex-col overflow-y-auto bg-[var(--shell-pane)]">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={section}
@@ -87,8 +88,7 @@ function Shell() {
           <ClipboardChip />
         </main>
       </div>
-      <QueueDock />
-      <Footer />
+      <StatusBar />
       <SparkBurst />
       <FileDropOverlay />
       <Toaster position="top-right" offset={{ top: 48, right: 20 }} theme={settings?.theme ?? 'dark'} toastOptions={{ className: '!rounded-lg !border !border-border !bg-popover !text-popover-foreground !text-[13px]' }} />

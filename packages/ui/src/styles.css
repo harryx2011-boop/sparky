@@ -408,3 +408,6 @@
   border-radius: var(--shell-radius);
   backdrop-filter: blur(var(--shell-blur)) saturate(140%);
 }
+[data-material='os'] body {
+  background: transparent;
+}
