@@ -45,6 +45,10 @@ Source: `2026-11-05-sparky-2-file-manager.md`, section "Decisions".
 | D-2.0-6 | Look | Close to Atlas: translucent panels, a theme set. Non-default themes may change the accent; the default theme keeps lime |
 | D-2.0-7 | Windows depth | Sparky's own right-click menu plus "Open in Explorer"; no other apps' shell items, no Win+E takeover |
 | D-2.0-8 | Main-window direction (2026-11-06) | C · Frost: floating rounded panels over the blurred desktop, soft lime selection tint, frosted job pill, convert wheel with lime last-used ring and spark burst. Comp: `apps/desktop/src/renderer/prototypes/file-manager/` (`data-mood="frost"`); critique `docs/design/2.0/README.md` |
+| D-2.0-9 | Agent files: order (2026-11-07) | Agent file tools next on `sparky-2`, before UI steps 12-14; ships with 2.0, not as 1.4. Plan `2026-11-07-agent-files.md` |
+| D-2.0-10 | Agent files: what comes back | Facts only (names, kinds, sizes, dates, types, counts); no contents or peeks; paths, never bytes |
+| D-2.0-11 | Agent files: writes | Copy, move, rename, new folder, delete in the default `core` profile; delete is Recycle Bin only; every change journaled and undoable |
+| D-2.0-12 | Agent files: window role | Two-way: an Agents place lists agent reads and changes with Undo; agents can open a folder, select files and read Harry's selection |
 
 ## Decided against
 

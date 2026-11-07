@@ -27,7 +27,7 @@ File operations
 - **S13: Delete to Recycle Bin.** Given a selected file. When the user presses Delete. Then the file is in the Recycle Bin and can be restored there.
 - **S14: Undo.** Given the user just moved 3 files. When they press Ctrl+Z. Then the 3 files are back where they were.
 - **S15: Preview before a big batch.** Given 21 or more selected files. When the user starts a move, rename or delete. Then a list of planned results shows first and nothing changes until they confirm.
-- **S16: Agent limits.** Given an MCP agent on the `all` profile. When it asks to move or delete a file outside its allowed folders. Then the call is refused; inside them, delete goes to the Recycle Bin only.
+- **S16: Agent limits.** Given an MCP agent on the default `core` profile. When it asks to move or delete a file outside its allowed folders. Then the call is refused; inside them, delete goes to the Recycle Bin only (D-2.0-11).
 
 Menu, wheel, command bar
 - **S17: Searchable right-click.** Given a selected `.mov`. When the user right-clicks and types "gif". Then only the matching actions remain, with "Make GIF" first.
@@ -54,6 +54,22 @@ Extras, cloud, look
 - **S32: Theme switch.** Given the Sparky dark theme. When the user picks Nord. Then the window restyles at once and Nord is still set after a restart.
 - **S33: Window first.** Given Sparky is closed. When the user starts it. Then the window shows before the engine loads, within 1 s on a warm start.
 
+Agents (plan `docs/plans/2026-11-07-agent-files.md`; facts only, never file contents, D-2.0-10)
+- **S34: List a folder.** Given a folder of 541 entries. When an agent calls `sparky_files_list` with `limit` 200. Then it gets one summary line (counts, total size, top extensions), 200 tab-separated rows of relative name, kind, size and modified time, and a `more:` cursor that returns the next 200.
+- **S35: Filtered list.** Given a folder tree. When an agent lists it with depth 3, glob `*.pdf` and a size range. Then only PDFs in that range within 3 levels come back, sorted as asked.
+- **S36: Stat many paths.** Given 3 paths, one missing. When an agent calls `sparky_files_stat`. Then it gets kind, size, dates and attributes for two and "missing" for the third, in one answer.
+- **S37: Find by name.** Given a tree with a junction that loops back and a folder the agent may not read. When it finds `*.mp4` under the root. Then each match comes back once, the loop is not followed and the answer says 1 folder was skipped.
+- **S38: Read outside the roots.** Given the allowed roots. When an agent lists, finds or stats a path outside them. Then the call is refused and names the allowed folders.
+- **S39: Dry run.** Given 30 files to move. When an agent calls `sparky_file_move` with `dryRun`. Then it gets the planned target of each file and each name clash, and nothing on disk changes.
+- **S40: Clash for agents.** Given the target holds `a.txt`. When an agent copies `a.txt` there with no conflict choice. Then the job fails naming `a.txt`; with `replace` the old file goes to the Recycle Bin first; with `keep-both` it makes `a (2).txt`.
+- **S41: One call, one job.** Given 50 files. When an agent moves them in one call. Then the Queue shows one job and one undo group.
+- **S42: Agent undo.** Given an agent moved 3 files and trashed 1. When it calls `sparky_undo` for each job. Then the 3 files are back and the trashed one is restored from the Recycle Bin.
+- **S43: Undo refuses changed files.** Given a file an agent copied was edited afterwards. When the copy is undone. Then that file is kept and the answer names it.
+- **S44: No silent delete.** Given a volume with no Recycle Bin. When an agent trashes a file there. Then the call is refused and the file stays.
+- **S45: Show in the window.** Given the Sparky window is open. When an agent calls `sparky_show` with a folder and 3 names. Then Browse shows that folder with "3 selected", Back returns to the earlier folder, and focus stays where it was.
+- **S46: Read Harry's selection.** Given Harry selected 2 files in Browse. When an agent calls `sparky_selection`. Then it gets the open folder and the 2 paths; with the window closed it gets "Open the Sparky window to use this."
+- **S47: Agents place.** Given an agent listed a folder and then moved 12 files. When Harry opens Agents in Places. Then two rows show the client name, time and action, and Undo on the move puts the 12 files back.
+
 ## Edge cases
 - A file in use by another app -> copy works, move and delete report "in use by another app" and leave it in place (part of S10-S13 tests).
 - Copy to a full disk -> the job fails with "Not enough space", no partial file (S11 test file).
@@ -74,3 +90,9 @@ Other apps' Explorer menu items, Win+E takeover, encrypted folders, disk-space m
 | S25-S26 | `apps/desktop/src/renderer/src/preview/*.test.tsx` |
 | S28-S31 | `packages/engine/test/{archive,tags,folder-size,remote}.test.ts` |
 | S32-S33 | `apps/desktop/src/renderer/src/theme.test.tsx`, `packages/engine/test/gpu-cache.test.ts` (S33) |
+| S34-S37 | `packages/engine/test/files.test.ts` (output format: `packages/cli/test/mcp-files.test.ts`) |
+| S38 | `packages/cli/test/mcp-limits.test.ts` |
+| S39-S43 | `packages/engine/test/file-ops.test.ts`, `packages/engine/test/undo.test.ts` |
+| S44 | `packages/fs-native/test/trash.test.ts` |
+| S45-S46 | `apps/desktop/src/main/ui-routes.test.ts`, `packages/cli/test/mcp-files.test.ts` |
+| S47 | `apps/desktop/src/renderer/src/agents/*.test.tsx` |
