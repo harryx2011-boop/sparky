@@ -10,6 +10,7 @@ import { cliPaths, localForced, VERSION } from './env'
 import { BackendError, messageOf } from './errors'
 import { acceptsText, choiceText, fieldsOf, OUT_TEXT, toolLabel, toolName } from './fields'
 import { checkPaths, guardOptions } from './guard'
+import { callFileTool, FILE_TOOLS, isFileTool } from './mcp-files'
 import { profileFrom, selectOps } from './profiles'
 import { headline, summarize, summarizeEntry } from './report'
 
@@ -116,6 +117,7 @@ export function mcpTools(ops: readonly OpDescriptor[]): Tool[] {
       }),
     ),
     ...EXTRA_TOOLS,
+    ...FILE_TOOLS,
   ]
 }
 
@@ -178,6 +180,7 @@ type Extra = {
 
 export async function callTool(router: McpRouter, ops: readonly OpDescriptor[], name: string, input: Record<string, unknown>, extra?: Extra): Promise<CallToolResult> {
   try {
+    if (isFileTool(name)) return callFileTool(name, input, guardOptions().roots)
     switch (name) {
       case 'sparky_list_ops': {
         const b = await router.pick()
@@ -257,6 +260,7 @@ export const INSTRUCTIONS = [
   'Calls wait for the job by default. For long videos, pass wait=false and poll sparky_get_job.',
   'To use what a video says (summarize it, quote it, answer from it), call sparky_transcript first: it saves the captions as a text file and downloads nothing else. Download the video itself only when the picture or sound is needed.',
   'Before downloading or converting, sparky_list_history shows whether it was done already and where the files are.',
+  'To look at folders, use sparky_files_list, sparky_files_find and sparky_files_stat: shorter answers than dir or Get-ChildItem, facts only.',
   'When the Sparky app is open the jobs show in its Queue.',
 ].join(' ')
 

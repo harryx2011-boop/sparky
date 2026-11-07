@@ -91,7 +91,7 @@ Other apps' Explorer menu items, Win+E takeover, encrypted folders, disk-space m
 | S28-S31 | `packages/engine/test/{archive,tags,folder-size,remote}.test.ts` |
 | S32-S33 | `apps/desktop/src/renderer/src/theme.test.tsx`, `packages/engine/test/gpu-cache.test.ts` (S33) |
 | S34-S37 | `packages/engine/test/files.test.ts` (output format: `packages/cli/test/mcp-files.test.ts`) |
-| S38 | `packages/cli/test/mcp-limits.test.ts` |
+| S38 | `packages/cli/test/mcp-files.test.ts` |
 | S39-S43 | `packages/engine/test/file-ops.test.ts`, `packages/engine/test/undo.test.ts` |
 | S44 | `packages/fs-native/test/trash.test.ts` |
 | S45-S46 | `apps/desktop/src/main/ui-routes.test.ts`, `packages/cli/test/mcp-files.test.ts` |

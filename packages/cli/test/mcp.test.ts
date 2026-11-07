@@ -32,9 +32,9 @@ afterAll(async () => {
 })
 
 describe('sparky mcp', () => {
-  it('lists one tool per op plus the five helpers', async () => {
+  it('lists one tool per op plus the five helpers and the three file reads', async () => {
     const { tools } = await client.listTools()
-    expect(tools).toHaveLength(listOps().length + 5)
+    expect(tools).toHaveLength(listOps().length + 5 + 3)
     const merge = tools.find((t) => t.name === 'sparky_pdf_merge')
     expect(merge?.description).toMatch(/PDF/)
     expect(merge?.inputSchema.properties).toHaveProperty('wait')
@@ -120,7 +120,8 @@ describe('sparky mcp, default profile and folders', () => {
     const names = (await core.listTools()).tools.map((t) => t.name).sort()
     expect(names).toEqual(
       ['sparky_convert', 'sparky_download', 'sparky_image_edit', 'sparky_media_compress', 'sparky_media_edit', 'sparky_ocr', 'sparky_pdf_compress', 'sparky_pdf_merge', 'sparky_pdf_split', 'sparky_transcript',
-        'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_cancel_job', 'sparky_list_history'].sort(),
+        'sparky_list_ops', 'sparky_list_formats', 'sparky_get_job', 'sparky_cancel_job', 'sparky_list_history',
+        'sparky_files_list', 'sparky_files_find', 'sparky_files_stat'].sort(),
     )
     expect(core.getInstructions()).toContain(coreDir)
     const listed = textOf(await core.callTool({ name: 'sparky_list_ops', arguments: {} }))

@@ -45,16 +45,20 @@ function inside(root: string, target: string): boolean {
 
 const same = (a: string, b: string) => (process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b)
 
+export function checkInside(paths: readonly string[], roots: readonly string[]): void {
+  for (const p of paths) {
+    if (UNC.test(p) || !roots.some((r) => inside(r, real(p)))) {
+      throw new GuardError(`"${p}" is outside the folders the Sparky MCP may use (${roots.join('; ')}). Use a file or folder under one of them, or set SPARKY_MCP_ROOTS for the MCP server.`)
+    }
+  }
+}
+
 export function checkPaths(op: Pick<OpDescriptor, 'positional' | 'accepts'>, args: Record<string, unknown>, roots: readonly string[], allowReplace = false): void {
   const inputs = op.accepts.length
     ? op.positional.flatMap((k) => (Array.isArray(args[k]) ? (args[k] as unknown[]) : [args[k]])).filter((v): v is string => typeof v === 'string')
     : []
   const out = typeof args.out === 'string' ? args.out : undefined
-  for (const p of [...inputs, ...(out ? [out] : [])]) {
-    if (UNC.test(p) || !roots.some((r) => inside(r, real(p)))) {
-      throw new GuardError(`"${p}" is outside the folders the Sparky MCP may use (${roots.join('; ')}). Use a file or folder under one of them, or set SPARKY_MCP_ROOTS for the MCP server.`)
-    }
-  }
+  checkInside([...inputs, ...(out ? [out] : [])], roots)
   if (allowReplace) return
   const replacing = args.originals === 'replace' || args.originals === 'trash' || (out !== undefined && inputs.some((i) => same(real(i), real(out))))
   if (replacing) throw new GuardError('Replacing or trashing the original files, or saving over an input, is off for the Sparky MCP. Leave `originals` as keep and give a different `out`, or set SPARKY_MCP_ALLOW_REPLACE=1 for the MCP server.')
