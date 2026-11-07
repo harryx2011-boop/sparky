@@ -6,6 +6,6 @@ export default defineConfig({
   resolve: { alias: { '@': resolve(__dirname, 'src/renderer/src') } },
   test: {
     environment: 'node',
-    include: ['src/renderer/src/lib/**/*.test.ts', 'src/main/**/*.test.ts'],
+    include: ['src/renderer/src/{lib,browse}/**/*.test.ts', 'src/main/**/*.test.ts'],
   },
 })

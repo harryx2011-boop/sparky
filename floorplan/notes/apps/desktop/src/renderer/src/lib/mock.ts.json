@@ -22,7 +22,7 @@
     {
       "id": "n3",
       "symbol": "NEEDS_OFFICE",
-      "line": 195,
+      "line": 196,
       "offset": 0,
       "text": "Spreadsheets only print through LibreOffice, which the mock PC doesn't have.",
       "kind": "doc"

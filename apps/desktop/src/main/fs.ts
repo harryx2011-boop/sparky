@@ -1,5 +1,5 @@
 // Folder listing for the window: the first rows at once, the rest on request, plain error text, live change events.
-import type { FolderListing, FolderListResult } from '@sparky/core'
+import type { FolderListing, FolderListResult, Places } from '@sparky/core'
 import { list } from '@sparky/fs-native'
 import { randomUUID } from 'node:crypto'
 import { watch } from 'node:fs'
@@ -68,7 +68,8 @@ export function watchFolder(path: string, onChange: () => void): () => void {
   }
 }
 
-export function registerFsIpc(ipc: IpcMain): void {
+export function registerFsIpc(ipc: IpcMain, places: () => Places): void {
+  ipc.handle('folders:places', () => places())
   const watchers = new Map<string, () => void>()
   const stop = (id: string) => {
     watchers.get(id)?.()

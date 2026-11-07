@@ -17,6 +17,7 @@ import {
   type Settings,
   type SparkyApi,
 } from '@sparky/core'
+import { MOCK_PLACES, mockList } from './mockFolders'
 
 const MB = 1024 * 1024
 let settings: Settings = { ...defaultSettings('C:\\Users\\you\\Documents\\Sparky'), performance: 'max', theme: 'dark' }
@@ -319,11 +320,12 @@ export const mockApi: SparkyApi = {
   api: { info: async () => ({ running: true, port: 8600, tokenPath: 'C:\\Users\\you\\AppData\\Roaming\\Sparky\\api-token' }), revealToken: noop },
   icons: { forExt: async () => null },
   folders: {
-    list: async (path) => ({ ok: false, path, code: 'ENOSYS', message: 'Folders open in the app, not the browser preview.' }),
+    list: async (path) => mockList(path),
     rest: async () => null,
     watch: async () => 'preview',
     unwatch: noop,
     onChange: () => () => undefined,
+    places: async () => MOCK_PLACES,
   },
   agents: {
     detect: async () => [

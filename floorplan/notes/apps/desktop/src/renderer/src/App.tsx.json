@@ -6,7 +6,7 @@
     {
       "id": "n1",
       "symbol": "Shell",
-      "line": 35,
+      "line": 36,
       "offset": 4,
       "text": "Ctrl+1…6 switches sections.",
       "kind": "what"
@@ -14,7 +14,7 @@
     {
       "id": "n2",
       "symbol": "Shell",
-      "line": 48,
+      "line": 49,
       "offset": 17,
       "text": "In-app toast when a job fails while the window is in front.",
       "kind": "what"

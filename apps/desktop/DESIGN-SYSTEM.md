@@ -20,7 +20,7 @@ Scope: the Electron app's renderer, the main product UI (`src/renderer/src`). Th
 - Window material: Windows 11 22H2+ gets the OS acrylic and `data-material="os"` clears the body and wall; elsewhere, or with `SPARKY_MATERIAL=none`, the wall is painted (`src/main/material.ts`, `src/renderer/src/main.tsx`).
 - Title bar: `h-10`, one tab (shadcn Tabs) naming the open place, window buttons 46px wide (`src/renderer/src/shell/TitleBar.tsx:20-24`).
 - Status bar: `h-9`, contact links left, job pill right (`src/renderer/src/shell/StatusBar.tsx:10`).
-- Main: content column capped at 980px, centred, `px-7` and `py-6` (rem units: 24.5px and 21px at the 14px root) (`src/renderer/src/App.tsx:83`).
+- Main: content column capped at 980px, centred, `px-7` and `py-6` (rem units: 24.5px and 21px at the 14px root) (`src/renderer/src/App.tsx:83`). Pages marked `bleed` in `PAGES` (Browse) fill the pane edge to edge and scroll inside their own view.
 - Dialog: 420px wide, centred, capped to the window width minus 32px (`src/renderer/src/components/ui/dialog.tsx:31`); overlay is `bg-black/50` (`src/renderer/src/components/ui/dialog.tsx:28`).
 - Toasts sit top right, offset 48px from the top and 20px from the right (`src/renderer/src/App.tsx:94`).
 - Breakpoints: none. The renderer has no width media query; its only media query is `prefers-color-scheme` (`src/renderer/src/lib/state.tsx:96`).
@@ -39,7 +39,8 @@ Scope: the Electron app's renderer, the main product UI (`src/renderer/src`). Th
 | Progress | `src/renderer/src/components/ui/progress.tsx` | h-1 track, indeterminate when no value |
 | Tooltip | `src/renderer/src/components/ui/tooltip.tsx` | popover surface, small text |
 | Dialog | `src/renderer/src/components/ui/dialog.tsx` | 420px, overlay black at 50% |
-| Places | `src/renderer/src/shell/Places.tsx` | Sparky's sections with Ctrl+1 to 6, Settings pinned at the bottom, lime count on Queue while jobs wait |
+| Places | `src/renderer/src/shell/Places.tsx` | Quick access folders and drives (open in the pane), then Sparky's sections with Ctrl+1 to 6, Settings pinned at the bottom, lime count on Queue while jobs wait |
+| Folder views | `src/renderer/src/browse/` | Details (sortable columns), List (columns flow across) and Grid (tiles); virtual rows via TanStack Virtual; Compact, Normal and Roomy densities; selected item uses `--shell-select`; hidden items at 60% opacity when shown |
 | Title bar | `src/renderer/src/shell/TitleBar.tsx` | frameless drag region, one tab, double-click maximizes |
 | Job pill | `src/renderer/src/shell/JobPill.tsx` | the running job with progress, or the waiting count, or Queue idle; click opens the Queue |
 | Job row and job icons | `src/renderer/src/components/JobRow.tsx` | source and result icons, progress and controls |

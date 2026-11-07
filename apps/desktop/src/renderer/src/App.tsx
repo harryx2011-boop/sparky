@@ -6,6 +6,7 @@ import { ClipboardChip } from './components/ClipboardChip'
 import { FileDropOverlay } from './components/FileDropOverlay'
 import { SparkBurst } from './components/SparkBurst'
 import { TooltipProvider } from './components/ui/tooltip'
+import { BrowsePage } from './browse/BrowsePage'
 import { api } from './lib/api'
 import { AppProvider, useApp, useTheme } from './lib/state'
 import { ConvertPage } from './pages/ConvertPage'
@@ -18,13 +19,14 @@ import { Places, SECTIONS } from './shell/Places'
 import { StatusBar } from './shell/StatusBar'
 import { TitleBar } from './shell/TitleBar'
 
-const PAGES: Record<Section, () => ReactNode> = {
-  convert: ConvertPage,
-  download: DownloadPage,
-  tools: ToolsPage,
-  queue: QueuePage,
-  history: HistoryPage,
-  settings: SettingsPage,
+const PAGES: Record<Section, { Page: () => ReactNode; bleed?: boolean }> = {
+  browse: { Page: BrowsePage, bleed: true },
+  convert: { Page: ConvertPage },
+  download: { Page: DownloadPage },
+  tools: { Page: ToolsPage },
+  queue: { Page: QueuePage },
+  history: { Page: HistoryPage },
+  settings: { Page: SettingsPage },
 }
 
 function Shell() {
@@ -64,7 +66,7 @@ function Shell() {
     [],
   )
 
-  const Page = PAGES[section]
+  const { Page, bleed } = PAGES[section]
   return (
     <div className="sp-shell flex h-full flex-col text-foreground">
       <TitleBar />
@@ -72,7 +74,7 @@ function Shell() {
         <aside className="sp-panel w-[216px] shrink-0 overflow-hidden bg-[var(--shell-side)]">
           <Places />
         </aside>
-        <main className="sp-panel relative flex min-w-0 grow flex-col overflow-y-auto bg-[var(--shell-pane)]">
+        <main className={`sp-panel relative flex min-w-0 grow flex-col bg-[var(--shell-pane)] ${bleed ? 'overflow-hidden' : 'overflow-y-auto'}`}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={section}
@@ -80,7 +82,7 @@ function Shell() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.16 }}
-              className="mx-auto flex min-h-full w-full max-w-[980px] flex-col px-7 py-6"
+              className={bleed ? 'flex min-h-0 grow flex-col' : 'mx-auto flex min-h-full w-full max-w-[980px] flex-col px-7 py-6'}
             >
               <Page />
             </motion.div>

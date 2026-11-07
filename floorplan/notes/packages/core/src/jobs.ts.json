@@ -6,7 +6,7 @@
     {
       "id": "n1",
       "symbol": "AdvancedOptions.videoKbps",
-      "line": 10,
+      "line": 11,
       "offset": 0,
       "text": "Overrides the compression level's video quality with a fixed bitrate.",
       "kind": "doc"
@@ -14,7 +14,7 @@
     {
       "id": "n2",
       "symbol": "AdvancedOptions.imageQuality",
-      "line": 12,
+      "line": 13,
       "offset": 0,
       "text": "1–100, images only. Overrides the compression level.",
       "kind": "doc"
@@ -22,7 +22,7 @@
     {
       "id": "n3",
       "symbol": "AdvancedOptions.trimStart",
-      "line": 13,
+      "line": 14,
       "offset": 0,
       "text": "Seconds.",
       "kind": "doc"
@@ -30,7 +30,7 @@
     {
       "id": "n4",
       "symbol": "AdvancedOptions.width",
-      "line": 15,
+      "line": 16,
       "offset": 0,
       "text": "Resize images (or GIFs). Keeps the aspect ratio when only one is set.",
       "kind": "doc"
@@ -38,7 +38,7 @@
     {
       "id": "n5",
       "symbol": "AdvancedOptions.fps",
-      "line": 17,
+      "line": 18,
       "offset": 0,
       "text": "Frames per second for GIF output.",
       "kind": "doc"
@@ -46,7 +46,7 @@
     {
       "id": "n6",
       "symbol": "ConvertSettings.output",
-      "line": 21,
+      "line": 22,
       "offset": 0,
       "text": "Output extension, e.g. \"mp4\". Same as the input means \"just shrink it\".",
       "kind": "doc"
@@ -54,7 +54,7 @@
     {
       "id": "n7",
       "symbol": "ConvertSettings.resolution",
-      "line": 23,
+      "line": 24,
       "offset": 0,
       "text": "null keeps the source resolution.",
       "kind": "doc"
@@ -62,7 +62,7 @@
     {
       "id": "n8",
       "symbol": "DownloadRequest.title",
-      "line": 41,
+      "line": 42,
       "offset": 0,
       "text": "Title shown in the queue.",
       "kind": "doc"
@@ -70,7 +70,7 @@
     {
       "id": "n9",
       "symbol": "DownloadRequest.quality",
-      "line": 43,
+      "line": 44,
       "offset": 0,
       "text": "null means \"best available\".",
       "kind": "doc"
@@ -78,7 +78,7 @@
     {
       "id": "n10",
       "symbol": "DownloadRequest.items",
-      "line": 44,
+      "line": 45,
       "offset": 0,
       "text": "1-based playlist positions. Empty or undefined downloads everything.",
       "kind": "doc"
@@ -86,7 +86,7 @@
     {
       "id": "n11",
       "symbol": "DownloadRequest.count",
-      "line": 45,
+      "line": 46,
       "offset": 0,
       "text": "How many items this request will download, for overall progress.",
       "kind": "doc"
@@ -94,7 +94,7 @@
     {
       "id": "n12",
       "symbol": "DownloadRequest.convertTo",
-      "line": 46,
+      "line": 47,
       "offset": 0,
       "text": "Convert the finished download into this format in the same job.",
       "kind": "doc"
@@ -102,7 +102,7 @@
     {
       "id": "n13",
       "symbol": "JobKind",
-      "line": 60,
+      "line": 61,
       "offset": 0,
       "text": "The app's bucket for a job: its icon, its History filter. Which op ran it is `Job.op`.",
       "kind": "doc"
@@ -110,7 +110,7 @@
     {
       "id": "n14",
       "symbol": "Job.op",
-      "line": 65,
+      "line": 66,
       "offset": 0,
       "text": "The engine op that runs this job, e.g. \"convert\" or \"pdf.merge\".",
       "kind": "doc"
@@ -118,7 +118,7 @@
     {
       "id": "n15",
       "symbol": "Job.args",
-      "line": 66,
+      "line": 67,
       "offset": 0,
       "text": "The op's input as validated by its schema, including the caller's `out`.",
       "kind": "doc"
@@ -126,7 +126,7 @@
     {
       "id": "n16",
       "symbol": "Job.restartsOnResume",
-      "line": 67,
+      "line": 68,
       "offset": 0,
       "text": "Pausing throws the work away, so a resumed job starts from the beginning.",
       "kind": "doc"
@@ -134,7 +134,7 @@
     {
       "id": "n17",
       "symbol": "Job.source",
-      "line": 69,
+      "line": 70,
       "offset": 0,
       "text": "File path or link.",
       "kind": "doc"
@@ -142,7 +142,7 @@
     {
       "id": "n18",
       "symbol": "Job.progress",
-      "line": 73,
+      "line": 74,
       "offset": 0,
       "text": "0–1, or -1 when progress can't be measured.",
       "kind": "doc"
@@ -150,7 +150,7 @@
     {
       "id": "n19",
       "symbol": "Job.speed",
-      "line": 74,
+      "line": 75,
       "offset": 0,
       "text": "e.g. \"3.1x\" or \"6.4 MB/s\"",
       "kind": "doc"
@@ -158,7 +158,7 @@
     {
       "id": "n20",
       "symbol": "Job.eta",
-      "line": 75,
+      "line": 76,
       "offset": 0,
       "text": "Seconds left.",
       "kind": "doc"
@@ -166,7 +166,7 @@
     {
       "id": "n21",
       "symbol": "Job.suggestUpdate",
-      "line": 80,
+      "line": 81,
       "offset": 0,
       "text": "A hint that yt-dlp may need an update.",
       "kind": "doc"
@@ -174,7 +174,7 @@
     {
       "id": "n22",
       "symbol": "OP_TEXT",
-      "line": 107,
+      "line": 108,
       "offset": 0,
       "text": "Plain-language words for the engine's ops: `label` for the app and the CLI help, `done` for the finished notification. One row per op.",
       "kind": "doc"
@@ -182,7 +182,7 @@
     {
       "id": "n23",
       "symbol": "OP_TEXT.unknown",
-      "line": 110,
+      "line": 111,
       "offset": 0,
       "text": "A job whose op this build doesn't know, such as one queued by a newer CLI.",
       "kind": "doc"
@@ -190,7 +190,7 @@
     {
       "id": "n24",
       "symbol": "convertTitle",
-      "line": 113,
+      "line": 114,
       "offset": 0,
       "text": "Queue title for a conversion, e.g. \"clip.mov → MP4\".",
       "kind": "doc"
@@ -198,7 +198,7 @@
     {
       "id": "n25",
       "symbol": "downloadTitle",
-      "line": 119,
+      "line": 120,
       "offset": 0,
       "text": "Queue title for a download, e.g. \"Night bus home → MP3\".",
       "kind": "doc"
@@ -206,7 +206,7 @@
     {
       "id": "n26",
       "symbol": "Settings.batch",
-      "line": 135,
+      "line": 136,
       "offset": 0,
       "text": "Work on several files at the same time. How many is Sparky's call, from the Performance level and the PC.",
       "kind": "doc"
@@ -214,7 +214,7 @@
     {
       "id": "n27",
       "symbol": "CONCURRENCY_MIN",
-      "line": 177,
+      "line": 178,
       "offset": 0,
       "text": "Hard limits for the queue itself; the batch rule stays well inside them.",
       "kind": "doc"
@@ -222,7 +222,7 @@
     {
       "id": "n28",
       "symbol": "TOOL_LABELS",
-      "line": 189,
+      "line": 190,
       "offset": 0,
       "text": "What each bundled tool does, in plain words, shown in Settings. One place, so the app and its browser preview agree.",
       "kind": "doc"
@@ -230,7 +230,7 @@
     {
       "id": "n29",
       "symbol": "OPTIONAL_TOOLS",
-      "line": 200,
+      "line": 201,
       "offset": 0,
       "text": "Tools the user installs; the rest ship inside Sparky.",
       "kind": "doc"
@@ -238,7 +238,7 @@
     {
       "id": "n30",
       "symbol": "TOOL_NAMES",
-      "line": 202,
+      "line": 203,
       "offset": 0,
       "text": "The tools' own names, for the credits line and the add-on hints where a person has to find them by name.",
       "kind": "doc"
@@ -246,7 +246,7 @@
     {
       "id": "n31",
       "symbol": "ProbeResult.duration",
-      "line": 228,
+      "line": 229,
       "offset": 0,
       "text": "Seconds, for audio and video.",
       "kind": "doc"
@@ -254,7 +254,7 @@
     {
       "id": "n32",
       "symbol": "LinkEntry.index",
-      "line": 234,
+      "line": 235,
       "offset": 0,
       "text": "1-based position in the playlist.",
       "kind": "doc"
@@ -262,7 +262,7 @@
     {
       "id": "n33",
       "symbol": "LinkInfo.maxHeight",
-      "line": 248,
+      "line": 249,
       "offset": 0,
       "text": "Tallest video height on offer.",
       "kind": "doc"
@@ -270,7 +270,7 @@
     {
       "id": "n34",
       "symbol": "LinkInfo.sizeEstimate",
-      "line": 249,
+      "line": 250,
       "offset": 0,
       "text": "Rough size of the best download, in bytes.",
       "kind": "doc"
@@ -278,7 +278,7 @@
     {
       "id": "n35",
       "symbol": "OpSummary",
-      "line": 259,
+      "line": 260,
       "offset": 0,
       "text": "An engine op as the app sees it. `missing` holds tool ids (\"libreoffice\") and app capabilities (\"print\", \"trash\").",
       "kind": "doc"
@@ -286,7 +286,7 @@
     {
       "id": "n36",
       "symbol": "OpSummary.category",
-      "line": 263,
+      "line": 264,
       "offset": 0,
       "text": "'pdf', 'video', 'audio', 'image', 'document', 'archive', 'tool', or 'convert'/'download' for the two ops with their own pages.",
       "kind": "doc"
@@ -294,7 +294,7 @@
     {
       "id": "n37",
       "symbol": "OpSummary.secret",
-      "line": 268,
+      "line": 269,
       "offset": 0,
       "text": "Fields to render as password inputs; Sparky never stores them.",
       "kind": "doc"
@@ -302,7 +302,7 @@
     {
       "id": "n38",
       "symbol": "OpSummary.accepts",
-      "line": 269,
+      "line": 270,
       "offset": 0,
       "text": "Extensions the op takes, lower case, without the dot.",
       "kind": "doc"
@@ -310,7 +310,7 @@
     {
       "id": "n39",
       "symbol": "OpSummary.inputSchema",
-      "line": 270,
+      "line": 271,
       "offset": 0,
       "text": "JSON Schema of the op's input, `out` included.",
       "kind": "doc"
@@ -318,7 +318,7 @@
     {
       "id": "n40",
       "symbol": "TargetSummary",
-      "line": 275,
+      "line": 276,
       "offset": 0,
       "text": "One thing a file can become, and whether this PC can make it.",
       "kind": "doc"
@@ -326,7 +326,7 @@
     {
       "id": "n41",
       "symbol": "SaveResult",
-      "line": 284,
+      "line": 285,
       "offset": 0,
       "text": "`canceled` when the user closed the dialog; `missing` counts files that were gone or could not be copied.",
       "kind": "doc"
@@ -334,7 +334,7 @@
     {
       "id": "n42",
       "symbol": "SaveResult.dest",
-      "line": 288,
+      "line": 289,
       "offset": 0,
       "text": "Where the files went: the file for a single save, else the folder.",
       "kind": "doc"
@@ -342,7 +342,7 @@
     {
       "id": "n43",
       "symbol": "SparkyApi",
-      "line": 291,
+      "line": 292,
       "offset": 0,
       "text": "The API the preload script exposes as `window.sparky`.",
       "kind": "doc"
@@ -350,7 +350,7 @@
     {
       "id": "n44",
       "symbol": "SparkyApi.files.pathFor",
-      "line": 299,
+      "line": 300,
       "offset": 0,
       "text": "Path for a File dropped into the window.",
       "kind": "doc"
@@ -358,7 +358,7 @@
     {
       "id": "n45",
       "symbol": "SparkyApi.files.save",
-      "line": 302,
+      "line": 303,
       "offset": 0,
       "text": "Copies finished files where the user chooses: a save dialog for one file, a folder picker for several.",
       "kind": "doc"
@@ -366,7 +366,7 @@
     {
       "id": "n46",
       "symbol": "SparkyApi.ops.start",
-      "line": 314,
+      "line": 315,
       "offset": 0,
       "text": "Never throws for bad input: a wrong or unavailable request comes back as `ok: false`.",
       "kind": "doc"
@@ -374,7 +374,7 @@
     {
       "id": "n47",
       "symbol": "SparkyApi.history.rerun",
-      "line": 332,
+      "line": 333,
       "offset": 0,
       "text": "A refused rerun (bad input, or a password Sparky never kept) comes back as `ok: false`.",
       "kind": "doc"
@@ -382,7 +382,7 @@
     {
       "id": "n48",
       "symbol": "SparkyApi.api.revealToken",
-      "line": 359,
+      "line": 360,
       "offset": 0,
       "text": "Shows the token file in Explorer; the token itself never reaches the UI or the clipboard.",
       "kind": "doc"
@@ -390,7 +390,7 @@
     {
       "id": "n49",
       "symbol": "SparkyApi.icons.forExt",
-      "line": 362,
+      "line": 363,
       "offset": 0,
       "text": "A data URL for the icon Windows shows for this extension, or null when Windows has no specific one.",
       "kind": "doc"
@@ -398,7 +398,7 @@
     {
       "id": "n50",
       "symbol": "ApiInfo",
-      "line": 372,
+      "line": 381,
       "offset": 0,
       "text": "The local HTTP API as the app hosts it, for the Settings Agents group.",
       "kind": "doc"
@@ -406,7 +406,7 @@
     {
       "id": "n51",
       "symbol": "ApiInfo.running",
-      "line": 373,
+      "line": 382,
       "offset": 0,
       "text": "False when the port was taken at startup.",
       "kind": "doc"
@@ -414,7 +414,7 @@
     {
       "id": "n52",
       "symbol": "ApiInfo.tokenPath",
-      "line": 375,
+      "line": 384,
       "offset": 0,
       "text": "The token file clients read.",
       "kind": "doc"
@@ -422,7 +422,7 @@
     {
       "id": "n53",
       "symbol": "AgentClient",
-      "line": 378,
+      "line": 387,
       "offset": 0,
       "text": "An agent client that can run Sparky's MCP server.",
       "kind": "doc"
@@ -430,7 +430,7 @@
     {
       "id": "n54",
       "symbol": "AgentClient.found",
-      "line": 381,
+      "line": 390,
       "offset": 0,
       "text": "The client is installed on this PC.",
       "kind": "doc"
@@ -438,7 +438,7 @@
     {
       "id": "n55",
       "symbol": "AgentClient.installed",
-      "line": 382,
+      "line": 391,
       "offset": 0,
       "text": "Its config already lists Sparky.",
       "kind": "doc"
@@ -446,7 +446,7 @@
     {
       "id": "n56",
       "symbol": "AgentClient.current",
-      "line": 383,
+      "line": 392,
       "offset": 0,
       "text": "Installed, and it starts this copy of Sparky the way Sparky would write it now. False means an update is offered.",
       "kind": "doc"

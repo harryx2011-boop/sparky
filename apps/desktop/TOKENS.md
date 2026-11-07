@@ -78,6 +78,11 @@ Source of truth: `../../packages/ui/src/styles.css` (shared theme, imported by `
 | --- | --- | --- | --- |
 | `--shell-row` | `30px` | 2.0 shell file row height | `../../packages/ui/src/styles.css:385` |
 | `--shell-gap` | `8px` | 2.0 shell gap between floating panels | `../../packages/ui/src/styles.css:386` |
+| `DENSITIES.compact` | row `24px`, font `12px`, tile `96px` | folder views, Compact density (numbers in code because the virtual lists size rows from them) | `src/renderer/src/browse/model.ts:24` |
+| `DENSITIES.normal` | row `30px`, font `13px`, tile `120px` | folder views, Normal density (default; row matches `--shell-row`) | `src/renderer/src/browse/model.ts:25` |
+| `DENSITIES.roomy` | row `36px`, font `14px`, tile `148px` | folder views, Roomy density | `src/renderer/src/browse/model.ts:26` |
+| `COLUMN_WIDTH` | `260px` | List view column width | `src/renderer/src/browse/ListView.tsx:7` |
+| `GAP` | `6px` | Grid view gap between tiles | `src/renderer/src/browse/GridView.tsx:7` |
 
 ## Radius
 | token | value | use | source |

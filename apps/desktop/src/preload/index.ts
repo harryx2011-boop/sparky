@@ -78,6 +78,7 @@ const api: SparkyApi = {
     watch: (path) => invoke('folders:watch', path),
     unwatch: (id) => invoke('folders:unwatch', id),
     onChange: (l) => listen('folders:change', l),
+    places: () => invoke('folders:places'),
   },
   agents: { detect: () => invoke('agents:detect'), install: (id) => invoke('agents:install', id) },
 }

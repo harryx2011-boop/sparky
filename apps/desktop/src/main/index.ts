@@ -11,6 +11,7 @@ import { registerAgentsIpc } from './agents'
 import { registerFsIpc } from './fs'
 import { registerIconIpc } from './icons'
 import { windowMaterial } from './material'
+import { drives, quickAccess } from './places'
 import { copyInto, copyTo } from './save'
 
 const isDev = !app.isPackaged
@@ -298,7 +299,7 @@ function registerIpc(): void {
   })
   registerAgentsIpc(ipcMain)
   registerIconIpc(ipcMain)
-  registerFsIpc(ipcMain)
+  registerFsIpc(ipcMain, () => ({ quick: quickAccess((name) => app.getPath(name), engine.getSettings().outputRoot), drives: drives(fs.existsSync) }))
 }
 
 function configuredApiPort(): number {

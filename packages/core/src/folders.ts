@@ -8,6 +8,17 @@ export interface FolderListing {
   attrs: Uint32Array
 }
 
+export interface Place {
+  label: string
+  path: string
+  icon: 'desktop' | 'downloads' | 'documents' | 'pictures' | 'sparky' | 'drive'
+}
+
+export interface Places {
+  quick: Place[]
+  drives: Place[]
+}
+
 export type FolderListResult =
   | { ok: true; path: string; head: FolderListing; total: number; rest: string | null }
   | { ok: false; path: string; code: string; message: string }

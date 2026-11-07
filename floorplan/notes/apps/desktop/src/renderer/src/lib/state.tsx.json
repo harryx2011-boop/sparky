@@ -6,7 +6,7 @@
     {
       "id": "n1",
       "symbol": "AppState.files",
-      "line": 13,
+      "line": 15,
       "offset": 0,
       "text": "Files waiting on the Convert page, kept when switching sections.",
       "kind": "doc"
@@ -14,7 +14,7 @@
     {
       "id": "n2",
       "symbol": "AppState.pendingLink",
-      "line": 17,
+      "line": 19,
       "offset": 0,
       "text": "A link handed over by the tray or the clipboard chip.",
       "kind": "doc"
@@ -22,7 +22,7 @@
     {
       "id": "n3",
       "symbol": "useTheme",
-      "line": 90,
+      "line": 98,
       "offset": 0,
       "text": "Dark until the saved choice arrives (index.html starts dark); \"Match Windows\" follows the system from then on.",
       "kind": "doc"
