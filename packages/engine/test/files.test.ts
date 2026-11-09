@@ -149,5 +149,10 @@ describe('findFiles', () => {
     const all = findFiles({ path: root, glob: '*.log', limit: 100 })
     expect(all.entries).toHaveLength(40)
     expect(all.timedOut).toBeUndefined()
+
+    const skipping = findFiles({ path: root, glob: '*.log', cursor: '35', timeoutMs: 100 }, slow)
+    expect(skipping.timedOut).toBe(true)
+    expect(skipping.entries).toHaveLength(0)
+    expect(skipping.next).toBeUndefined()
   })
 })

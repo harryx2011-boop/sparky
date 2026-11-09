@@ -27,6 +27,7 @@ export function findFiles(q: FindQuery, lister: Lister = defaultLister): FindRes
     hits.push(e)
     return true
   })
-  const next = timedOut ? start + hits.length : more ? start + limit : undefined
+  // A timeout before the first match would hand back the same cursor and loop, so it gets none.
+  const next = timedOut ? (hits.length ? start + hits.length : undefined) : more ? start + limit : undefined
   return { path: q.path, entries: hits, ...(next !== undefined ? { next: String(next) } : {}), skipped, ...(timedOut ? { timedOut: true as const } : {}), elapsedMs: Date.now() - t0 }
 }

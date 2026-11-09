@@ -69,7 +69,7 @@ Agents (plan `docs/plans/2026-11-07-agent-files.md`; facts only, never file cont
 - **S45: Show in the window.** Given the Sparky window is open. When an agent calls `sparky_show` with a folder and 3 names. Then Browse shows that folder with "3 selected", Back returns to the earlier folder, and focus stays where it was.
 - **S46: Read Harry's selection.** Given Harry selected 2 files in Browse. When an agent calls `sparky_selection`. Then it gets the open folder and the 2 paths; with the window closed it gets "Open the Sparky window to use this."
 - **S47: Agents place.** Given an agent listed a folder and then moved 12 files. When Harry opens Agents in Places. Then two rows show the client name, time and action, and Undo on the move puts the 12 files back.
-- **S48: Find with a time budget.** Given a tree too big to walk in time. When an agent finds by name with a `timeout` (20 s by default). Then it gets the matches found by then, a line that says it stopped after N s so the list is incomplete, and a cursor that resumes after the last match.
+- **S48: Find with a time budget.** Given a tree too big to walk in time. When an agent finds by name with a `timeout` (20 s by default). Then it gets the matches found by then, a line that says it stopped after N s so the list is incomplete, and a cursor that resumes after the last match (no cursor when it found nothing yet, so it cannot loop).
 
 ## Edge cases
 - A file in use by another app -> copy works, move and delete report "in use by another app" and leave it in place (part of S10-S13 tests).
