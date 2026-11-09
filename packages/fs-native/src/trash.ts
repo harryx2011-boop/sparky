@@ -78,12 +78,30 @@ export function trash(paths: string[]): TrashedItem[] {
     // stderr can carry PowerShell's CLIXML after our line; paths never hold < or a line break.
     const [, kind, detail] = /(NOBIN|FAILED):([^\r\n<]+)/.exec(msg) ?? []
     if (kind === 'NOBIN') throw new Error(`${detail!.trim()} is on a drive with no Recycle Bin, so it was not deleted.`)
-    throw new Error(`Could not move to the Recycle Bin (${detail?.trim() ?? `exit ${(err as { status?: number }).status}`}).`)
+    const why = (err as { code?: string }).code === 'ETIMEDOUT' ? 'timed out after 30 s' : (detail?.trim() ?? `exit ${(err as { status?: number }).status}`)
+    const trashed = landed(full, since)
+    const left = full.filter((p) => !trashed.some((t) => t.path === p))
+    throw new TrashError(`Moved ${trashed.length} of ${full.length} to the Recycle Bin; not moved (${why}): ${left.join(', ')}`, trashed)
   }
-  return full.map((p) => {
-    const rec = records(p).filter((r) => r.deletedAt >= since).sort((a, b) => b.deletedAt - a.deletedAt)[0]
-    if (!rec) throw new Error(`${p} is gone but not in the Recycle Bin.`)
-    return { path: p, deletedAt: rec.deletedAt }
+  const trashed = landed(full, since)
+  const lost = full.filter((p) => !trashed.some((t) => t.path === p))
+  if (lost.length) throw new TrashError(`Gone but not in the Recycle Bin: ${lost.join(', ')}`, trashed)
+  return trashed
+}
+
+/** A trash call that did not finish; `trashed` lists what is in the Recycle Bin already, for undo. */
+export class TrashError extends Error {
+  readonly trashed: TrashedItem[]
+  constructor(message: string, trashed: TrashedItem[]) {
+    super(message)
+    this.trashed = trashed
+  }
+}
+
+function landed(full: string[], since: number): TrashedItem[] {
+  return full.flatMap((p) => {
+    const rec = exists(p) ? undefined : records(p).filter((r) => r.deletedAt >= since).sort((a, b) => b.deletedAt - a.deletedAt)[0]
+    return rec ? [{ path: p, deletedAt: rec.deletedAt }] : []
   })
 }
 

@@ -1,4 +1,5 @@
 // Spec scenario S44 (docs/specs/file-manager.md) and agent files A5: trash only to the Recycle Bin, and restore from it.
+import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -57,6 +58,34 @@ describe.runIf(process.platform === 'win32')('fs-native trash', () => {
 
     restore(dir, items[0]!.deletedAt)
     expect(readFileSync(join(dir, 'child.txt'), 'utf8')).toBe('kid')
+  }, 90_000)
+
+  it('a call that fails part way names what already went to the Recycle Bin, so it can be undone', async () => {
+    const free = join(root, 'free.txt')
+    const locked = join(root, 'locked.txt')
+    writeFileSync(free, 'free')
+    writeFileSync(locked, 'locked')
+    const holder = spawn('powershell', ['-NoProfile', '-Command', `$f = [IO.File]::Open($env:LOCKED, 'Open', 'Read', 'None'); 'open'; Start-Sleep 30`], {
+      env: { ...process.env, LOCKED: locked },
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    try {
+      await new Promise((ok) => holder.stdout!.once('data', ok))
+      let err: (Error & { trashed?: { path: string; deletedAt: number }[] }) | undefined
+      try {
+        trash([free, locked])
+      } catch (e) {
+        err = e as typeof err
+      }
+      expect(err?.message).toMatch(/locked\.txt/)
+      expect(existsSync(locked)).toBe(true)
+      const moved = [free, locked].filter((p) => !existsSync(p))
+      expect(err!.trashed!.map((t) => t.path)).toEqual(moved)
+      for (const t of err!.trashed!) restore(t.path, t.deletedAt)
+      expect(existsSync(free)).toBe(true)
+    } finally {
+      holder.kill()
+    }
   }, 90_000)
 
   it('S44: No silent delete: a path on a volume with no Recycle Bin is refused and stays', () => {

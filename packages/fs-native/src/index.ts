@@ -24,4 +24,4 @@ export function list(path: string): Listing {
   return addon ? addon(path) : listFallback(path)
 }
 
-export { restore, trash, type TrashedItem } from './trash'
+export { restore, trash, TrashError, type TrashedItem } from './trash'
