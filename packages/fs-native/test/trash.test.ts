@@ -1,7 +1,7 @@
 // Spec scenario S44 (docs/specs/file-manager.md) and agent files A5: trash only to the Recycle Bin, and restore from it.
 import { spawn } from 'node:child_process'
 import { randomBytes } from 'node:crypto'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -94,5 +94,18 @@ describe.runIf(process.platform === 'win32')('fs-native trash', () => {
     const unc = `\\\\localhost\\${p[0]}$${p.slice(2)}`
     expect(() => trash([unc])).toThrow(/stays\.txt is on a drive with no Recycle Bin, so it was not deleted/)
     expect(existsSync(p)).toBe(true)
+  }, 60_000)
+
+  // A folder on another drive (this PC's scratch spike folder), reached through a junction like a mounted volume would be.
+  const other = ['D:\\sparky-trash-spike-tmp'].find((d) => existsSync(join(d, 'a.txt')) && d[0] !== root[0])
+  it.runIf(other)('refuses a path whose folder is really on another volume, and leaves it', () => {
+    const link = join(root, 'elsewhere')
+    symlinkSync(other!, link, 'junction')
+    try {
+      expect(() => trash([join(link, 'a.txt')])).toThrow(/on another volume/)
+      expect(existsSync(join(other!, 'a.txt'))).toBe(true)
+    } finally {
+      unlinkSync(link)
+    }
   }, 60_000)
 })

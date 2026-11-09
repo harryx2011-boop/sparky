@@ -1,7 +1,7 @@
 // Recycle Bin without Electron (agent files A5): trash refuses a volume with no bin, restore reads the bin's $I records.
 // ponytail: trash runs one PowerShell (SHFileOperation, ~1 s); move it into list.cc as IFileOperation if that is too slow.
 import { execFileSync } from 'node:child_process'
-import { lstatSync, mkdirSync, readdirSync, readFileSync, renameSync, unlinkSync } from 'node:fs'
+import { lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, unlinkSync } from 'node:fs'
 import path from 'node:path'
 
 export interface TrashedItem {
@@ -52,6 +52,16 @@ const exists = (p: string) => {
   }
 }
 
+const rootOf = (p: string) => path.parse(p).root.toLowerCase()
+
+function sameVolume(p: string): boolean {
+  try {
+    return rootOf(realpathSync.native(path.dirname(p))) === rootOf(p)
+  } catch {
+    return false
+  }
+}
+
 /** Sends files and folders to the Recycle Bin. Refuses the whole call, touching nothing, if any path is on a volume with no bin. */
 export function trash(paths: string[]): TrashedItem[] {
   if (process.platform !== 'win32') throw new Error('The Recycle Bin is Windows only.')
@@ -65,6 +75,8 @@ export function trash(paths: string[]): TrashedItem[] {
   // The shell deletes a path of MAX_PATH (260) or more for good instead of recycling it, without asking under our flags.
   for (const p of full) if (p.length >= 260) throw new Error(`${p} is too long for the Recycle Bin (260 characters or more), so it was not deleted.`)
   for (const p of full) if (!p.startsWith('\\\\') && !exists(p)) throw new Error(`${p} doesn't exist.`)
+  // The bin lives on the volume that really holds the item; a junction or mount point would send it to another drive's bin.
+  for (const p of full) if (!p.startsWith('\\\\') && !sameVolume(p)) throw new Error(`${p} is on another volume reached through a folder link or mount point, so it was not deleted.`)
   const since = Date.now() - 2000
   try {
     execFileSync('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(SCRIPT, 'utf16le').toString('base64')], {
