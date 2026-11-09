@@ -59,6 +59,8 @@ export function trash(paths: string[]): TrashedItem[] {
     if (!path.isAbsolute(p)) throw new Error(`${p} is not an absolute path.`)
     return path.resolve(p)
   })
+  // The shell deletes a path of MAX_PATH (260) or more for good instead of recycling it, without asking under our flags.
+  for (const p of full) if (p.length >= 260) throw new Error(`${p} is too long for the Recycle Bin (260 characters or more), so it was not deleted.`)
   for (const p of full) if (!p.startsWith('\\\\') && !exists(p)) throw new Error(`${p} doesn't exist.`)
   const since = Date.now() - 2000
   try {

@@ -1,6 +1,6 @@
 // Spec scenario S44 (docs/specs/file-manager.md) and agent files A5: trash only to the Recycle Bin, and restore from it.
 import { randomBytes } from 'node:crypto'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -32,6 +32,16 @@ describe.runIf(process.platform === 'win32')('fs-native trash', () => {
     rmSync(p)
     expect(restore(p, item!.deletedAt)).toBe(p)
     expect(readFileSync(p, 'utf8')).toBe('first')
+  }, 60_000)
+
+  it('refuses a path of 260 or more characters, which the shell would delete for good, and leaves it', () => {
+    const dir = join(root, 'd'.repeat(120), 'e'.repeat(120))
+    mkdirSync(dir, { recursive: true })
+    const p = join(dir, 'long.txt')
+    expect(p.length).toBeGreaterThanOrEqual(260)
+    writeFileSync(p, 'x')
+    expect(() => trash([p])).toThrow(/too long for the Recycle Bin/)
+    expect(existsSync(p)).toBe(true)
   }, 60_000)
 
   it('S44: No silent delete: a path on a volume with no Recycle Bin is refused and stays', () => {
