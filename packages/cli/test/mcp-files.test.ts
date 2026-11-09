@@ -69,6 +69,13 @@ describe('file read tools', () => {
     expect(lines.slice(2).map((l) => l.split('\t')[0])).toContain(path.join('Archive', 'old.mp4'))
   })
 
+  it('S48: a find that runs out of time says it stopped early and hands back a cursor', () => {
+    const lines = text(call('sparky_files_find', { path: root, glob: '*.mp4', timeout: 0 })).split('\n')
+    expect(lines[0]).toMatch(/^0 matches under .+\. Stopped after 0 s \(time limit\), so the list is incomplete\.$/)
+    expect(lines.at(-1)).toBe('more: cursor=0')
+    expect(FILE_TOOLS.find((t) => t.name === 'sparky_files_find')!.inputSchema.properties).toHaveProperty('timeout')
+  })
+
   it('S38: Read outside the roots: list, find and stat are refused and name the allowed folders', () => {
     for (const [name, input] of [
       ['sparky_files_list', { path: outside }],

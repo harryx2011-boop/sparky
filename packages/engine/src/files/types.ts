@@ -48,6 +48,8 @@ export interface ListResult {
 
 export interface FindQuery extends Omit<ListQuery, 'sort' | 'desc'> {
   text?: string
+  /** Stop walking after this long and answer with what was found; default 20 s. */
+  timeoutMs?: number
 }
 
 export interface FindResult {
@@ -55,6 +57,9 @@ export interface FindResult {
   entries: FileEntry[]
   next?: string
   skipped: number
+  /** Set when the time budget ran out before the walk finished; `next` then resumes after the last match. */
+  timedOut?: true
+  elapsedMs: number
 }
 
 export type StatResult =

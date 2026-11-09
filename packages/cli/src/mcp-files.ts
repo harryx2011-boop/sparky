@@ -41,13 +41,14 @@ export const FILE_TOOLS: Tool[] = [
   {
     name: 'sparky_files_find',
     description:
-      'Finds files and folders by name under a folder, its whole tree by default; stops when a page is full. Give `glob` (*.mp4) or `text` (part of the name, any case). Answers like sparky_files_list without the totals. Junctions are not followed; folders it may not open are counted as skipped.',
+      'Finds files and folders by name under a folder, its whole tree by default; stops when a page is full. Give `glob` (*.mp4) or `text` (part of the name, any case). Answers like sparky_files_list without the totals. Junctions are not followed; folders it may not open are counted as skipped. Stops after `timeout` seconds and says so; a whole drive rarely finishes, so search the likely folder.',
     inputSchema: {
       type: 'object',
       properties: {
         path: { type: 'string', description: 'Absolute folder to search under.' },
         text: { type: 'string', description: 'Part of the name, any case.' },
         depth: { type: 'integer', minimum: 1, description: 'Levels to search; the whole tree when left out.' },
+        timeout: { type: 'number', minimum: 0, description: 'Seconds to search before answering with what was found. Default 20.' },
         ...FILTERS,
       },
       required: ['path'],
@@ -136,9 +137,11 @@ function run(name: string, input: Record<string, unknown>, roots: readonly strin
   const q = query(input)
   checkInside([q.path], roots)
   if (name === 'sparky_files_find') {
-    const r = findFiles({ ...q, text: str(input, 'text'), depth: q.depth })
+    const timeout = num(input, 'timeout')
+    const r = findFiles({ ...q, text: str(input, 'text'), depth: q.depth, timeoutMs: timeout === undefined ? undefined : timeout * 1000 })
     const skipped = r.skipped ? ` ${plural(r.skipped, 'folder', 'folders')} skipped (no access).` : ''
-    return [`${plural(r.entries.length, 'match', 'matches')} under ${r.path}.${skipped}`, HEADER, ...r.entries.map(row), ...more(r.next)].join('\n')
+    const stopped = r.timedOut ? ` Stopped after ${Math.round(r.elapsedMs / 1000)} s (time limit), so the list is incomplete.` : ''
+    return [`${plural(r.entries.length, 'match', 'matches')} under ${r.path}.${skipped}${stopped}`, HEADER, ...r.entries.map(row), ...more(r.next)].join('\n')
   }
   const r = listFiles(q)
   const { files, dirs, exts } = r.summary

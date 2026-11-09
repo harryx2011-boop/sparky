@@ -133,4 +133,21 @@ describe('findFiles', () => {
     expect(rest.next).toBeUndefined()
     expect(new Set([...first.entries, ...rest.entries].map((e) => e.name)).size).toBe(5)
   })
+
+  it('S48: Find with a time budget: a slow tree answers with what it found by then, flagged as stopped', () => {
+    for (let i = 0; i < 40; i++) file(`d${String(i).padStart(2, '0')}/hit.log`)
+    const slow: Lister = (p) => (Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 20), list(p))
+
+    const t0 = Date.now()
+    const res = findFiles({ path: root, glob: '*.log', timeoutMs: 100 }, slow)
+    expect(Date.now() - t0).toBeLessThan(600)
+    expect(res.timedOut).toBe(true)
+    expect(res.entries.length).toBeGreaterThan(0)
+    expect(res.entries.length).toBeLessThan(40)
+    expect(res.next).toBe(String(res.entries.length))
+
+    const all = findFiles({ path: root, glob: '*.log', limit: 100 })
+    expect(all.entries).toHaveLength(40)
+    expect(all.timedOut).toBeUndefined()
+  })
 })
