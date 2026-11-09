@@ -23,3 +23,5 @@ export const native = addon !== null
 export function list(path: string): Listing {
   return addon ? addon(path) : listFallback(path)
 }
+
+export { restore, trash, type TrashedItem } from './trash'
