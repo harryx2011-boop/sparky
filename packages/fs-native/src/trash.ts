@@ -55,10 +55,13 @@ const exists = (p: string) => {
 /** Sends files and folders to the Recycle Bin. Refuses the whole call, touching nothing, if any path is on a volume with no bin. */
 export function trash(paths: string[]): TrashedItem[] {
   if (process.platform !== 'win32') throw new Error('The Recycle Bin is Windows only.')
-  const full = paths.map((p) => {
+  const asked = paths.map((p) => {
     if (!path.isAbsolute(p)) throw new Error(`${p} is not an absolute path.`)
     return path.resolve(p)
   })
+  // A repeat, or a path inside another listed folder, goes with that folder; naming it twice hangs SHFileOperation.
+  const key = (p: string) => p.toLowerCase().replace(/\\?$/, '\\')
+  const full = asked.filter((p, i) => !asked.some((q, j) => (j < i || key(q) !== key(p)) && key(p).startsWith(key(q))))
   // The shell deletes a path of MAX_PATH (260) or more for good instead of recycling it, without asking under our flags.
   for (const p of full) if (p.length >= 260) throw new Error(`${p} is too long for the Recycle Bin (260 characters or more), so it was not deleted.`)
   for (const p of full) if (!p.startsWith('\\\\') && !exists(p)) throw new Error(`${p} doesn't exist.`)
@@ -68,6 +71,7 @@ export function trash(paths: string[]): TrashedItem[] {
       env: { ...process.env, SPARKY_TRASH: JSON.stringify(full) },
       stdio: ['ignore', 'ignore', 'pipe'],
       windowsHide: true,
+      timeout: 30_000,
     })
   } catch (err) {
     const msg = String((err as { stderr?: Buffer }).stderr ?? '')

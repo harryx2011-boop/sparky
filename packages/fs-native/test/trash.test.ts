@@ -44,6 +44,21 @@ describe.runIf(process.platform === 'win32')('fs-native trash', () => {
     expect(existsSync(p)).toBe(true)
   }, 60_000)
 
+  it('trashes a folder once when the call also names its child or repeats it, and restores the whole folder', () => {
+    const dir = join(root, 'nested')
+    mkdirSync(dir)
+    writeFileSync(join(dir, 'child.txt'), 'kid')
+
+    const t0 = Date.now()
+    const items = trash([dir, join(dir, 'child.txt'), dir])
+    expect(Date.now() - t0).toBeLessThan(20_000)
+    expect(items.map((i) => i.path)).toEqual([dir])
+    expect(existsSync(dir)).toBe(false)
+
+    restore(dir, items[0]!.deletedAt)
+    expect(readFileSync(join(dir, 'child.txt'), 'utf8')).toBe('kid')
+  }, 90_000)
+
   it('S44: No silent delete: a path on a volume with no Recycle Bin is refused and stays', () => {
     const p = join(root, 'stays.txt')
     writeFileSync(p, 'x')
