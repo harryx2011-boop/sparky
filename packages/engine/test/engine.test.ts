@@ -7,6 +7,7 @@ import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import os from 'node:os'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createEngine, type Engine } from '../src'
 import { samePath } from '../src/output'
@@ -24,6 +25,7 @@ describe.skipIf(!BIN)('engine with real tools', () => {
   let engine: Engine
   const trashed: string[] = []
   const printed: string[] = []
+  const printedFolders: string[] = []
 
   const waitFor = (id: string) =>
     new Promise<Job>((resolve) => {
@@ -55,8 +57,9 @@ describe.skipIf(!BIN)('engine with real tools', () => {
           trashed.push(p)
           fs.rmSync(p, { recursive: true, force: true })
         },
-        printToPdf: async (html, pdf) => {
+        printToPdf: async (html, pdf, folder) => {
           printed.push(fs.readFileSync(html, 'utf8'))
+          printedFolders.push(folder)
           fs.writeFileSync(pdf, '%PDF-1.4 test')
         },
       },
@@ -171,6 +174,40 @@ describe.skipIf(!BIN)('engine with real tools', () => {
     const pdf = await convert(path.join(dir, 'notes.md'), { output: 'pdf' })
     expect(pdf.status, pdf.error).toBe('done')
     expect(printed.at(-1)).toContain('<strong>bold</strong>')
+  })
+
+  it('keeps files outside the document folder and remote URLs out of HTML and PDF results', async () => {
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64')
+    fs.mkdirSync(path.join(dir, 'hostile'), { recursive: true })
+    fs.mkdirSync(path.join(dir, 'private'), { recursive: true })
+    fs.writeFileSync(path.join(dir, 'private', 'secret.png'), png)
+    fs.writeFileSync(path.join(dir, 'hostile', 'own.png'), png)
+    const hits: string[] = []
+    const server = http.createServer((req, res) => {
+      hits.push(req.url ?? '')
+      res.writeHead(200, { 'Content-Type': 'image/png' })
+      res.end(png)
+    })
+    await new Promise<void>((r) => server.listen(0, '127.0.0.1', r))
+    const remote = `http://127.0.0.1:${(server.address() as AddressInfo).port}/beacon.png`
+    const doc = path.join(dir, 'hostile', 'page.md')
+    fs.writeFileSync(doc, `![own](own.png)\n\n![secret](../private/secret.png)\n\n![beacon](${remote})\n`)
+    try {
+      const html = await convert(doc, { output: 'html' })
+      expect(html.status, html.error).toBe('done')
+      expect(fs.readFileSync(html.outputs[0]!, 'utf8')).not.toContain('data:image/png')
+      const before = printed.length
+      const pdf = await convert(doc, { output: 'pdf' })
+      expect(pdf.status, pdf.error).toBe('done')
+      expect(printed.length).toBe(before + 1)
+      expect(printed.at(-1)).not.toContain('data:image/png')
+      expect(printed.at(-1)).toContain(`<base href="${pathToFileURL(`${path.dirname(doc)}${path.sep}`).href}">`)
+      expect(printed.at(-1)).toContain('@page')
+      expect(printedFolders.at(-1)).toBe(path.dirname(doc))
+      expect(hits).toEqual([])
+    } finally {
+      await new Promise<void>((r) => server.close(() => r()))
+    }
   })
 
   it.skipIf(!has('7za') && !has('7z'))('repacks and unpacks archives', async () => {

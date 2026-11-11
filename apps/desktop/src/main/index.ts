@@ -1,6 +1,6 @@
 // Electron main process: window, tray, notifications, clipboard and IPC.
 import { isKnownMediaLink, OP_TEXT, type ApiInfo, type ConvertSettings, type DownloadRequest, type HistoryQuery, type Job, type OpStartResult, type OpSummary, type SaveResult, type Section, type Settings } from '@sparky/core'
-import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, shell, Tray } from 'electron'
+import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, nativeImage, nativeTheme, Notification, session, shell, Tray } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'node:fs'
 import fsp from 'node:fs/promises'
@@ -8,6 +8,7 @@ import path from 'node:path'
 import { apiPort, createEngine, DEFAULT_API_PORT, ensureToken, opById, OpInputError, startApiServer, tokenPath, type ApiServer, type Engine } from '@sparky/engine'
 import { registerAgentsIpc } from './agents'
 import { registerIconIpc } from './icons'
+import { allowPrintRequest } from './print-guard'
 import { copyInto, copyTo } from './save'
 
 const isDev = !app.isPackaged
@@ -187,13 +188,30 @@ function notifyFinished(job: Job): void {
   n.show()
 }
 
-async function printToPdf(htmlPath: string, pdfPath: string): Promise<void> {
-  const w = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } })
+const printFolders = new Map<number, readonly string[]>()
+let printSession: Electron.Session | undefined
+
+function printSessionOnce(): Electron.Session {
+  if (!printSession) {
+    printSession = session.fromPartition('sparky-print')
+    printSession.webRequest.onBeforeRequest((details, done) => {
+      const folders = details.webContentsId === undefined ? undefined : printFolders.get(details.webContentsId)
+      done({ cancel: !folders || !allowPrintRequest(details.url, folders) })
+    })
+  }
+  return printSession
+}
+
+async function printToPdf(htmlPath: string, pdfPath: string, folder: string): Promise<void> {
+  const w = new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false, session: printSessionOnce() } })
+  const id = w.webContents.id
+  printFolders.set(id, [path.dirname(htmlPath), folder])
   try {
     await w.loadFile(htmlPath)
     const pdf = await w.webContents.printToPDF({ printBackground: true, pageSize: 'A4', preferCSSPageSize: true })
     await fsp.writeFile(pdfPath, pdf)
   } finally {
+    printFolders.delete(id)
     w.destroy()
   }
 }

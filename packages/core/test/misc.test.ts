@@ -59,4 +59,9 @@ describe('tools', () => {
     expect(sevenZipPackArgs('out.7z', 4)).toEqual(expect.arrayContaining(['-t7z', '-mx=9']))
     expect(parseSevenZipProgress('  12% 3\r  45% 9 + x')).toBe(0.45)
   })
+
+  it('runs pandoc sandboxed whenever it writes HTML', () => {
+    expect(pandocArgs('a.md', 'a.html')).toContain('--sandbox')
+    expect(pandocArgs('a.docx', 'a.html', { to: 'html5' })).toContain('--sandbox')
+  })
 })

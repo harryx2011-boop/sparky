@@ -43,8 +43,8 @@ import type { Tools } from './tools'
 
 /** What the running app lends the engine. Outside the app both are missing, and the ops that need them say so before starting. */
 export interface EngineHost {
-  /** Renders an HTML file to PDF (Electron's printToPDF in the app). */
-  printToPdf?(htmlPath: string, pdfPath: string): Promise<void>
+  /** Renders an HTML file to PDF (Electron's printToPDF in the app); only files in `folder` or next to the HTML may load. */
+  printToPdf?(htmlPath: string, pdfPath: string, folder: string): Promise<void>
   /** Moves a file to the Recycle Bin. */
   trash?(filePath: string): Promise<void>
 }
@@ -327,18 +327,17 @@ async function printToPdf(env: EngineEnv, input: string, output: string, signal:
   await fs.mkdir(work, { recursive: true })
   try {
     let html = input
+    const folder = path.dirname(input)
     if (normalizeExt(input) !== 'html') {
-      const css = path.join(work, 'print.css')
-      await fs.writeFile(css, PRINT_CSS)
+      const base = pathToFileURL(`${folder}${path.sep}`).href.replace(/&/g, '&amp;')
       html = path.join(work, 'document.html')
       const args = pandocArgs(input, html, { title: path.parse(input).name })
-      args.splice(args.indexOf('--'), 0, '--css', css)
-      // Let pandoc find images that sit next to the document.
-      args.splice(args.indexOf('--'), 0, '--resource-path', path.dirname(input))
+      // Images next to the document load through the <base>; the print window allows only that folder.
+      args.splice(args.indexOf('--'), 0, '--variable', `header-includes=<base href="${base}"><style>${PRINT_CSS}</style>`)
       await runOk(need(env.tools.pandoc, 'Pandoc'), args, { signal })
     }
     throwIfAborted(signal)
-    await need(env.host.printToPdf, 'printing')(html, output)
+    await need(env.host.printToPdf, 'printing')(html, output, folder)
   } finally {
     await fs.rm(work, { recursive: true, force: true })
   }

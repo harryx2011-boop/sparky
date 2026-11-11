@@ -15,7 +15,7 @@ export function pandocArgs(input: string, output: string, opts: { to?: string; t
   const to = opts.to ?? PANDOC_FORMATS[normalizeExt(output)] ?? 'html'
   const args = ['--from', from === 'gfm' ? 'gfm' : from, '--to', to, '--output', output]
   if (to === 'html' || to === 'html5') {
-    args.push('--standalone', '--embed-resources')
+    args.push('--sandbox', '--standalone', '--embed-resources')
     args.push('--metadata', `pagetitle=${opts.title ?? 'Document'}`)
   }
   if (to === 'gfm' || to === 'plain') args.push('--wrap', 'none')
