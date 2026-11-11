@@ -45,6 +45,14 @@ function inside(root: string, target: string): boolean {
   return rel === '' || (rel.split(path.sep)[0] !== '..' && !path.isAbsolute(rel))
 }
 
+function isFile(p: string): boolean {
+  try {
+    return fs.statSync(p).isFile()
+  } catch {
+    return false
+  }
+}
+
 const same = (a: string, b: string) => (process.platform === 'win32' ? a.toLowerCase() === b.toLowerCase() : a === b)
 
 /** Throws a GuardError naming the way out when an input, `out` or `originals` breaks the rules. Download links are not paths. */
@@ -61,4 +69,5 @@ export function checkPaths(op: Pick<OpDescriptor, 'positional' | 'accepts'>, arg
   if (allowReplace) return
   const replacing = args.originals === 'replace' || args.originals === 'trash' || (out !== undefined && inputs.some((i) => same(real(i), real(out))))
   if (replacing) throw new GuardError('Replacing or trashing the original files, or saving over an input, is off for the Sparky MCP. Leave `originals` as keep and give a different `out`, or set SPARKY_MCP_ALLOW_REPLACE=1 for the MCP server.')
+  if (out !== undefined && isFile(out)) throw new GuardError(`"${out}" already exists. Saving over an existing file is off for the Sparky MCP. Give an \`out\` that is a new file name or a folder, or set SPARKY_MCP_ALLOW_REPLACE=1 for the MCP server.`)
 }

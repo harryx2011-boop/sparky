@@ -81,6 +81,17 @@ describe('path guard', () => {
     expect(() => checkPaths(op(), { files: [a], originals: 'replace' }, [root], true)).not.toThrow()
     expect(() => checkPaths(op(), { files: [a], originals: 'keep' }, [root])).not.toThrow()
   })
+
+  it('refuses an out that names an existing file unless replace is allowed', () => {
+    const a = path.join(root, 'a.pdf')
+    const victim = path.join(root, 'victim.env')
+    fs.writeFileSync(victim, 'SECRET=1')
+    expect(() => checkPaths(op(), { files: [a], out: victim }, [root])).toThrow(/SPARKY_MCP_ALLOW_REPLACE/)
+    expect(() => checkPaths(op(), { files: [a], out: victim }, [root], true)).not.toThrow()
+    expect(() => checkPaths(op(), { files: [a], out: path.join(root, 'fresh.pdf') }, [root])).not.toThrow()
+    expect(() => checkPaths(op(), { files: [a], out: root }, [root])).not.toThrow()
+    expect(fs.readFileSync(victim, 'utf8')).toBe('SECRET=1')
+  })
 })
 
 describe('mcpRoots', () => {
